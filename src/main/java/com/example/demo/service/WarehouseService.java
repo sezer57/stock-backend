@@ -13,6 +13,9 @@ public class WarehouseService {
     }
 
     public void addWarehouse(Warehouse warehouse) {
+        if(warehouseRepository.existsWarehouseByName(warehouse.getName())){
+            return;
+        }
         warehouseRepository.save(warehouse);
     }
 }
