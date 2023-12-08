@@ -1,14 +1,12 @@
 package com.example.demo.controller;
 
+import com.example.demo.Dto.ClientDto;
 import com.example.demo.dto.StockDto;
 import com.example.demo.dto.WarehouseTransferDto;
 import com.example.demo.model.Stock;
 import com.example.demo.model.Warehouse;
 import com.example.demo.model.WarehouseStock;
-import com.example.demo.service.StockService;
-import com.example.demo.service.WarehouseService;
-import com.example.demo.service.WarehouseStockService;
-import com.example.demo.service.WarehouseTransferService;
+import com.example.demo.service.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +20,7 @@ public class Controller {
     private final WarehouseService warehouseService;
     private final WarehouseStockService warehouseStockService;
     private final WarehouseTransferService warehouseTransferService;
+    private final ClientService clientService;
 
     public Controller(StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService) {
         this.stockService = stockService;
@@ -45,6 +44,15 @@ public class Controller {
     public ResponseEntity<String> addStock(@RequestBody Warehouse Warehouse) {
         warehouseService.addWarehouse(Warehouse);
         return ResponseEntity.ok("Stock added successfully");
+    }
+
+    @PostMapping("/client")
+    public ResponseEntity<String> addClient(@RequestBody ClientDto client){
+        if(clientService.addClient(client)){
+            return ResponseEntity.ok("Client added successfully");
+        }else {
+            return ResponseEntity.ok("failed to add to stock");
+        }
     }
 
 
