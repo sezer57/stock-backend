@@ -22,11 +22,12 @@ public class Controller {
     private final WarehouseTransferService warehouseTransferService;
     private final ClientService clientService;
 
-    public Controller(StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService) {
+    public Controller(StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService, ClientService clientService) {
         this.stockService = stockService;
         this.warehouseService = warehouseService;
         this.warehouseStockService = warehouseStockService;
         this.warehouseTransferService = warehouseTransferService;
+        this.clientService = clientService;
     }
 
     // Stock ekleme
@@ -47,12 +48,12 @@ public class Controller {
     }
 
     @PostMapping("/client")
-    public ResponseEntity<String> addClient(@RequestBody ClientDto client){
-        if(clientService.addClient(client)){
-            return ResponseEntity.ok("Client added successfully");
-        }else {
-            return ResponseEntity.ok("failed to add to stock");
-        }
+    public ResponseEntity<String> addClient(@RequestBody ClientDto Client){
+      if(clientService.addClient(Client)){
+      return ResponseEntity.ok("Stock added successfully");
+      }else{
+          return ResponseEntity.ok("Error");
+      }
     }
 
 
