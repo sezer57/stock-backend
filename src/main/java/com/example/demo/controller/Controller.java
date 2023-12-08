@@ -50,7 +50,7 @@ public class Controller {
     @PostMapping("/client")
     public ResponseEntity<String> addClient(@RequestBody ClientDto Client){
       if(clientService.addClient(Client)){
-      return ResponseEntity.ok("Stock added successfully");
+      return ResponseEntity.ok("Client added successfully");
       }else{
           return ResponseEntity.ok("Error");
       }

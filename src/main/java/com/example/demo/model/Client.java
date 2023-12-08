@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import org.w3c.dom.Text;
+
 
 import java.sql.Date;
 
@@ -66,4 +66,6 @@ public class Client {
         this.phone=phone;
         this.gsm=gsm;
     }
+
+    public Client() {}
 }
