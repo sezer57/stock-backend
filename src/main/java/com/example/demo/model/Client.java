@@ -12,9 +12,8 @@ import java.sql.Date;
 @Setter
 @Data
 @Entity
-@Table(name = "client")
+@Table(name = "clients")
 public class Client {
-
 
 
     // primary key müşteri ıd mi olmalı yoksa National Insurance Number(tc kimlik numarası mı olmalı) aynı isimde 2 müşteri olabilir;
@@ -22,9 +21,6 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "clientID")
     private Long clientId;
-
-    @Column(name = "registrationDate" , nullable = false)
-    private Date registrationDate;
 
     @Column(name = "clientCode" , nullable = false)
     private Integer clientCode;
@@ -53,9 +49,12 @@ public class Client {
     @Column(name = "gsm" , nullable = false)
     private String gsm;
 
-    public Client(Long clientId,Date registrationDate,Integer clientCode,String commercialTitle,String name,String surname,String address,String country,String city,String phone,String gsm) {
-        this.clientId = clientId;
-        this.registrationDate=registrationDate;
+    @Column(name = "registrationDate" , nullable = false)
+    private Date registrationDate;
+
+    public Client() {}
+
+    public Client(Integer clientCode,String commercialTitle,String name,String surname,String address,String country,String city,String phone,String gsmDate,Date registrationDate) {
         this.clientCode=clientCode;
         this.commercialTitle=commercialTitle;
         this.name=name;
@@ -65,7 +64,8 @@ public class Client {
         this.city=city;
         this.phone=phone;
         this.gsm=gsm;
+        this.registrationDate=registrationDate;
     }
 
-    public Client() {}
+
 }

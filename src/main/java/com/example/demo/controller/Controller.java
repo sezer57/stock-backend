@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
 import com.example.demo.Dto.ClientDto;
-import com.example.demo.dto.StockDto;
-import com.example.demo.dto.WarehouseTransferDto;
+import com.example.demo.Dto.StockDto;
+import com.example.demo.Dto.WarehouseTransferDto;
 import com.example.demo.model.Stock;
 import com.example.demo.model.Warehouse;
 import com.example.demo.model.WarehouseStock;
@@ -47,12 +47,14 @@ public class Controller {
         return ResponseEntity.ok("Stock added successfully");
     }
 
-    @PostMapping("/client")
-    public ResponseEntity<String> addClient(@RequestBody ClientDto Client){
-      if(clientService.addClient(Client)){
+    //client ekleme
+
+    @PostMapping("/clients")
+    public ResponseEntity<String> addClient(@RequestBody ClientDto client){
+      if(clientService.addClient(client)){
       return ResponseEntity.ok("Client added successfully");
       }else{
-          return ResponseEntity.ok("Error");
+          return ResponseEntity.ok("Error of addition client");
       }
     }
 

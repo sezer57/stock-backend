@@ -8,8 +8,6 @@ import java.sql.Date;
 @Getter
 @Setter
 public class ClientDto {
-    private Date registrationDate;
-    private Long clientId;
     private Integer clientCode;
     private String commercialTitle;
     private String name;
@@ -19,4 +17,5 @@ public class ClientDto {
     private String city;
     private String phone;
     private String gsm;
+    private Date registrationDate;
 }

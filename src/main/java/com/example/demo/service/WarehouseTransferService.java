@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.WarehouseTransferDto;
+import com.example.demo.Dto.WarehouseTransferDto;
 import com.example.demo.model.WarehouseStock;
 import com.example.demo.model.WarehouseTransfer;
 import com.example.demo.repository.WarehouseTransferRepository;
