@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import com.example.demo.Dto.StockDto;
-import com.example.demo.Dto.WarehouseTransferDto;
+import com.example.demo.dto.StockDto;
+import com.example.demo.dto.WarehouseTransferDto;
 import com.example.demo.model.Stock;
 import com.example.demo.model.Warehouse;
 import com.example.demo.model.WarehouseStock;
@@ -33,13 +33,13 @@ public class Controller {
     // Stock ekleme
     @PostMapping("/stocks")
     public ResponseEntity<String> addStock(@RequestBody StockDto stock) {
-        if(stockService.addStock(stock)){
+        if (stockService.addStock(stock)) {
             return ResponseEntity.ok("Stock added successfully");
-        }
-        else{
+        } else {
             return ResponseEntity.ok("hata");
         }
     }
+
     // Warehouse ekleme
     @PostMapping("/warehouse")
     public ResponseEntity<String> addStock(@RequestBody Warehouse Warehouse) {
@@ -52,18 +52,18 @@ public class Controller {
     @PatchMapping("/{stockId}/updateQuantityIn")
     public ResponseEntity<String> updateQuantityIn(@PathVariable Long stockId, @RequestParam Integer quantityIn) {
 
-            if (warehouseStockService.updateQuantityIn(stockId,quantityIn)) {
-                return ResponseEntity.status(HttpStatus.OK).body("WarehouseStock updateQuantityIn guncellendi:" + stockId);
-            }
+        if (warehouseStockService.updateQuantityIn(stockId, quantityIn)) {
+            return ResponseEntity.status(HttpStatus.OK).body("WarehouseStock updateQuantityIn guncellendi:" + stockId);
+        }
 
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hata updateQuantityIn:" + stockId);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hata updateQuantityIn:" + stockId);
     }
 
     // Quantity çıkarma
     @PatchMapping("/{stockId}/updateQuantityOut")
     public ResponseEntity<String> updateQuantityOut(@PathVariable Long stockId, @RequestParam Integer quantityOut) {
 
-        if (warehouseStockService.updateQuantityOut(stockId,quantityOut)) {
+        if (warehouseStockService.updateQuantityOut(stockId, quantityOut)) {
             return ResponseEntity.status(HttpStatus.OK).body("WarehouseStock  updateQuantityOut guncellendi:" + stockId);
         }
 
@@ -94,15 +94,19 @@ public class Controller {
         }
     }
 
-    // warehouse stock tarnsfer
-//    @PostMapping("/warehouseStock/transfer")
-//    public ResponseEntity<String> transfer(@RequestBody WarehouseTransferDto warehouseTransferDto){
-//        if (warehouseTransferService.transfer(warehouseTransferDto)) {
-//            return ResponseEntity.status(HttpStatus.OK).body("transfer oluşturuldu");
-//        }
-//
-//        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hata transfer");
-//    }
+    //    warehouse stock tarnsfer
+    @PostMapping("/warehouseStock/transfer")
+    public ResponseEntity<String> transfer(@RequestBody WarehouseTransferDto warehouseTransferDto) {
+        String transferResult = warehouseTransferService.transfer(warehouseTransferDto);
+
+        if (transferResult != null) {
+            // Transfer başarılıysa
+            return ResponseEntity.status(HttpStatus.OK).body(transferResult);
+        } else {
+            // Transfer başarısızsa veya bir hata oluştuysa
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hata transfer");
+        }
 
 
+    }
 }

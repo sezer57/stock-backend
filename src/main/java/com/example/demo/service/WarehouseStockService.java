@@ -45,6 +45,7 @@ public class WarehouseStockService {
         warehouseStock.setQuantityRemaining(oldR-quantity_out);
         warehouseStockRepository.save(warehouseStock);
         return true;
+
     }
 
     public List<WarehouseStock> getAllWarehouseStock() {
@@ -53,8 +54,10 @@ public class WarehouseStockService {
 
 
 
-//    public Warehouse findByWarehouseStock_stockId(){
-//        return  warehouseStockRepository.findWarehouse();
-//
-//    }
+    public WarehouseStock findByWarehouseStock_stockId(Long stockId){
+        return  warehouseStockRepository.findWarehouseStockByStockStockId(stockId);
+    }
+    public void savedb(WarehouseStock warehouseStock){
+        warehouseStockRepository.save(warehouseStock);
+    }
 }

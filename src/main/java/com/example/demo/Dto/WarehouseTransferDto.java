@@ -1,4 +1,4 @@
-package com.example.demo.Dto;
+package com.example.demo.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,8 +6,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class WarehouseTransferDto {
-    private Integer source_id;
-    private Integer target_id;
+    private Long source_id;
+    private Long target_id;
+    private Long stock_id;
     private Integer quantity;
     private String comment;
 }

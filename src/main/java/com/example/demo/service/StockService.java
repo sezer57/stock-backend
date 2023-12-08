@@ -1,6 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.Dto.StockDto;
+import com.example.demo.dto.StockDto;
 import com.example.demo.model.Stock;
 import com.example.demo.model.Warehouse;
 import com.example.demo.model.WarehouseStock;
