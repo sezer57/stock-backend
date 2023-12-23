@@ -17,11 +17,14 @@ public class ClientService {
    }
 
    public boolean addClient(ClientDto client){
+       Client c = new Client(client.getClientCode(),client.getCommercialTitle(),client.getName(),client.getSurname(),client.getAddress(),client.getCountry(),client.getCity(),client.getPhone(),client.getGsm(),client.getRegistrationDate());
+       clientRepository.save(c);
 
-    Client c = new Client(client.getClientCode(),client.getCommercialTitle(),client.getName(),client.getSurname(),client.getAddress(),client.getCountry(),client.getCity(),client.getPhone(),client.getGsm(),client.getRegistrationDate());
-    clientRepository.save(c);
-    return true;
-    }
+
+
+       return true;
+
+   }
 
 
 }

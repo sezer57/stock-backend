@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.Dto.ClientDto;
+import com.example.demo.Dto.InformationCodeDto;
 import com.example.demo.Dto.StockDto;
 import com.example.demo.Dto.WarehouseTransferDto;
 import com.example.demo.model.Stock;
@@ -21,6 +22,8 @@ public class Controller {
     private final WarehouseStockService warehouseStockService;
     private final WarehouseTransferService warehouseTransferService;
     private final ClientService clientService;
+
+    private final InformationCodeService ınformationCodeService;
 
     public Controller(StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService, ClientService clientService) {
         this.stockService = stockService;
@@ -57,6 +60,17 @@ public class Controller {
           return ResponseEntity.ok("Error of addition client");
       }
     }
+    //InformationCode sorguları
+    @PostMapping("/information-codes")
+    public ResponseEntity<String> addInformationCode(@RequestBody InformationCodeDto informationCodeDto) {
+        if (InformationCodeService.addInformationCode(informationCodeDto)) {
+            return ResponseEntity.ok("InformationCode updated successfully");
+        } else {
+            return ResponseEntity.ok("Error updating InformationCode");
+        }
+    }
+
+
 
 
     // Quantity ekleme
