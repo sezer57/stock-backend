@@ -40,4 +40,6 @@ public class BankAccountInfo {
         this.accountNumber=accountNumber;
         this.iban=iban;
     }
+
+    public BankAccountInfo() {}
 }
