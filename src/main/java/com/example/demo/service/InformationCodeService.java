@@ -15,8 +15,6 @@ public class InformationCodeService {
     public InformationCodeService(InformationCodeRepository informationCodeRepository) {
         this.informationCodeRepository = informationCodeRepository;
     }
-
-
     public  boolean addInformationCode(InformationCodeDto  informationCodeDto){
         InformationCode informationCode = new InformationCode(
                 informationCodeDto.getDocumentNumber(),
@@ -27,6 +25,7 @@ public class InformationCodeService {
                 informationCodeDto.getStatus()
         );
         informationCodeRepository.save(informationCode);
-     return true;
+        return true;
     }
 }
+

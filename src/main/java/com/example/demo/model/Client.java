@@ -46,7 +46,7 @@ public class Client {
     @Column(name = "phone" , nullable = false)
     private String phone;
 
-    @Column(name = "gsm" , nullable = false)
+    @Column(name = "gsm")
     private String gsm;
 
     @Column(name = "registrationDate" , nullable = false)

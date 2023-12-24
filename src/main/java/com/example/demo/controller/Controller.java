@@ -1,9 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.Dto.ClientDto;
-import com.example.demo.Dto.InformationCodeDto;
-import com.example.demo.Dto.StockDto;
-import com.example.demo.Dto.WarehouseTransferDto;
+import com.example.demo.Dto.*;
 import com.example.demo.model.Stock;
 import com.example.demo.model.Warehouse;
 import com.example.demo.model.WarehouseStock;
@@ -24,15 +21,15 @@ public class Controller {
     private final ClientService clientService;
 
     private final InformationCodeService informationCodeService;
-
-    public Controller(StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService, ClientService clientService, InformationCodeService ınformationCodeService, InformationCodeService informationCodeService) {
+    public final BankAccountInfoService bankAccountInfoService;
+    public Controller(StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService, ClientService clientService, InformationCodeService informationCodeService, BankAccountInfoService bankAccountInfoService) {
         this.stockService = stockService;
         this.warehouseService = warehouseService;
         this.warehouseStockService = warehouseStockService;
         this.warehouseTransferService = warehouseTransferService;
         this.clientService = clientService;
         this.informationCodeService = informationCodeService;
-
+        this.bankAccountInfoService = bankAccountInfoService;
     }
 
     // Stock ekleme
@@ -71,7 +68,14 @@ public class Controller {
             return ResponseEntity.ok("Error updating InformationCode");
         }
     }
-
+@PostMapping("/bankAccountInfos")
+public ResponseEntity<String> addBankAccountInfo (@RequestBody BankAccountInfoDto bankAccountInfo){
+        if(bankAccountInfoService.addBankAccountInfo(bankAccountInfo)){
+            return ResponseEntity.ok("InformationCode updated successfully");
+        } else {
+            return ResponseEntity.ok("Error updating InformationCode");
+        }
+}
 
 
 
@@ -121,7 +125,7 @@ public class Controller {
         }
     }
 
-    //    warehouse stock transfer
+    //    warehouse stock tarnsfer
     @PostMapping("/warehouseStock/transfer")
     public ResponseEntity<String> transfer(@RequestBody WarehouseTransferDto warehouseTransferDto) {
         String transferResult = warehouseTransferService.transfer(warehouseTransferDto);
@@ -133,7 +137,6 @@ public class Controller {
             // Transfer başarısızsa veya bir hata oluştuysa
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hata transfer");
         }
-        //transfer onay işlemi
 
 
     }

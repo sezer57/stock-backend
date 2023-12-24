@@ -5,6 +5,7 @@ import com.example.demo.model.Client;
 import com.example.demo.repository.ClientRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -25,6 +26,10 @@ public class ClientService {
        return true;
 
    }
+
+    public List<Client> getAllClients(){
+        return clientRepository.findAll();
+    }
 
 
 }
