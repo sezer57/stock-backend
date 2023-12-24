@@ -15,18 +15,18 @@ public class InformationCodeService {
     public InformationCodeService(InformationCodeRepository informationCodeRepository) {
         this.informationCodeRepository = informationCodeRepository;
     }
-    public static boolean addInformationCode(InformationCodeDto InformationCodeDto informationCodeDto){
 
+
+    public  boolean addInformationCode(InformationCodeDto  informationCodeDto){
         InformationCode informationCode = new InformationCode(
-                informationCode.getInfoCodeId(),
-                informationCode.getDocumentNumber(),
-                informationCode.getProcessType(),
-                informationCode.getTransactionDate(),
-                informationCode.getTransactionTime(),
-                informationCode.getProcessAmount(),
-                informationCode.getStatus()
+                informationCodeDto.getDocumentNumber(),
+                informationCodeDto.getProcessType(),
+                informationCodeDto.getTransactionDate(),
+                informationCodeDto.getTransactionTime(),
+                informationCodeDto.getProcessAmount(),
+                informationCodeDto.getStatus()
         );
         informationCodeRepository.save(informationCode);
-
+     return true;
     }
 }

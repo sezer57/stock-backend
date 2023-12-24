@@ -11,10 +11,7 @@ import java.util.Date;
 @Setter
 @Data
 @Entity
-@Table(name = "Information Code")
-
-
-
+@Table(name = "Information_code")
 public class InformationCode {
 
     @Id
@@ -43,9 +40,8 @@ public class InformationCode {
 
     public InformationCode() {}
 
-    public void informationCode(Long info_codeId,Integer documentNumber, String processType,Date transactionDate,Date transactionTime,Long processAmount,String Status ){
+    public InformationCode(Integer documentNumber, String processType,Date transactionDate,Date transactionTime,Long processAmount,String Status ){
 
-        this.info_codeId=info_codeId;
         this.documentNumber=documentNumber;
         this.processType=processType;
         this.transactionDate=transactionDate;

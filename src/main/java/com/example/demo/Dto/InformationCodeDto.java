@@ -9,12 +9,11 @@ import java.util.Date;
 @Getter
 @Setter
 public class InformationCodeDto {
-    private Long infoCodeId;
+
     private Integer documentNumber;
     private String processType;
     private Date transactionDate;
     private Date transactionTime;
-    private Integer processAmount;
+    private Long processAmount;
     private String status;
-
 }

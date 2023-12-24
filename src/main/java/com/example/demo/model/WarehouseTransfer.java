@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Date;
+
 
 @Getter
 @Setter
@@ -34,6 +36,9 @@ public class WarehouseTransfer {
     @Column(name = "comment")
     private String comment;
 
+    @Column(name = "transfer_date")
+    private Date date;
+
     @Column(name = "approval_status")
     private String approvalStatus; // "Onay Bekliyor", "Onaylandı", "Reddedildi"
 
@@ -41,13 +46,13 @@ public class WarehouseTransfer {
     public WarehouseTransfer() {
 
     }
-    public WarehouseTransfer( Warehouse source, Warehouse target,Long stock_id, Integer quantity, String comment, String approvalStatus) {
-
+    public WarehouseTransfer( Warehouse source, Warehouse target,Long stock_id, Integer quantity,Date date, String comment, String approvalStatus) {
         this.stock_id=stock_id;
         this.source = source;
         this.target = target;
         this.quantity = quantity;
         this.comment = comment;
+        this.date = date;
         this.approvalStatus = approvalStatus;
     }
 

@@ -23,14 +23,16 @@ public class Controller {
     private final WarehouseTransferService warehouseTransferService;
     private final ClientService clientService;
 
-    private final InformationCodeService ınformationCodeService;
+    private final InformationCodeService informationCodeService;
 
-    public Controller(StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService, ClientService clientService) {
+    public Controller(StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService, ClientService clientService, InformationCodeService ınformationCodeService, InformationCodeService informationCodeService) {
         this.stockService = stockService;
         this.warehouseService = warehouseService;
         this.warehouseStockService = warehouseStockService;
         this.warehouseTransferService = warehouseTransferService;
         this.clientService = clientService;
+        this.informationCodeService = informationCodeService;
+
     }
 
     // Stock ekleme
@@ -63,7 +65,7 @@ public class Controller {
     //InformationCode sorguları
     @PostMapping("/information-codes")
     public ResponseEntity<String> addInformationCode(@RequestBody InformationCodeDto informationCodeDto) {
-        if (InformationCodeService.addInformationCode(informationCodeDto)) {
+        if (informationCodeService.addInformationCode(informationCodeDto)) {
             return ResponseEntity.ok("InformationCode updated successfully");
         } else {
             return ResponseEntity.ok("Error updating InformationCode");
@@ -119,7 +121,7 @@ public class Controller {
         }
     }
 
-    //    warehouse stock tarnsfer
+    //    warehouse stock transfer
     @PostMapping("/warehouseStock/transfer")
     public ResponseEntity<String> transfer(@RequestBody WarehouseTransferDto warehouseTransferDto) {
         String transferResult = warehouseTransferService.transfer(warehouseTransferDto);
@@ -131,6 +133,7 @@ public class Controller {
             // Transfer başarısızsa veya bir hata oluştuysa
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hata transfer");
         }
+        //transfer onay işlemi
 
 
     }

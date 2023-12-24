@@ -47,7 +47,7 @@ public class WarehouseTransferService {
             return "depoda yeterli remainin ürün yok";
         }
 
-        sourceWarehouseStock.setQuantityIn(oldQI-warehouseTransferDto.getQuantity());
+
         sourceWarehouseStock.setQuantityRemaining(oldQR-warehouseTransferDto.getQuantity());
         sourceWarehouseStock.setQuantityTransfer(oldQt+warehouseTransferDto.getQuantity());
         warehouseStockService.savedb(sourceWarehouseStock);
@@ -57,6 +57,7 @@ public class WarehouseTransferService {
                 targetWarehouseStock.getWarehouse(),
                 warehouseTransferDto.getStock_id(),
                 warehouseTransferDto.getQuantity(),
+                warehouseTransferDto.getDate(),
                 warehouseTransferDto.getComment(),
                 "Onay Bekliyor"
         );
