@@ -4,12 +4,13 @@ import com.example.demo.Dto.*;
 import com.example.demo.model.Stock;
 import com.example.demo.model.Warehouse;
 import com.example.demo.model.WarehouseStock;
+import com.example.demo.model.WarehouseTransfer;
 import com.example.demo.service.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
@@ -68,15 +69,14 @@ public class Controller {
             return ResponseEntity.ok("Error updating InformationCode");
         }
     }
-@PostMapping("/bankAccountInfos")
-public ResponseEntity<String> addBankAccountInfo (@RequestBody BankAccountInfoDto bankAccountInfo){
-        if(bankAccountInfoService.addBankAccountInfo(bankAccountInfo)){
-            return ResponseEntity.ok("InformationCode updated successfully");
-        } else {
-            return ResponseEntity.ok("Error updating InformationCode");
-        }
-}
-
+    @PostMapping("/bankAccountInfos")
+    public ResponseEntity<String> addBankAccountInfo (@RequestBody BankAccountInfoDto bankAccountInfo){
+            if(bankAccountInfoService.addBankAccountInfo(bankAccountInfo)){
+                return ResponseEntity.ok("InformationCode updated successfully");
+            } else {
+                return ResponseEntity.ok("Error updating InformationCode");
+            }
+    }
 
 
     // Quantity ekleme
@@ -138,6 +138,44 @@ public ResponseEntity<String> addBankAccountInfo (@RequestBody BankAccountInfoDt
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hata transfer");
         }
 
+    }
+
+    // get waiting warehouse transfer
+
+    @GetMapping("/warehouseStock/get_waiting_transfer")
+    public ResponseEntity<List<Map<String, String>>>getwaitngtransfer(){
+        List<WarehouseTransfer> warehouseTransfers = warehouseTransferService.getallwaitingtransfer();
+        List<Map<String, String>> transferNames = new ArrayList<>();
+        for (WarehouseTransfer transfer : warehouseTransfers) {
+            Map<String, String> names = new HashMap<>();
+            names.put("source", transfer.getSource().getName());
+            names.put("target", transfer.getTarget().getName());
+            names.put("quantity",transfer.getQuantity().toString());
+            names.put("comment",transfer.getComment());
+            names.put("approvelstatus",transfer.getApprovalStatus());
+            transferNames.add(names);
+        }
+
+        return ResponseEntity.ok(transferNames);
+    }
+
+    // approvelStatus change
+    @PatchMapping("/{warehouse_transfer_id}/approvelStatus")
+    public ResponseEntity<String> change_approvelStatus(@PathVariable Long warehouse_transfer_id, @RequestParam String status) {
+        if(Objects.equals(status, "onay")){
+            warehouseTransferService.change_status(warehouse_transfer_id,status);
+            return ResponseEntity.ok("onaylandı");
+        }
+        else if(Objects.equals(status, "red")){
+            warehouseTransferService.change_status(warehouse_transfer_id,status);
+            return ResponseEntity.ok("red edildi ve miktar kaynaga tekrardan aktarıldı");
+        }
+        else
+            return ResponseEntity.badRequest().body("yanlış değer");
 
     }
+
+
+
+
 }
