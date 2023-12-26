@@ -1,10 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.Dto.*;
-import com.example.demo.model.Stock;
-import com.example.demo.model.Warehouse;
-import com.example.demo.model.WarehouseStock;
-import com.example.demo.model.WarehouseTransfer;
+import com.example.demo.model.*;
 import com.example.demo.service.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +20,8 @@ public class Controller {
 
     private final InformationCodeService informationCodeService;
     public final BankAccountInfoService bankAccountInfoService;
-    public Controller(StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService, ClientService clientService, InformationCodeService informationCodeService, BankAccountInfoService bankAccountInfoService) {
+    public final BalanceService balanceService;
+    public Controller(StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService, ClientService clientService, InformationCodeService informationCodeService, BankAccountInfoService bankAccountInfoService, BalanceService balanceService) {
         this.stockService = stockService;
         this.warehouseService = warehouseService;
         this.warehouseStockService = warehouseStockService;
@@ -31,6 +29,7 @@ public class Controller {
         this.clientService = clientService;
         this.informationCodeService = informationCodeService;
         this.bankAccountInfoService = bankAccountInfoService;
+        this.balanceService = balanceService;
     }
 
     // Stock ekleme
@@ -69,13 +68,25 @@ public class Controller {
             return ResponseEntity.ok("Error updating InformationCode");
         }
     }
+
+    //Add bank Account Info
     @PostMapping("/bankAccountInfos")
     public ResponseEntity<String> addBankAccountInfo (@RequestBody BankAccountInfoDto bankAccountInfo){
             if(bankAccountInfoService.addBankAccountInfo(bankAccountInfo)){
-                return ResponseEntity.ok("InformationCode updated successfully");
+                return ResponseEntity.ok("Bank account infos succeed");
             } else {
-                return ResponseEntity.ok("Error updating InformationCode");
+                return ResponseEntity.ok("Bank account infos error");
             }
+    }
+
+    //Add balance
+    @PostMapping("/balances")
+    public ResponseEntity<String> addBalance(@RequestBody BalanceDto balance){
+        if(balanceService.addBalance(balance)){
+            return ResponseEntity.ok("Balance succeed");
+        } else {
+            return ResponseEntity.ok("Balance error");
+        }
     }
 
 
@@ -122,6 +133,18 @@ public class Controller {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.ok(stocks);
+        }
+    }
+
+    // bütün Clients alma
+    @GetMapping("/getClients")
+    public ResponseEntity<List<Client>> getAllClients() {
+        List<Client> clients = clientService.getAllClients();
+
+        if (clients.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(clients);
         }
     }
 

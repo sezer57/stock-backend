@@ -13,7 +13,7 @@ import java.sql.Date;
 @Data
 @Entity
 @Table(name = "clients")
-public class Client {
+public class  Client {
 
 
     // primary key müşteri ıd mi olmalı yoksa National Insurance Number(tc kimlik numarası mı olmalı) aynı isimde 2 müşteri olabilir;
@@ -46,7 +46,7 @@ public class Client {
     @Column(name = "phone" , nullable = false)
     private String phone;
 
-    @Column(name = "gsm")
+    @Column(name = "gsm" , nullable = false)
     private String gsm;
 
     @Column(name = "registrationDate" , nullable = false)
@@ -54,7 +54,7 @@ public class Client {
 
     public Client() {}
 
-    public Client(Integer clientCode,String commercialTitle,String name,String surname,String address,String country,String city,String phone,String gsmDate,Date registrationDate) {
+    public Client(Integer clientCode,String commercialTitle,String name,String surname,String address,String country,String city,String phone,String gsm,Date registrationDate) {
         this.clientCode=clientCode;
         this.commercialTitle=commercialTitle;
         this.name=name;

@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class BankAccountInfoDto {
 
-    private Long clientID;
+    private Long clientId;
     private String name;
     private String code;
     private String accountNumber;
