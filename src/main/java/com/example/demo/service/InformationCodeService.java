@@ -27,5 +27,8 @@ public class InformationCodeService {
         informationCodeRepository.save(informationCode);
         return true;
     }
+    public void add_db(InformationCode informationCode){
+        informationCodeRepository.save(informationCode);
+    }
 }
 

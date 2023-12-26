@@ -26,10 +26,10 @@ public class InformationCode {
     private String processType;
 
     @Column(name = "transactionDate" , nullable = false)
-    private Date transactionDate;
+    private String transactionDate;
 
     @Column(name = "transactionTime" , nullable = false)
-    private Date transactionTime;
+    private String transactionTime;
 
     @Column(name = "processAmount" , nullable = false)
     private Long processAmount;
@@ -40,7 +40,7 @@ public class InformationCode {
 
     public InformationCode() {}
 
-    public InformationCode(Integer documentNumber, String processType,Date transactionDate,Date transactionTime,Long processAmount,String Status ){
+    public InformationCode(Integer documentNumber, String processType,String transactionDate,String transactionTime,Long processAmount,String Status ){
 
         this.documentNumber=documentNumber;
         this.processType=processType;

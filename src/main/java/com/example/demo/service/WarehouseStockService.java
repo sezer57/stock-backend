@@ -1,19 +1,27 @@
 package com.example.demo.service;
 
 
-import com.example.demo.model.Warehouse;
+import com.example.demo.model.InformationCode;
 import com.example.demo.model.WarehouseStock;
 import com.example.demo.repository.WarehouseStockRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+//time
+
 
 @Service
 public class WarehouseStockService {
     private final WarehouseStockRepository warehouseStockRepository;
-
-    public WarehouseStockService(WarehouseStockRepository warehouseStockRepository) {
+    private final InformationCodeService informationCodeService;
+    public WarehouseStockService(WarehouseStockRepository warehouseStockRepository, InformationCodeService informationCodeService) {
         this.warehouseStockRepository = warehouseStockRepository;
+        this.informationCodeService = informationCodeService;
     }
 
     public boolean updateQuantityIn(Long stockId,Integer quantity_in) {
@@ -28,6 +36,21 @@ public class WarehouseStockService {
         }
         warehouseStock.setQuantityIn(oldQin+quantity_in);
         warehouseStock.setQuantityRemaining(oldR+quantity_in);
+
+
+        // add information update quantity
+
+        InformationCode informationCode = new InformationCode();
+
+        informationCode.setStatus("add to : "+warehouseStock.getStock().getStockName() +" quantity:" + quantity_in);
+        informationCode.setProcessType("succes");
+        informationCode.setTransactionTime(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
+        informationCode.setDocumentNumber(1);
+        informationCode.setTransactionDate(LocalDate.now().format(DateTimeFormatter.ofPattern("d/MM/uuuu")));
+        informationCode.setProcessAmount(Long.valueOf(quantity_in));
+        informationCodeService.add_db(informationCode);
+        //
+
         warehouseStockRepository.save(warehouseStock);
         return true;
     }

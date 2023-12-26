@@ -148,6 +148,7 @@ public class Controller {
         List<Map<String, String>> transferNames = new ArrayList<>();
         for (WarehouseTransfer transfer : warehouseTransfers) {
             Map<String, String> names = new HashMap<>();
+            names.put("id", transfer.getWarehouseTransferId().toString());
             names.put("source", transfer.getSource().getName());
             names.put("target", transfer.getTarget().getName());
             names.put("quantity",transfer.getQuantity().toString());

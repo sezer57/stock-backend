@@ -71,7 +71,7 @@ public class WarehouseTransferService {
 
     // onay bekleyen transferleri çekme
     public List<WarehouseTransfer> getallwaitingtransfer(){
-        return warehouseTransferRepository.findAll();
+        return warehouseTransferRepository.findByApprovalStatus("Onay Bekliyor");
     }
 
     public void change_status(Long warehouse_transfer_id,String status){

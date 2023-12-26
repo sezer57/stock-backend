@@ -12,8 +12,8 @@ public class InformationCodeDto {
 
     private Integer documentNumber;
     private String processType;
-    private Date transactionDate;
-    private Date transactionTime;
+    private String transactionDate;
+    private String transactionTime;
     private Long processAmount;
     private String status;
 }
