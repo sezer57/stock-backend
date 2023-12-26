@@ -14,7 +14,7 @@ public class BankAccountInfoService {
     }
 
     public boolean addBankAccountInfo(BankAccountInfoDto bankAccountInfo ){
-        BankAccountInfo b = new BankAccountInfo(bankAccountInfo.getClientID(),
+        BankAccountInfo b = new BankAccountInfo(bankAccountInfo.getClientId(),
                 bankAccountInfo.getName(),
                 bankAccountInfo.getCode(),
                 bankAccountInfo.getAccountNumber(),
