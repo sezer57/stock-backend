@@ -17,11 +17,12 @@ public class Controller {
     private final WarehouseStockService warehouseStockService;
     private final WarehouseTransferService warehouseTransferService;
     private final ClientService clientService;
+    private final BalanceService balanceService;
 
     private final InformationCodeService informationCodeService;
     public final BankAccountInfoService bankAccountInfoService;
-    public final BalanceService balanceService;
-    public Controller(StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService, ClientService clientService, InformationCodeService informationCodeService, BankAccountInfoService bankAccountInfoService, BalanceService balanceService) {
+    public final BalanceTransferService balanceTransferService;
+    public Controller(StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService, ClientService clientService, InformationCodeService informationCodeService, BankAccountInfoService bankAccountInfoService, BalanceService balanceService, BalanceTransferService balanceTransferService) {
         this.stockService = stockService;
         this.warehouseService = warehouseService;
         this.warehouseStockService = warehouseStockService;
@@ -30,6 +31,7 @@ public class Controller {
         this.informationCodeService = informationCodeService;
         this.bankAccountInfoService = bankAccountInfoService;
         this.balanceService = balanceService;
+        this.balanceTransferService = balanceTransferService;
     }
 
     // Stock ekleme
@@ -87,6 +89,20 @@ public class Controller {
         } else {
             return ResponseEntity.ok("Balance error");
         }
+    }
+
+    @PostMapping("/balance/transfer")
+    public ResponseEntity<String> balancetransfer(@RequestBody BalanceTransferDto balanceTransferDto) {
+        String transferResult = balanceTransferService.transfer(balanceTransferDto);
+
+        if (transferResult != null) {
+            // Transfer başarılıysa
+            return ResponseEntity.status(HttpStatus.OK).body(transferResult);
+        } else {
+            // Transfer başarısızsa veya bir hata oluştuysa
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hata transfer");
+        }
+
     }
 
 

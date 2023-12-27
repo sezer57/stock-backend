@@ -66,6 +66,19 @@ public class WarehouseStockService {
         }
         warehouseStock.setQuantityOut(oldQout+quantity_out);
         warehouseStock.setQuantityRemaining(oldR-quantity_out);
+
+        // add information update quantity
+
+        InformationCode informationCode = new InformationCode();
+
+        informationCode.setStatus("out to : "+warehouseStock.getStock().getStockName() +" quantity:" + quantity_out);
+        informationCode.setProcessType("succes");
+        informationCode.setTransactionTime(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
+        informationCode.setDocumentNumber(1);
+        informationCode.setTransactionDate(LocalDate.now().format(DateTimeFormatter.ofPattern("d/MM/uuuu")));
+        informationCode.setProcessAmount(Long.valueOf(quantity_out));
+        informationCodeService.add_db(informationCode);
+        //
         warehouseStockRepository.save(warehouseStock);
         return true;
 
