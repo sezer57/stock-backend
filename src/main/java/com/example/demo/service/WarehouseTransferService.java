@@ -4,7 +4,6 @@ import com.example.demo.Dto.WarehouseTransferDto;
 import com.example.demo.model.WarehouseStock;
 import com.example.demo.model.WarehouseTransfer;
 import com.example.demo.repository.WarehouseTransferRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

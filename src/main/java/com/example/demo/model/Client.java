@@ -16,7 +16,6 @@ import java.sql.Date;
 public class  Client {
 
 
-    // primary key müşteri ıd mi olmalı yoksa National Insurance Number(tc kimlik numarası mı olmalı) aynı isimde 2 müşteri olabilir;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "clientID")
