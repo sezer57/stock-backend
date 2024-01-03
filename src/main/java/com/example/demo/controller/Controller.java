@@ -113,7 +113,6 @@ public class Controller {
         if (warehouseStockService.updateQuantityIn(stockId, quantityIn)) {
             return ResponseEntity.status(HttpStatus.OK).body("WarehouseStock updateQuantityIn guncellendi:" + stockId);
         }
-
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hata updateQuantityIn:" + stockId);
     }
 
@@ -124,7 +123,6 @@ public class Controller {
         if (warehouseStockService.updateQuantityOut(stockId, quantityOut)) {
             return ResponseEntity.status(HttpStatus.OK).body("WarehouseStock  updateQuantityOut guncellendi:" + stockId);
         }
-
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hata updateQuantityOut:" + stockId);
     }
 
@@ -144,7 +142,6 @@ public class Controller {
     @GetMapping("/getWarehouseStock")
     public ResponseEntity<List<WarehouseStock>> getAllWarehouseStock() {
         List<WarehouseStock> stocks = warehouseStockService.getAllWarehouseStock();
-
         if (stocks.isEmpty()) {
             return ResponseEntity.noContent().build();
         } else {
@@ -152,7 +149,7 @@ public class Controller {
         }
     }
 
-    // bütün Clients alma
+    // get all Clients
     @GetMapping("/getClients")
     public ResponseEntity<List<Client>> getAllClients() {
         List<Client> clients = clientService.getAllClients();
@@ -161,6 +158,15 @@ public class Controller {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.ok(clients);
+        }
+    }
+    @GetMapping("/getBalances")
+    public ResponseEntity<List<Balance>> getAllBalances(){
+        List<Balance> balances = balanceService.getAllBalances();
+        if (balances.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(balances);
         }
     }
 
@@ -176,7 +182,6 @@ public class Controller {
             // Transfer başarısızsa veya bir hata oluştuysa
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hata transfer");
         }
-
     }
 
     // get waiting warehouse transfer
@@ -195,7 +200,6 @@ public class Controller {
             names.put("approvelstatus",transfer.getApprovalStatus());
             transferNames.add(names);
         }
-
         return ResponseEntity.ok(transferNames);
     }
 
