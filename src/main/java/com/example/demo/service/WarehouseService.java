@@ -4,6 +4,8 @@ import com.example.demo.model.Warehouse;
 import com.example.demo.repository.WarehouseRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class WarehouseService {
     private final WarehouseRepository warehouseRepository;
@@ -17,5 +19,9 @@ public class WarehouseService {
             return;
         }
         warehouseRepository.save(warehouse);
+    }
+    public List<Warehouse> getWarehouse(){
+
+        return warehouseRepository.findAll();
     }
 }

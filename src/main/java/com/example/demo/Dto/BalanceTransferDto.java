@@ -13,4 +13,5 @@ public class BalanceTransferDto {
     private Long system;
     private BigDecimal turnoverDebitAmount;
     private BigDecimal turnoverCreditAmount;
+    private String comment;
 }

@@ -37,12 +37,16 @@ public class BalanceTransfer {
     @Column(name = "transfer_date")
     private String date;
 
+    @Column(name = "Comment")
+    private String comment;
+
     public BalanceTransfer(){}
-    public BalanceTransfer(Balance client, Balance system, BigDecimal turnoverDebitAmount, BigDecimal turnoverCreditAmount, String date) {
+    public BalanceTransfer(Balance client, Balance system, BigDecimal turnoverDebitAmount, BigDecimal turnoverCreditAmount, String date, String comment) {
         this.client = client;
         this.system = system;
         this.turnoverDebitAmount = turnoverDebitAmount;
         this.turnoverCreditAmount = turnoverCreditAmount;
         this.date = date;
+        this.comment=comment;
     }
 }

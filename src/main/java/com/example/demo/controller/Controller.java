@@ -51,6 +51,14 @@ public class Controller {
         return ResponseEntity.ok("Stock added successfully");
     }
 
+    // Warehouse alma
+    @GetMapping("/getWarehouse")
+    public ResponseEntity<List<Warehouse>> getWarehouse() {
+        List<Warehouse> Warehouse = warehouseService.getWarehouse();
+        return ResponseEntity.ok(Warehouse) ;
+    }
+
+
     //client ekleme
 
     @PostMapping("/clients")
@@ -130,6 +138,18 @@ public class Controller {
     @GetMapping("/getStocks")
     public ResponseEntity<List<Stock>> getAllStocks() {
         List<Stock> stocks = stockService.getAllStocks();
+
+        if (stocks.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(stocks);
+        }
+    }
+
+    // bütün stocklar alma
+    @GetMapping("/getStocksById")
+    public ResponseEntity<List<StockWarehouseDto>> getstockwithid(@RequestParam("warehouse_id") Long warehouse_id) {
+        List<StockWarehouseDto> stocks = stockService.getStockWithId(warehouse_id);
 
         if (stocks.isEmpty()) {
             return ResponseEntity.noContent().build();
