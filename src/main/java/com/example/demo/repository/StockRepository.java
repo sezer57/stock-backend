@@ -8,5 +8,6 @@ import java.util.Optional;
 
 public interface StockRepository extends JpaRepository<Stock,Long> {
     boolean existsStocksByWarehouseWarehouseIdAndStockName(Long warehouseId, String stockName);
+    Stock findStockByStockId(Long id);
     List<Stock> findStocksByWarehouse_WarehouseId(Long warehouseid);
 }

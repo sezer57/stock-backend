@@ -87,11 +87,16 @@ public class WarehouseStockService {
     public List<WarehouseStock> getAllWarehouseStock() {
         return warehouseStockRepository.findAll();
     }
-
+    public List<WarehouseStock> getWithIdWarehouseStock(Long warehouse_id) {
+        return (List<WarehouseStock>) warehouseStockRepository.findWarehouseStockByWarehouseStockId(warehouse_id);
+    }
 
 
     public WarehouseStock findByWarehouseStock_stockId(Long stockId){
         return  warehouseStockRepository.findWarehouseStockByStockStockId(stockId);
+    }
+    public WarehouseStock findByWarehouseStock_name(String stockId,Long id){
+        return  warehouseStockRepository.findWarehouseStockByStockStockNameAndWarehouseWarehouseId(stockId,id);
     }
     public void savedb(WarehouseStock warehouseStock){
         warehouseStockRepository.save(warehouseStock);

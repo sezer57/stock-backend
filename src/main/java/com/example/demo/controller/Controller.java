@@ -146,7 +146,7 @@ public class Controller {
         }
     }
 
-    // bütün stocklar alma
+    //  stocklar alma warehouse transfer için yapılan sadece id ve isim
     @GetMapping("/getStocksById")
     public ResponseEntity<List<StockWarehouseDto>> getstockwithid(@RequestParam("warehouse_id") Long warehouse_id) {
         List<StockWarehouseDto> stocks = stockService.getStockWithId(warehouse_id);
@@ -162,6 +162,16 @@ public class Controller {
     @GetMapping("/getWarehouseStock")
     public ResponseEntity<List<WarehouseStock>> getAllWarehouseStock() {
         List<WarehouseStock> stocks = warehouseStockService.getAllWarehouseStock();
+        if (stocks.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(stocks);
+        }
+    }
+    //  warehousedaki stockları alma id ile
+    @GetMapping("/getWarehouseStockWithId")
+    public ResponseEntity<List<WarehouseStock>> getWithIdWarehouseStock(@RequestParam("warehouse_id") Long warehouse_id) {
+        List<WarehouseStock> stocks = warehouseStockService.getWithIdWarehouseStock(warehouse_id);
         if (stocks.isEmpty()) {
             return ResponseEntity.noContent().build();
         } else {
@@ -195,12 +205,12 @@ public class Controller {
     public ResponseEntity<String> transfer(@RequestBody WarehouseTransferDto warehouseTransferDto) {
         String transferResult = warehouseTransferService.transfer(warehouseTransferDto);
 
-        if (transferResult != null) {
+        if (Objects.equals(transferResult, "transfer basarılı")) {
             // Transfer başarılıysa
             return ResponseEntity.status(HttpStatus.OK).body(transferResult);
         } else {
             // Transfer başarısızsa veya bir hata oluştuysa
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hata transfer");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(transferResult);
         }
     }
 

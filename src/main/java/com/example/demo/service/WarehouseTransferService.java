@@ -1,6 +1,7 @@
 package com.example.demo.service;
 
 import com.example.demo.Dto.WarehouseTransferDto;
+import com.example.demo.model.Stock;
 import com.example.demo.model.WarehouseStock;
 import com.example.demo.model.WarehouseTransfer;
 import com.example.demo.repository.WarehouseTransferRepository;
@@ -13,29 +14,25 @@ import java.util.Objects;
 public class WarehouseTransferService {
     private final WarehouseTransferRepository warehouseTransferRepository;
     private final WarehouseStockService warehouseStockService;
-
-    public WarehouseTransferService(WarehouseTransferRepository warehouseTransferRepository, WarehouseStockService warehouseStockService) {
+    private final StockService stockService;
+    public WarehouseTransferService(WarehouseTransferRepository warehouseTransferRepository, WarehouseStockService warehouseStockService, StockService stockService) {
         this.warehouseTransferRepository = warehouseTransferRepository;
         this.warehouseStockService = warehouseStockService;
+        this.stockService = stockService;
     }
 
     public String transfer(WarehouseTransferDto warehouseTransferDto) {
         if(Objects.equals(warehouseTransferDto.getSource_id(), warehouseTransferDto.getTarget_id())){
             return "target == source";
         }
+        Stock s = stockService.getstockjustid(warehouseTransferDto.getStock_id());
 
-        WarehouseStock sourceWarehouseStock = warehouseStockService.findByWarehouseStock_stockId(warehouseTransferDto.getSource_id());
-        WarehouseStock targetWarehouseStock = warehouseStockService.findByWarehouseStock_stockId(warehouseTransferDto.getTarget_id());
-
-        if(sourceWarehouseStock==null)
-        {
-            return "kaynak bulunamadı";
-        } else if(!Objects.equals(sourceWarehouseStock.getWarehouse().getWarehouseId(), warehouseTransferDto.getStock_id())){
-            return "kaynakta id:"+warehouseTransferDto.getStock_id()+ " ürün yok , //ilk önce kaynakta ürünü tanımlayınız";
-        } else if (targetWarehouseStock==null)
-        {
-            return "target bulunamadı";
+        WarehouseStock sourceWarehouseStock = warehouseStockService.findByWarehouseStock_name(s.getStockName(),warehouseTransferDto.getSource_id());
+        WarehouseStock targetWarehouseStock = warehouseStockService.findByWarehouseStock_name(s.getStockName(),warehouseTransferDto.getTarget_id());//hatalı bulamıyor
+        if(targetWarehouseStock==null){
+            return "hedef depoya aynı ürünü ekleyin";
         }
+
 
         Integer oldQt=sourceWarehouseStock.getQuantityTransfer();
         Integer oldQI=sourceWarehouseStock.getQuantityIn();
@@ -65,7 +62,7 @@ public class WarehouseTransferService {
 
         warehouseTransferRepository.save(newWarehouseTransfer);
 
-        return "transfer başarılı";
+        return "transfer basarılı";
     }
 
     // onay bekleyen transferleri çekme
@@ -75,11 +72,11 @@ public class WarehouseTransferService {
 
     public void change_status(Long warehouse_transfer_id,String status){
        WarehouseTransfer transfer = warehouseTransferRepository.getReferenceById(warehouse_transfer_id);
-
+       Stock s = stockService.getstockjustid(transfer.getStock_id());
         if(Objects.equals(transfer.getApprovalStatus(), "Onay Bekliyor")){
 
-        WarehouseStock sourceWarehouseStock = warehouseStockService.findByWarehouseStock_stockId(transfer.getSource().getWarehouseId());
-        WarehouseStock targetWarehouseStock = warehouseStockService.findByWarehouseStock_stockId(transfer.getTarget().getWarehouseId());
+        WarehouseStock sourceWarehouseStock = warehouseStockService.findByWarehouseStock_name(s.getStockName(),transfer.getSource().getWarehouseId());
+        WarehouseStock targetWarehouseStock = warehouseStockService.findByWarehouseStock_name(s.getStockName(),transfer.getTarget().getWarehouseId());
         Integer add=transfer.getQuantity();
 
         if(Objects.equals(status, "onay")){

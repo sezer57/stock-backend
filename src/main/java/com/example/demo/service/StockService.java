@@ -58,7 +58,9 @@ public class StockService {
             return convertToStockWarehouseDto(stocks);
         }
     }
-
+    public Stock getstockjustid(Long id){
+        return stockRepository.findStockByStockId(id);
+    }
     private List<StockWarehouseDto> convertToStockWarehouseDto(List<Stock> stocks) {
         return stocks.stream()
                 .map(stock -> new StockWarehouseDto(
