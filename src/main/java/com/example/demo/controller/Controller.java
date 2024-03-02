@@ -200,6 +200,11 @@ public class Controller {
         }
     }
 
+    //Purchase satın alma faturası eklenecek
+
+
+
+
     //    warehouse stock tarnsfer
     @PostMapping("/warehouseStock/transfer")
     public ResponseEntity<String> transfer(@RequestBody WarehouseTransferDto warehouseTransferDto) {
