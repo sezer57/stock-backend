@@ -232,8 +232,8 @@ public class Controller {
 
     //Purchase satın alma faturası eklenecek
     @GetMapping("/getPurchases")
-    public ResponseEntity<List<Purchase>> getAllPurchases() {
-        List<Purchase> purchases = purchaseService.getAllPurchases();
+    public ResponseEntity<List<PurchaseDto2>> getAllPurchases() {
+        List<PurchaseDto2> purchases = purchaseService.getAllPurchases();
         if (purchases.isEmpty()) {
             return ResponseEntity.noContent().build();
         } else {
@@ -241,6 +241,19 @@ public class Controller {
         }
     }
 
+    //purchase oluşturma
+    @PostMapping("/purchase")
+    public ResponseEntity<Boolean> addPurchase(@RequestBody PurchaseDto purchaseDto) {
+        boolean transferResult = purchaseService.addPurchase(purchaseDto);
+
+        if (transferResult==true) {
+            // Transfer başarılıysa
+            return ResponseEntity.status(HttpStatus.OK).body(transferResult);
+        } else {
+            // Transfer başarısızsa veya bir hata oluştuysa
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(transferResult);
+        }
+    }
 
 
     //    warehouse stock tarnsfer

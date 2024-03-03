@@ -20,21 +20,24 @@ public class Purchase {
     @Column(name = "purchase_id")
     private Long purchase_id;
 
+    @ManyToOne
+    @JoinColumn(name = "stockCode", nullable = false)
+    private Stock stockCode;
 
-    @Column(name = "stockCode")
-    private BigDecimal stockCode;
+    @ManyToOne
+    @JoinColumn(name = "client", nullable = false)
+    private Client clientId;
+//    @Column(name = "barcode" , nullable = false)   // gerek yok stock id ile çekilicek
+//    private BigDecimal barcode;
 
-    @Column(name = "barcode" , nullable = false)
-    private BigDecimal barcode;
-
-    @Column(name = "stockName" , nullable = false)
-    private String stockName;
+//    @Column(name = "stockName" , nullable = false)
+//    private String stockName;
 
     @Column(name = "quantity" , nullable = false) // Bunu stocktan da çekebiliriz
     private Integer quantity;
 
-    @Column(name = "unit" , nullable = false)
-    private String unit;
+//    @Column(name = "unit" , nullable = false)
+ //   private String unit;
 
 
     @Column(name = "price" , nullable = false)
@@ -44,18 +47,15 @@ public class Purchase {
     private Date date;
     public Purchase(){}
 
-
-    public Purchase(BigDecimal stockCode, BigDecimal barcode, String stockName, Integer quantity, String unit, Date date,BigDecimal price ){
-
+    public Purchase(Stock stockCode,Client clientId, Integer quantity, Date date, BigDecimal price) {
         this.stockCode=stockCode;
-        this.barcode=barcode;
-        this.stockName=stockName;
+        this.clientId=clientId;
+        //       this.barcode=barcode;
+        //     this.stockName=stockName;
         this.quantity=quantity;
-        this.unit=unit;
+        //      this.unit=unit;
         this.date=date;
         this.price=price;
-
-
     }
 }
 

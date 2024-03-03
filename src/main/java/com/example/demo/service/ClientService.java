@@ -27,7 +27,10 @@ public class ClientService {
        balanceService.savedb(b);
        return true;
    }
+    public Client getClientWithId(Long id){
 
+        return clientRepository.findClientByClientId(id);
+    }
     public List<Client> getAllClients(){
         return clientRepository.findAll();
     }
