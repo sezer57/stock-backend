@@ -68,6 +68,7 @@ public class BalanceTransferService {
                 LocalDate.now().format(DateTimeFormatter.ofPattern("d/MM/uuuu"))+" " +LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")),
                 balanceTransferDto.getComment()
         );
+
         balanceTransferRepository.save(balanceTransfer);
 
         return "from :"+ sourceBalance.getClientID() + " to:"+targetBalance.getClientID()+ " transfer success";

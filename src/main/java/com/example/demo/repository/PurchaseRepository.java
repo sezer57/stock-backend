@@ -5,4 +5,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PurchaseRepository extends JpaRepository<Purchase,Long> {
 }
-// burada eksik olabilir.
+// burada eksik olabilir.z
