@@ -55,5 +55,4 @@ public class WarehouseTransfer {
         this.date = date;
         this.approvalStatus = approvalStatus;
     }
-
 }
