@@ -2,7 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.Dto.PurchaseDto;
 import com.example.demo.Dto.PurchaseDto2;
-import com.example.demo.model.Purchase;
+import com.example.demo.model.PurchaseInvoice;
 import com.example.demo.repository.PurchaseRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,19 +22,19 @@ public class PurchaseService {
 
     public boolean addPurchase(PurchaseDto purchase) {
 
-        Purchase p = new Purchase(stockService.getstockjustid(purchase.getStockCode()),clientService.getClientWithId(purchase.getClientId()), purchase.getQuantity(), purchase.getDate(), purchase.getPrice());
+        PurchaseInvoice p = new PurchaseInvoice(stockService.getstockjustid(purchase.getStockCode()),clientService.getClientWithId(purchase.getClientId()), purchase.getQuantity(), purchase.getDate(), purchase.getPrice());
         purchaseRepository.save(p);
         return true;
     }
 
     public List<PurchaseDto2> getAllPurchases() {
-        List<Purchase> purchases = purchaseRepository.findAll();
-        return purchases.stream()
+        List<PurchaseInvoice> purchaseInvoices = purchaseRepository.findAll();
+        return purchaseInvoices.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    private PurchaseDto2 convertToDTO(Purchase purchases) {
+    private PurchaseDto2 convertToDTO(PurchaseInvoice purchases) {
         PurchaseDto2 dto = new PurchaseDto2();
         dto.setPurchase_id(purchases.getPurchase_id());
         dto.setStockId(purchases.getStockCode().getStockId());

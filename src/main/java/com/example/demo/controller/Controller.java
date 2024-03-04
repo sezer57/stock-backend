@@ -7,7 +7,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.PublicKey;
 import java.util.*;
 
 @RestController
@@ -20,19 +19,20 @@ public class Controller {
     private final ClientService clientService;
     private final BalanceService balanceService;
     private final PurchaseService purchaseService;
-
+    private final ExpenseInvoiceService expenseInvoiceService;
 
     private final InformationCodeService informationCodeService;
     public final BankAccountInfoService bankAccountInfoService;
     public final BalanceTransferService balanceTransferService;
     private final TransactionService transactionService;
 
-    public Controller(StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService, ClientService clientService, InformationCodeService informationCodeService, BankAccountInfoService bankAccountInfoService, BalanceService balanceService, PurchaseService purchaseService, BalanceTransferService balanceTransferService, TransactionService transactionService) {
+    public Controller(StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService, ClientService clientService, ExpenseInvoiceService expenseInvoiceService, InformationCodeService informationCodeService, BankAccountInfoService bankAccountInfoService, BalanceService balanceService, PurchaseService purchaseService, BalanceTransferService balanceTransferService, TransactionService transactionService) {
         this.stockService = stockService;
         this.warehouseService = warehouseService;
         this.warehouseStockService = warehouseStockService;
         this.warehouseTransferService = warehouseTransferService;
         this.clientService = clientService;
+        this.expenseInvoiceService = expenseInvoiceService;
         this.informationCodeService = informationCodeService;
         this.bankAccountInfoService = bankAccountInfoService;
         this.balanceService = balanceService;
@@ -254,7 +254,30 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(transferResult);
         }
     }
+    //sales satın alma faturası eklenecek
+    @GetMapping("/getSales")
+    public ResponseEntity<List<ExpenseInvoiceDto2>> getAllSales() {
+        List<ExpenseInvoiceDto2> Sales = expenseInvoiceService.getAllExpenseInvoice();
+        if (Sales.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(Sales);
+        }
+    }
 
+    //sales oluşturma
+    @PostMapping("/Sales")
+    public ResponseEntity<Boolean> addPurchase(@RequestBody ExpenseInvoiceDto expenseInvoiceDto) {
+        boolean transferResult = expenseInvoiceService.addExpenseInvoice(expenseInvoiceDto);
+
+        if (transferResult==true) {
+            // Transfer başarılıysa
+            return ResponseEntity.status(HttpStatus.OK).body(transferResult);
+        } else {
+            // Transfer başarısızsa veya bir hata oluştuysa
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(transferResult);
+        }
+    }
 
     //    warehouse stock tarnsfer
     @PostMapping("/warehouseStock/transfer")

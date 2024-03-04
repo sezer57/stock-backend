@@ -1,6 +1,5 @@
 package com.example.demo.Dto;
 
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,14 +8,11 @@ import java.util.Date;
 
 @Getter
 @Setter
-public class ExpenseInvoiceDto {
-
-
-
-    private Integer quantity;
-    private Long stockCode;
-    private Long clientId;
+public class ExpenseInvoiceDto2 {
+    private Long expense_id;
+    private Long stockId;
+    private String stockName;
     private BigDecimal price;
+    private int quantity;
     private Date date;
-
 }

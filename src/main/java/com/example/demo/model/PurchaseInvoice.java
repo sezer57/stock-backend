@@ -12,7 +12,7 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "purchase")
-public class Purchase {
+public class PurchaseInvoice {
 
     // satın alma faturası (ticaret için yapılan ürünlerin faturası bu kısımda olacak)
     @Id
@@ -45,9 +45,9 @@ public class Purchase {
 
     @Column(name = "date" , nullable = false)
     private Date date;
-    public Purchase(){}
+    public PurchaseInvoice(){}
 
-    public Purchase(Stock stockCode,Client clientId, Integer quantity, Date date, BigDecimal price) {
+    public PurchaseInvoice(Stock stockCode, Client clientId, Integer quantity, Date date, BigDecimal price) {
         this.stockCode=stockCode;
         this.clientId=clientId;
         //       this.barcode=barcode;

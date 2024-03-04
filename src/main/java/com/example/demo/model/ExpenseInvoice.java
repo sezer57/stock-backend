@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 // bu kısımda operation type kısmı var bu eksik.
@@ -15,57 +16,54 @@ import java.util.Date;
 @Setter
 @Data
 @Entity
-@Table(name = "Expence Invoice")
+@Table(name = "expence_invoice")
 public class ExpenseInvoice {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "expence_id")
+    private Long expence_id;
 
-    @Column(name = "ExpenseInvoiceID" , nullable = false)
-    private Long ExpenseInvoiceID;
-    @Column(name = "ClientID" , nullable = false)
-    private Integer ClientID;
+    @ManyToOne
+    @JoinColumn(name = "stockCode", nullable = false)
+    private Stock stockCode;
 
-    @Column(name = "CurrencyAmount")
-    private Integer CurrencyAmount;
+    @ManyToOne
+    @JoinColumn(name = "client", nullable = false)
+    private Client clientId;
+//    @Column(name = "barcode" , nullable = false)   // gerek yok stock id ile çekilicek
+//    private BigDecimal barcode;
+
+//    @Column(name = "stockName" , nullable = false)
+//    private String stockName;
+
+    @Column(name = "quantity" , nullable = false) // Bunu stocktan da çekebiliriz
+    private Integer quantity;
+
+//    @Column(name = "unit" , nullable = false)
+    //   private String unit;
 
 
-    @Column(name = "BillNo"  , nullable = false)
-    private Integer BillNo;
+    @Column(name = "price" , nullable = false)
+    private BigDecimal price;
 
-    @Column(name = "BillDate" , nullable = false)
-    private Date BillDate;
-
-    @Column(name = "Due")
-    private String Due;
-
-    @Column(name = "CustomCode")
-    private Integer CustomCode;
-
-    @Column(name = "Comment")
-    private String Comment;
-
-    @Column(name = "TaxOffice")
-    private String TaxOffice;
-
-    @Column(name = "CommercialTitle")
-    private String CommercialTitle;
+    @Column(name = "date" , nullable = false)
+    private Date date;
 
     public ExpenseInvoice() {
     }
 
-    public ExpenseInvoice(Integer ClientID, Integer BillNo, Date BillDate, String Due, Integer CustomCode, String Comment, String TaxOffice, String CommercialTitle, Integer CurrencyAmount){
 
-        this.ClientID=ClientID;
-        this.BillNo=BillNo;
-        this.BillDate=BillDate;
-        this.Due=Due;
-        this.CustomCode=CustomCode;
-        this.Comment=Comment;
-        this.TaxOffice=TaxOffice;
-        this.CommercialTitle=CommercialTitle;
-        this.CurrencyAmount=CurrencyAmount;
+    public ExpenseInvoice(Stock stockCode, Client clientId, Integer quantity, Date date, BigDecimal price) {
+        this.stockCode=stockCode;
+        this.clientId=clientId;
+        //       this.barcode=barcode;
+        //     this.stockName=stockName;
+        this.quantity=quantity;
+        //      this.unit=unit;
+        this.date=date;
+        this.price=price;
     }
-
 }
 
 
