@@ -91,6 +91,7 @@ public class WarehouseTransferService {
         else if(Objects.equals(status, "red")){
             Integer oldQT_s=sourceWarehouseStock.getQuantityTransfer();
             sourceWarehouseStock.setQuantityTransfer(oldQT_s-add);
+            sourceWarehouseStock.setQuantityRemaining(oldQT_s+add);
             transfer.setApprovalStatus("red");
         }
         warehouseStockService.savedb(sourceWarehouseStock);
