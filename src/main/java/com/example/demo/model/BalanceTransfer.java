@@ -37,7 +37,7 @@ public class BalanceTransfer {
     @Column(name = "transfer_date")
     private String date;
 
-    @Column(name = "Comment")
+    @Column(name = "comment")
     private String comment;
 
     public BalanceTransfer(){}

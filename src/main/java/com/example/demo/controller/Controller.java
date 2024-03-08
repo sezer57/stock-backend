@@ -109,8 +109,8 @@ public class Controller {
 
     //Add balance
     @PostMapping("/balances")
-    public ResponseEntity<String> addBalance(@RequestBody BalanceDto balance){
-        if(balanceService.addBalance(balance)){
+    public ResponseEntity<String> addBalance(@RequestBody BalanceDto balance,@RequestParam("name") String name){
+        if(balanceService.addBalance(balance,name)){
             return ResponseEntity.ok("Balance succeed");
         } else {
             return ResponseEntity.ok("Balance error");
@@ -173,6 +173,16 @@ public class Controller {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.ok(stocks);
+        }
+    }
+
+    @GetMapping("getClientByName")
+    public ResponseEntity<List<Client>> findClientByName(@RequestParam("name") String name){
+        List<Client> clients = clientService.getClientWithName(name);
+        if (clients.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }else {
+            return ResponseEntity.ok(clients);
         }
     }
 
