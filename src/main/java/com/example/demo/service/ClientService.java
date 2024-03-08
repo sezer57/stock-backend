@@ -36,8 +36,8 @@ public class ClientService {
     }
 
 
-    public List<Client> getClientWithName(String name){
-        List<Client> clients = clientRepository.findClientByName(name);
+    public Client getClientWithName(String name){
+        Client clients = clientRepository.findClientByName(name);
        return clients;
     }
 

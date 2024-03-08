@@ -177,9 +177,9 @@ public class Controller {
     }
 
     @GetMapping("getClientByName")
-    public ResponseEntity<List<Client>> findClientByName(@RequestParam("name") String name){
-        List<Client> clients = clientService.getClientWithName(name);
-        if (clients.isEmpty()){
+    public ResponseEntity<Client> findClientByName(@RequestParam("name") String name){
+        Client clients = clientService.getClientWithName(name);
+        if (clients==null){
             return ResponseEntity.noContent().build();
         }else {
             return ResponseEntity.ok(clients);
