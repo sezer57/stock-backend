@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 @RestController
@@ -111,7 +112,8 @@ public class Controller {
     @PostMapping("/balances")
     public ResponseEntity<String> addBalance(@RequestBody BalanceDto balance,@RequestParam("name") String name){
         if(balanceService.addBalance(balance,name)){
-            return ResponseEntity.ok("Balance succeed");
+
+            return ResponseEntity.ok( "Balance succeed");
         } else {
             return ResponseEntity.ok("Balance error");
         }
@@ -140,6 +142,18 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.OK).body("WarehouseStock updateQuantityIn guncellendi:" + stockId);
         }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hata updateQuantityIn:" + stockId);
+    }
+
+    @PatchMapping("/{clientID}/updateBalance")
+    public ResponseEntity<String> updateBalance(@PathVariable Long clientID,@RequestParam String paymentType, @RequestParam BigDecimal value){
+        System.out.println(clientID);
+        System.out.println(paymentType);
+        System.out.println(value);
+        if(balanceService.updateBalance(clientID,paymentType,value)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Updated UpdateBalance");
+        }
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error UpdateBalance");
     }
 
     // Quantity çıkarma
@@ -175,6 +189,15 @@ public class Controller {
             return ResponseEntity.ok(stocks);
         }
     }
+    @GetMapping("getBalanceWithClientID")
+    public ResponseEntity<Balance>findBalanceByClientID(@RequestParam("ClientID") Long ClientID){
+        Balance balances = balanceService.findBalanceByClientID(ClientID);
+        if (balances==null){
+            return ResponseEntity.noContent().build();
+        }else {
+            return ResponseEntity.ok(balances);
+        }
+    }
 
     @GetMapping("getClientByName")
     public ResponseEntity<Client> findClientByName(@RequestParam("name") String name){
@@ -206,6 +229,7 @@ public class Controller {
             return ResponseEntity.ok(stocks);
         }
     }
+
 
     // get all Clients
     @GetMapping("/getClients")
