@@ -146,9 +146,6 @@ public class Controller {
 
     @PatchMapping("/{clientID}/updateBalance")
     public ResponseEntity<String> updateBalance(@PathVariable Long clientID,@RequestParam String paymentType, @RequestParam BigDecimal value){
-        System.out.println(clientID);
-        System.out.println(paymentType);
-        System.out.println(value);
         if(balanceService.updateBalance(clientID,paymentType,value)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Updated UpdateBalance");
         }

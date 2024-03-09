@@ -63,21 +63,15 @@ public class BalanceService {
         BigDecimal oldValue;
         switch (paymentType) {
             case "turnoverDebit":
-                System.out.println(paymentType);
-                // Update turnoverDebit field
                 oldValue = balance.getTurnoverDebit();
                 if (oldValue == null) {
                     oldValue = BigDecimal.ZERO;
                 }
                 BigDecimal newValue = oldValue.subtract(Value);
                 balance.setTurnoverDebit(newValue);
-                System.out.println("turnoverDebit güncellendi");
-                System.out.println(oldValue);
-                System.out.println(newValue);
                 break;
 
             case "turnoverCredit":
-                // Update turnoverCredit field
                 oldValue = balance.getTurnoverCredit();
                 if (oldValue == null) {
                     oldValue = BigDecimal.ZERO;
@@ -86,7 +80,6 @@ public class BalanceService {
                 balance.setTurnoverCredit(newValue);
                 break;
             case "turnoverBalance":
-                // Update transactionalDebit field
                 oldValue = balance.getTurnoverBalance();
                 if (oldValue == null) {
                     oldValue = BigDecimal.ZERO;
@@ -95,7 +88,6 @@ public class BalanceService {
                 balance.setTurnoverBalance(newValue);
                 break;
             case "transactionalDebit":
-                // Update transactionalDebit field
                 oldValue = balance.getTransactionalDebit();
                 if (oldValue == null) {
                     oldValue = BigDecimal.ZERO;
@@ -124,7 +116,7 @@ public class BalanceService {
                 return false;
         }
         balanceRepository.save(balance);
-        return false;
+        return true;
 
     }
 
