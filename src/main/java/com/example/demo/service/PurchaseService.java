@@ -14,15 +14,23 @@ public class PurchaseService {
     private final PurchaseRepository purchaseRepository;
     private final StockService stockService;
     private final ClientService clientService;
-    public PurchaseService(PurchaseRepository purchaseRepository, StockService stockService, ClientService clientService) {
+    private final BalanceService balanceService;
+    private final WarehouseStockService warehouseStockService;
+    public PurchaseService(PurchaseRepository purchaseRepository, StockService stockService, ClientService clientService, BalanceService balanceService, WarehouseStockService warehouseStockService) {
         this.purchaseRepository = purchaseRepository;
         this.stockService = stockService;
         this.clientService = clientService;
+        this.balanceService = balanceService;
+        this.warehouseStockService = warehouseStockService;
     }
 
     public boolean addPurchase(PurchaseDto purchase) {
 
         PurchaseInvoice p = new PurchaseInvoice(stockService.getstockjustid(purchase.getStockCode()),clientService.getClientWithId(purchase.getClientId()), purchase.getQuantity(), purchase.getDate(), purchase.getPrice());
+        warehouseStockService.updateQuantityIn(purchase.getStockCode(), purchase.getQuantity());
+     //   Balance b = balanceService.findBalanceByClientID(purchase.getClientId());
+    //    BigDecimal oldB=b.getTransactionalBalance();
+     //   b.setTransactionalBalance(oldB.add(purchase.getPrice()));
         purchaseRepository.save(p);
         return true;
     }
@@ -44,4 +52,12 @@ public class PurchaseService {
         dto.setDate(purchases.getDate());
         return dto;
     }
+    public List<PurchaseDto2> getPurchaseWithId(Long id) {
+        List<PurchaseInvoice> purchaseInvoices = purchaseRepository.findPurchaseInvoicesByClientId_ClientId(id);
+        return purchaseInvoices.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+
 }

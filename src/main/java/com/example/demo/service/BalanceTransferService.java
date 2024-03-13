@@ -65,7 +65,7 @@ public class BalanceTransferService {
                 targetBalance,
                 balanceTransferDto.getTurnoverDebitAmount(),
                 balanceTransferDto.getTurnoverCreditAmount(),
-                LocalDate.now().format(DateTimeFormatter.ofPattern("d/MM/uuuu"))+" " +LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")),
+                balanceTransferDto.getDate(),
                 balanceTransferDto.getComment()
         );
 

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.*;
 
 @RestController
@@ -26,8 +27,8 @@ public class Controller {
     public final BankAccountInfoService bankAccountInfoService;
     public final BalanceTransferService balanceTransferService;
     private final TransactionService transactionService;
-
-    public Controller(StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService, ClientService clientService, ExpenseInvoiceService expenseInvoiceService, InformationCodeService informationCodeService, BankAccountInfoService bankAccountInfoService, BalanceService balanceService, PurchaseService purchaseService, BalanceTransferService balanceTransferService, TransactionService transactionService) {
+    private final ReportService reportService;
+    public Controller(StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService, ClientService clientService, ExpenseInvoiceService expenseInvoiceService, InformationCodeService informationCodeService, BankAccountInfoService bankAccountInfoService, BalanceService balanceService, PurchaseService purchaseService, BalanceTransferService balanceTransferService, TransactionService transactionService, ReportService reportService) {
         this.stockService = stockService;
         this.warehouseService = warehouseService;
         this.warehouseStockService = warehouseStockService;
@@ -40,6 +41,7 @@ public class Controller {
         this.purchaseService = purchaseService;
         this.balanceTransferService = balanceTransferService;
         this.transactionService = transactionService;
+        this.reportService = reportService;
     }
 
     // Stock ekleme
@@ -186,6 +188,63 @@ public class Controller {
             return ResponseEntity.ok(stocks);
         }
     }
+
+    //stock update
+    @PostMapping("/stockUpdate")
+    public ResponseEntity<Boolean> addPurchase(@RequestBody StockUpdateDto stockUpdateDto) {
+        boolean transferResult = stockService.stockUpdate(stockUpdateDto);
+
+        if (transferResult==true) {
+            // Transfer başarılıysa
+            return ResponseEntity.status(HttpStatus.OK).body(transferResult);
+        } else {
+            // Transfer başarısızsa veya bir hata oluştuysa
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(transferResult);
+        }
+    }
+
+    //stock update
+    @PostMapping("/warehouseStockUpdate")
+    public ResponseEntity<Boolean> stockUpdate(@RequestBody StockWarehouseUpdateDto stockWarehouseUpdateDto) {
+        boolean transferResult = warehouseStockService.updateWarehouseStock(stockWarehouseUpdateDto);
+
+        if (transferResult==true) {
+            // Transfer başarılıysa
+            return ResponseEntity.status(HttpStatus.OK).body(transferResult);
+        } else {
+            // Transfer başarısızsa veya bir hata oluştuysa
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(transferResult);
+        }
+    }
+
+    //warehousestock delete
+    @PostMapping("/warehouseStockDelete")
+    public ResponseEntity<Boolean> stockUpdate(@RequestBody DeleteDto deleteDto) {
+        boolean transferResult = warehouseStockService.deleteWarehouseStock(deleteDto);
+
+        if (transferResult==true) {
+            // Transfer başarılıysa
+            return ResponseEntity.status(HttpStatus.OK).body(transferResult);
+        } else {
+            // Transfer başarısızsa veya bir hata oluştuysa
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(transferResult);
+        }
+    }
+    //product delete
+    @PostMapping("/productDelete")
+    public ResponseEntity<Boolean> productDelete(@RequestBody DeleteDto deleteDto) {
+        System.out.println(deleteDto.getId());
+        boolean transferResult = stockService.deleteStock(deleteDto);
+
+        if (transferResult==true) {
+            // Transfer başarılıysa
+            return ResponseEntity.status(HttpStatus.OK).body(transferResult);
+        } else {
+            // Transfer başarısızsa veya bir hata oluştuysa
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(transferResult);
+        }
+    }
+
     @GetMapping("getBalanceWithClientID")
     public ResponseEntity<Balance>findBalanceByClientID(@RequestParam("ClientID") Long ClientID){
         Balance balances = balanceService.findBalanceByClientID(ClientID);
@@ -193,6 +252,28 @@ public class Controller {
             return ResponseEntity.noContent().build();
         }else {
             return ResponseEntity.ok(balances);
+        }
+    }
+
+    //  kullanıcıdan alınan  listesi ödeme için
+    @GetMapping("/getPurchaseInvoiceClient")
+    public ResponseEntity<List<PurchaseDto2>> getClientExpensesInvoicewithid(@RequestParam("client_id") Long client_id) {
+        List<PurchaseDto2> purchases = purchaseService.getPurchaseWithId(client_id);
+
+        if (purchases.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(purchases);
+        }
+    }
+    //  kullanıcıdan  satılanların listesi ödeme için
+    @GetMapping("/getSalesInvoiceClient")
+    public ResponseEntity<List<ExpenseInvoiceDto2>> getClientSalesInvoicewithid(@RequestParam("client_id") Long client_id) {
+        List<ExpenseInvoiceDto2> expenses = expenseInvoiceService.getExpenseWithId(client_id);
+        if (expenses.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(expenses);
         }
     }
 
@@ -359,7 +440,9 @@ public class Controller {
 
     }
 
-
-
+    @GetMapping("/getDailyExpenses")
+    public List<Object> getDailyExpenses(@RequestParam("date") LocalDate date) {
+        return reportService.getDailyExpenses(date);
+    }
 
 }

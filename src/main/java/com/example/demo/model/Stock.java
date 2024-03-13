@@ -6,8 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.sql.Date;
-
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -21,7 +20,7 @@ public class Stock {
     private Long stockId;
 
     @Column(name = "registration_date", nullable = false)
-    private Date registrationDate;
+    private LocalDate registrationDate;
 
     @Column(name = "stock_name", nullable = false)
     private String stockName;
@@ -52,7 +51,7 @@ public class Stock {
     private Warehouse warehouse;
     public Stock() {}
 
-    public Stock(String unit, String stockCode, String stockName, String groupName, String middleGroupName, String barcode, BigDecimal salesPrice, Warehouse p,BigDecimal purchasePrice,Date registrationDate) {
+    public Stock(String unit, String stockCode, String stockName, String groupName, String middleGroupName, String barcode, BigDecimal salesPrice, Warehouse p,BigDecimal purchasePrice,LocalDate registrationDate) {
         this.unit=unit;
         this.stockCode=stockCode;
         this.stockName=stockName;

@@ -1,6 +1,8 @@
 package com.example.demo.service;
 
+import com.example.demo.Dto.DeleteDto;
 import com.example.demo.Dto.StockDto;
+import com.example.demo.Dto.StockUpdateDto;
 import com.example.demo.Dto.StockWarehouseDto;
 import com.example.demo.model.Stock;
 import com.example.demo.model.Warehouse;
@@ -41,6 +43,7 @@ public class StockService {
             stockRepository.save(s);
             WarehouseStock ps = new WarehouseStock(w,s);
             warehouseStockRepository.save(ps);
+            System.out.println(s.getRegistrationDate());
             return true;
         }
     }
@@ -69,9 +72,31 @@ public class StockService {
                         stock.getWarehouse().getWarehouseId()))
                 .collect(Collectors.toList());
     }
+    //stock update
+    public boolean stockUpdate(StockUpdateDto stockUpdateDto){
+        Stock s= stockRepository.findStockByStockId(stockUpdateDto.getStock_id());
+
+        s.setBarcode(stockUpdateDto.getBarcode());
+        s.setStockCode(stockUpdateDto.getStockCode());
+        s.setGroupName(stockUpdateDto.getGroupName());
+        s.setMiddleGroupName(stockUpdateDto.getGroupName());
+        s.setStockName(stockUpdateDto.getStockName());
+        s.setSalesPrice(stockUpdateDto.getSalesPrice());
+        s.setUnit(stockUpdateDto.getUnit());
+        s.setPurchasePrice(stockUpdateDto.getPurchasePrice());
+        stockRepository.save(s);
+        return true;
+    }
 
     private boolean isDuplicateStock(Integer warehouseId, String stockName) {
 
         return stockRepository.existsStocksByWarehouseWarehouseIdAndStockName(Long.valueOf(warehouseId), stockName);
+    }
+
+    public boolean deleteStock(DeleteDto deleteDto) {
+        Stock s = stockRepository.findStockByStockId(deleteDto.getId());
+
+        stockRepository.deleteById(s.getStockId());
+        return true;
     }
 }

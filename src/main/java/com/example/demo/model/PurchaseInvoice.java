@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 @Getter
 @Setter
 @Data
@@ -44,10 +44,10 @@ public class PurchaseInvoice {
     private BigDecimal price;
 
     @Column(name = "date" , nullable = false)
-    private Date date;
+    private LocalDate date;
     public PurchaseInvoice(){}
 
-    public PurchaseInvoice(Stock stockCode, Client clientId, Integer quantity, Date date, BigDecimal price) {
+    public PurchaseInvoice(Stock stockCode, Client clientId, Integer quantity, LocalDate date, BigDecimal price) {
         this.stockCode=stockCode;
         this.clientId=clientId;
         //       this.barcode=barcode;

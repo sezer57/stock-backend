@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -17,6 +17,6 @@ public class ExpenseInvoiceDto {
     private Long stockCode;
     private Long clientId;
     private BigDecimal price;
-    private Date date;
+    private LocalDate date;
 
 }

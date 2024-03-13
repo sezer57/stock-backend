@@ -2,8 +2,7 @@ package com.example.demo.Dto;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -12,6 +11,6 @@ public class WarehouseTransferDto {
     private Long target_id;
     private Long stock_id;
     private Integer quantity;
-    private Date date;
+    private LocalDate date;
     private String comment;
 }

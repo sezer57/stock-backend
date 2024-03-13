@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-
+import java.time.LocalDate;
 import java.math.BigDecimal;
-import java.sql.Date;
+
 
 @Getter
 @Setter
@@ -35,13 +35,13 @@ public class BalanceTransfer {
     private BigDecimal turnoverCreditAmount;
 
     @Column(name = "transfer_date")
-    private String date;
+    private LocalDate date;
 
     @Column(name = "comment")
     private String comment;
 
     public BalanceTransfer(){}
-    public BalanceTransfer(Balance client, Balance system, BigDecimal turnoverDebitAmount, BigDecimal turnoverCreditAmount, String date, String comment) {
+    public BalanceTransfer(Balance client, Balance system, BigDecimal turnoverDebitAmount, BigDecimal turnoverCreditAmount, LocalDate date, String comment) {
         this.client = client;
         this.system = system;
         this.turnoverDebitAmount = turnoverDebitAmount;

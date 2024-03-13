@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import java.sql.Time;
 import java.util.Date;
-
+import java.time.LocalDate;
 @Getter
 @Setter
 @Data
@@ -27,7 +27,7 @@ public class Transaction {
     private String processType;
 
     @Column(name = "transactionDate" , nullable = false)
-    private Date transactionDate;
+    private LocalDate transactionDate;
 
     @Column(name = "transactionTime" , nullable = false)
     private Date transactionTime;
@@ -35,7 +35,7 @@ public class Transaction {
     @Column(name = "processAmount" , nullable = false)
     private String processAmount;
 
-    public Transaction(String documentNo, String processType, Date transactionDate, Time transactionTime, String processAmount) {
+    public Transaction(String documentNo, String processType, LocalDate transactionDate, Time transactionTime, String processAmount) {
         this.documentNo=documentNo;
         this.processType=processType;
         this.transactionDate=transactionDate;

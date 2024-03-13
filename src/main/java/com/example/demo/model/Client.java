@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -49,11 +49,11 @@ public class  Client {
     private String gsm;
 
     @Column(name = "registrationDate" , nullable = false)
-    private Date registrationDate;
+    private LocalDate registrationDate;
 
     public Client() {}
 
-    public Client(Integer clientCode,String commercialTitle,String name,String surname,String address,String country,String city,String phone,String gsm,Date registrationDate) {
+    public Client(Integer clientCode,String commercialTitle,String name,String surname,String address,String country,String city,String phone,String gsm,LocalDate registrationDate) {
         this.clientCode=clientCode;
         this.commercialTitle=commercialTitle;
         this.name=name;

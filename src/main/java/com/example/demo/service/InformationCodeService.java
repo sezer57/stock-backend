@@ -30,5 +30,8 @@ public class InformationCodeService {
     public void add_db(InformationCode informationCode){
         informationCodeRepository.save(informationCode);
     }
+
+
+
 }
 

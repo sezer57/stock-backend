@@ -3,7 +3,7 @@ package com.example.demo.Dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -17,5 +17,5 @@ public class ClientDto {
     private String city;
     private String phone;
     private String gsm;
-    private Date registrationDate;
+    private LocalDate registrationDate;
 }
