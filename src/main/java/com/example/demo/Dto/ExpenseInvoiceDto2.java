@@ -14,5 +14,8 @@ public class ExpenseInvoiceDto2 {
     private String stockName;
     private BigDecimal price;
     private int quantity;
+    private String clientName;
+    private String clientAdress;
+    private String clientPhone;
     private LocalDate date;
 }

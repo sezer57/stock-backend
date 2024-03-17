@@ -55,6 +55,9 @@ public class ExpenseInvoiceService {
         dto.setPrice(expenseInvoice.getPrice());
         dto.setQuantity(expenseInvoice.getQuantity());
         dto.setDate(expenseInvoice.getDate());
+        dto.setClientName(expenseInvoice.getClientId().getName()+" "+expenseInvoice.getClientId().getSurname());
+        dto.setClientAdress(expenseInvoice.getClientId().getAddress());
+        dto.setClientPhone(expenseInvoice.getClientId().getPhone());
         return dto;
     }
     public List<ExpenseInvoiceDto2> getExpenseWithId(Long id) {

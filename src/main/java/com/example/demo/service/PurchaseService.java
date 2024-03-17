@@ -50,6 +50,9 @@ public class PurchaseService {
         dto.setPrice(purchases.getPrice());
         dto.setQuantity(purchases.getQuantity());
         dto.setDate(purchases.getDate());
+        dto.setClientName(purchases.getClientId().getName()+" "+purchases.getClientId().getSurname());
+        dto.setClientAdress(purchases.getClientId().getAddress());
+        dto.setClientPhone(purchases.getClientId().getPhone());
         return dto;
     }
     public List<PurchaseDto2> getPurchaseWithId(Long id) {
