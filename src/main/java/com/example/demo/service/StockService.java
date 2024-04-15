@@ -30,22 +30,42 @@ public class StockService {
     }
 
     public boolean addStock(StockDto stock) {
-        Optional<Warehouse> p = warehouseRepository.findById(Long.valueOf(stock.getWarehouse_id()));
-        if(p.isEmpty()){
-            return false;
-        }
-        else {
-            if (isDuplicateStock(stock.getWarehouse_id(), stock.getStockName())) {
-                return false; //  Aynı depoda aynı isimde stok var
+        List<Long> warehouseIds = stock.getWarehouse_id();
+        for (Long warehouseId : warehouseIds) {
+            try {
+                Long warehouseIdLong = Long.valueOf(warehouseId);
+                Optional<Warehouse> warehouseOptional = warehouseRepository.findById(warehouseIdLong);
+                if (warehouseOptional.isEmpty()) {
+                    return false; // Warehouse bulunamadı, işlem başarısız
+                } else {
+                    if (isDuplicateStock(warehouseId, stock.getStockName())) {
+                        return false; // Aynı depoda aynı isimde stok var
+                    }
+                    Warehouse warehouse = warehouseOptional.get();
+                    Stock newStock = new Stock(
+                            stock.getUnit(),
+                            stock.getStockCode(),
+                            stock.getStockName(),
+                            stock.getGroupName(),
+                            stock.getMiddleGroupName(),
+                            stock.getBarcode(),
+                            stock.getSalesPrice(),
+                            warehouse,
+                            stock.getPurchasePrice(),
+                            stock.getRegistrationDate()
+                    );
+                    stockRepository.save(newStock);
+                    WarehouseStock warehouseStock = new WarehouseStock(warehouse, newStock);
+                    warehouseStockRepository.save(warehouseStock);
+                    System.out.println(newStock.getRegistrationDate());
+                }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+                // Sayısal değere dönüştürmede hata, işlem başarısız
+                return false;
             }
-            Warehouse w = p.get();
-            Stock s = new Stock(stock.getUnit(),stock.getStockCode(),stock.getStockName(),stock.getGroupName(),stock.getMiddleGroupName(),stock.getBarcode(),stock.getSalesPrice(),w,stock.getPurchasePrice(),stock.getRegistrationDate());
-            stockRepository.save(s);
-            WarehouseStock ps = new WarehouseStock(w,s);
-            warehouseStockRepository.save(ps);
-            System.out.println(s.getRegistrationDate());
-            return true;
         }
+        return true;
     }
 
     public List<Stock> getAllStocks() {
@@ -75,7 +95,6 @@ public class StockService {
     //stock update
     public boolean stockUpdate(StockUpdateDto stockUpdateDto){
         Stock s= stockRepository.findStockByStockId(stockUpdateDto.getStock_id());
-
         s.setBarcode(stockUpdateDto.getBarcode());
         s.setStockCode(stockUpdateDto.getStockCode());
         s.setGroupName(stockUpdateDto.getGroupName());
@@ -88,9 +107,9 @@ public class StockService {
         return true;
     }
 
-    private boolean isDuplicateStock(Integer warehouseId, String stockName) {
+    private boolean isDuplicateStock(Long warehouseId, String stockName) {
 
-        return stockRepository.existsStocksByWarehouseWarehouseIdAndStockName(Long.valueOf(warehouseId), stockName);
+        return stockRepository.existsStocksByWarehouseWarehouseIdAndStockName(Long.valueOf(warehouseId.toString()), stockName);
     }
 
     public boolean deleteStock(DeleteDto deleteDto) {

@@ -37,11 +37,11 @@ public class BalanceTransferService {
             return "target bulunamadı";
         }
 
-        BigDecimal oldQc=sourceBalance.getTurnoverCredit();
-        BigDecimal oldQd=sourceBalance.getTurnoverDebit();
+        BigDecimal oldQc=sourceBalance.getCredit();
+        BigDecimal oldQd=sourceBalance.getDebit();
 
-        BigDecimal oldTc=targetBalance.getTurnoverCredit();
-        BigDecimal oldTd=targetBalance.getTurnoverDebit();
+        BigDecimal oldTc=targetBalance.getCredit();
+        BigDecimal oldTd=targetBalance.getDebit();
 
 
 //        if(Objects.equals(oldQc, BigDecimal.valueOf(0))){
@@ -50,12 +50,12 @@ public class BalanceTransferService {
 //        if(Objects.equals(oldQc, BigDecimal.valueOf(0))){
 //            return "depoda yeterli remainin ürün yok";
 //        }
-        sourceBalance.setTurnoverCredit(oldQc.subtract(balanceTransferDto.getTurnoverCreditAmount()));
-        sourceBalance.setTurnoverDebit(oldQd.subtract(balanceTransferDto.getTurnoverDebitAmount()));
+        sourceBalance.setCredit(oldQc.subtract(balanceTransferDto.getTurnoverCreditAmount()));
+        sourceBalance.setDebit(oldQd.subtract(balanceTransferDto.getTurnoverDebitAmount()));
 
 
-        targetBalance.setTurnoverCredit(oldTc.add(balanceTransferDto.getTurnoverCreditAmount()));
-        targetBalance.setTurnoverDebit(oldTd.add(balanceTransferDto.getTurnoverDebitAmount()));
+        targetBalance.setCredit(oldTc.add(balanceTransferDto.getTurnoverCreditAmount()));
+        targetBalance.setDebit(oldTd.add(balanceTransferDto.getTurnoverDebitAmount()));
         balanceService.savedb(sourceBalance);
         balanceService.savedb(targetBalance);
 

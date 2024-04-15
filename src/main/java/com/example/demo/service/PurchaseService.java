@@ -16,17 +16,19 @@ public class PurchaseService {
     private final ClientService clientService;
     private final BalanceService balanceService;
     private final WarehouseStockService warehouseStockService;
-    public PurchaseService(PurchaseRepository purchaseRepository, StockService stockService, ClientService clientService, BalanceService balanceService, WarehouseStockService warehouseStockService) {
+    private final WarehouseService warehouseService;
+    public PurchaseService(PurchaseRepository purchaseRepository, StockService stockService, ClientService clientService, BalanceService balanceService, WarehouseStockService warehouseStockService, WarehouseService warehouseService) {
         this.purchaseRepository = purchaseRepository;
         this.stockService = stockService;
         this.clientService = clientService;
         this.balanceService = balanceService;
         this.warehouseStockService = warehouseStockService;
+        this.warehouseService = warehouseService;
     }
 
     public boolean addPurchase(PurchaseDto purchase) {
 
-        PurchaseInvoice p = new PurchaseInvoice(stockService.getstockjustid(purchase.getStockCode()),clientService.getClientWithId(purchase.getClientId()), purchase.getQuantity(), purchase.getDate(), purchase.getPrice());
+        PurchaseInvoice p = new PurchaseInvoice(stockService.getstockjustid(purchase.getStockCode()),warehouseService.getWarehouseWithId(purchase.getWarehouseId()), purchase.getQuantity(), purchase.getDate(), purchase.getPrice());
         warehouseStockService.updateQuantityIn(purchase.getStockCode(), purchase.getQuantity());
      //   Balance b = balanceService.findBalanceByClientID(purchase.getClientId());
     //    BigDecimal oldB=b.getTransactionalBalance();
@@ -50,13 +52,13 @@ public class PurchaseService {
         dto.setPrice(purchases.getPrice());
         dto.setQuantity(purchases.getQuantity());
         dto.setDate(purchases.getDate());
-        dto.setClientName(purchases.getClientId().getName()+" "+purchases.getClientId().getSurname());
-        dto.setClientAdress(purchases.getClientId().getAddress());
-        dto.setClientPhone(purchases.getClientId().getPhone());
+        dto.setWarehouseName(purchases.getWarehouseId().getName());
+        dto.setWarehouseAddress(purchases.getWarehouseId().getAddress());
+        dto.setWarehousePhone(purchases.getWarehouseId().getPhone());
         return dto;
     }
     public List<PurchaseDto2> getPurchaseWithId(Long id) {
-        List<PurchaseInvoice> purchaseInvoices = purchaseRepository.findPurchaseInvoicesByClientId_ClientId(id);
+        List<PurchaseInvoice> purchaseInvoices = purchaseRepository.findPurchaseInvoicesByWarehouseId_WarehouseId(id);
         return purchaseInvoices.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());

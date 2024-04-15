@@ -24,4 +24,7 @@ public class WarehouseService {
 
         return warehouseRepository.findAll();
     }
+    public Warehouse getWarehouseWithId(Long id){
+        return warehouseRepository.findWarehouseByWarehouseId(id);
+    }
 }

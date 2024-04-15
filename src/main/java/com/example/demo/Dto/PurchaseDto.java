@@ -13,10 +13,9 @@ import java.time.LocalDate;
 @Setter
 public class PurchaseDto {
 
-
     private Integer quantity;
     private Long stockCode;
-    private Long clientId;
+    private Long warehouseId;
     private BigDecimal price;
     private LocalDate date;
 }

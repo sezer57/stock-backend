@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -18,6 +19,6 @@ public class StockDto {
     private String unit;
     private BigDecimal salesPrice;
     private BigDecimal purchasePrice;
-    private Integer warehouse_id;
+    private List<Long> warehouse_id;
 
 }

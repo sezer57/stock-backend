@@ -25,8 +25,8 @@ public class PurchaseInvoice {
     private Stock stockCode;
 
     @ManyToOne
-    @JoinColumn(name = "client", nullable = false)
-    private Client clientId;
+    @JoinColumn(name = "warehouseId", nullable = false)
+    private Warehouse warehouseId;
 //    @Column(name = "barcode" , nullable = false)   // gerek yok stock id ile çekilicek
 //    private BigDecimal barcode;
 
@@ -47,9 +47,9 @@ public class PurchaseInvoice {
     private LocalDate date;
     public PurchaseInvoice(){}
 
-    public PurchaseInvoice(Stock stockCode, Client clientId, Integer quantity, LocalDate date, BigDecimal price) {
+    public PurchaseInvoice(Stock stockCode, Warehouse warehouseId, Integer quantity, LocalDate date, BigDecimal price) {
         this.stockCode=stockCode;
-        this.clientId=clientId;
+        this.warehouseId=warehouseId;
         //       this.barcode=barcode;
         //     this.stockName=stockName;
         this.quantity=quantity;
