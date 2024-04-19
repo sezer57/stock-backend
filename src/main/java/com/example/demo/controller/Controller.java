@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.Dto.*;
 import com.example.demo.model.*;
 import com.example.demo.service.*;
+import com.example.demo.service.Jwt.JwtService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,9 +12,20 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+
 @RestController
 @RequestMapping("/api")
 public class Controller {
+
+    private final UserService service;
+
+    private final JwtService jwtService;
+
+    private final AuthenticationManager authenticationManager;
+
     private final StockService stockService;
     private final WarehouseService warehouseService;
     private final WarehouseStockService warehouseStockService;
@@ -28,7 +40,11 @@ public class Controller {
     public final BalanceTransferService balanceTransferService;
     private final TransactionService transactionService;
     private final ReportService reportService;
-    public Controller(StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService, ClientService clientService, ExpenseInvoiceService expenseInvoiceService, InformationCodeService informationCodeService, BankAccountInfoService bankAccountInfoService, BalanceService balanceService, PurchaseService purchaseService, BalanceTransferService balanceTransferService, TransactionService transactionService, ReportService reportService) {
+    public Controller(UserService service, JwtService jwtService, AuthenticationManager authenticationManager, StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService, ClientService clientService, ExpenseInvoiceService expenseInvoiceService, InformationCodeService informationCodeService, BankAccountInfoService bankAccountInfoService, BalanceService balanceService, PurchaseService purchaseService, BalanceTransferService balanceTransferService, TransactionService transactionService, ReportService reportService) {
+        this.service = service;
+        this.jwtService = jwtService;
+        this.authenticationManager = authenticationManager;
+
         this.stockService = stockService;
         this.warehouseService = warehouseService;
         this.warehouseStockService = warehouseStockService;
@@ -43,6 +59,35 @@ public class Controller {
         this.transactionService = transactionService;
         this.reportService = reportService;
     }
+
+
+    //login
+    //Authentication Endpoints
+    @PostMapping("/addNewUser")
+    public ResponseEntity<String> addNewUser(@RequestBody UserInfo userInfo) {
+        if(service.addUser(userInfo)){
+            return ResponseEntity.ok("User Added Successfully");
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already signed up");
+        }
+    }
+
+
+    @PostMapping("/login")
+    public String authenticateAndGetToken(@RequestBody AuthRequestDto authRequest) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+        if (authentication.isAuthenticated()) {
+            return jwtService.generateToken(authRequest.getUsername())+";"+authRequest.getUsername();
+        } else {
+            return ("invalid user request !");
+        }
+    }
+    @GetMapping("/getExpired")
+    public String getExpired() {
+        return "true";
+    }
+
 
     // Stock ekleme
     @PostMapping("/stocks")
