@@ -343,6 +343,7 @@ public class Controller {
         }
     }
     //  warehousedaki stockları alma id ile
+    //  warehousedaki stockları alma id ile
     @GetMapping("/getWarehouseStockWithId")
     public ResponseEntity<List<WarehouseStock>> getWithIdWarehouseStock(@RequestParam("warehouse_id") Long warehouse_id) {
         List<WarehouseStock> stocks = warehouseStockService.getWithIdWarehouseStock(warehouse_id);
@@ -490,4 +491,5 @@ public class Controller {
         return reportService.getDailyExpenses(date);
     }
 
+    //asdashkdjahsd
 }

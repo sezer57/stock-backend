@@ -17,46 +17,40 @@ public class Balance {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "balanceID")
+    @Column(name = "BalanceID")
     private Long balanceID;
 
-    @Column(name = "clientID" , nullable = false)
+    @Column(name = "ClientID" , nullable = false)
     private Long clientID;
 
-    @Column(name = "debitCreditStatus" , nullable = false)
+    @Column(name = "DebitCreditStatus" , nullable = false)
     private String debitCreditStatus;
 
-    @Column(name = "turnoverDebit" , nullable = false)
-    private BigDecimal turnoverDebit;
+    @Column(name = "Debit" , nullable = false)
+    private BigDecimal debit;
 
-    @Column(name = "turnoverCredit" , nullable = false)
-    private BigDecimal turnoverCredit;
+    @Column(name = "Credit" , nullable = false)
+    private BigDecimal credit;
 
-    @Column(name = "turnoverBalance" , nullable = false)
-    private BigDecimal turnoverBalance;
+    @Column(name = "Cash" , nullable = false)
+    private BigDecimal cash;
 
-    @Column(name = "transactionalDebit" , nullable = false)
-    private BigDecimal transactionalDebit;
+    @Column(name = "Balance" , nullable = false)
+    private BigDecimal balance;
 
-    @Column(name = "transactionalCredit" , nullable = false)
-    private BigDecimal transactionalCredit;
 
-    @Column(name = "transactionalBalance" , nullable = false)
-    private BigDecimal transactionalBalance;
 
     @Column(name = "comment" , nullable = false)
     private String comment;
 
 
-    public Balance (Long clientID,String debitCreditStatus,BigDecimal turnoverDebit,BigDecimal turnoverCredit,BigDecimal turnoverBalance,BigDecimal transactionalDebit,BigDecimal transactionalCredit,BigDecimal transactionalBalance,String comment){
+    public Balance (Long clientID,String debitCreditStatus,BigDecimal debit,BigDecimal credit,BigDecimal cash,BigDecimal balance,String comment){
         this.clientID=clientID;
         this.debitCreditStatus=debitCreditStatus;
-        this.turnoverDebit=turnoverDebit;
-        this.turnoverCredit=turnoverCredit;
-        this.turnoverBalance=turnoverBalance;
-        this.transactionalDebit=transactionalDebit;
-        this.transactionalCredit=transactionalCredit;
-        this.transactionalBalance=transactionalBalance;
+        this.debit=debit;
+        this.credit=credit;
+        this.cash=cash;
+        this.balance=balance;
         this.comment=comment;
     }
 

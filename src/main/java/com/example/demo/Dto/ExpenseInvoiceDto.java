@@ -10,13 +10,9 @@ import java.time.LocalDate;
 @Getter
 @Setter
 public class ExpenseInvoiceDto {
-
-
-
     private Integer quantity;
     private Long stockCode;
     private Long clientId;
     private BigDecimal price;
     private LocalDate date;
-
 }

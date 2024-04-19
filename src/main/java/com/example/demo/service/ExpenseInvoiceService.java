@@ -2,12 +2,14 @@ package com.example.demo.service;
 
 import com.example.demo.Dto.ExpenseInvoiceDto;
 import com.example.demo.Dto.ExpenseInvoiceDto2;
+import com.example.demo.model.Balance;
 import com.example.demo.model.ExpenseInvoice;
 import com.example.demo.model.Stock;
 import com.example.demo.model.WarehouseStock;
 import com.example.demo.repository.ExpenseInvoiceRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,10 +30,19 @@ public class ExpenseInvoiceService {
     }
   public boolean addExpenseInvoice(ExpenseInvoiceDto expenseInvoice){
 
-      ExpenseInvoice e = new ExpenseInvoice(stockService.getstockjustid(expenseInvoice.getStockCode()),clientService.getClientWithId(expenseInvoice.getClientId()), expenseInvoice.getQuantity(), expenseInvoice.getDate(), expenseInvoice.getPrice());
+      ExpenseInvoice e = new ExpenseInvoice(
+              stockService.getstockjustid(expenseInvoice.getStockCode()),
+              clientService.getClientWithId(expenseInvoice.getClientId()),
+              expenseInvoice.getQuantity(), expenseInvoice.getDate(),
+              expenseInvoice.getPrice()
+      );
+      BigDecimal totalPrice = expenseInvoice.getPrice().multiply(BigDecimal.valueOf(expenseInvoice.getQuantity()));
+
+      balanceService.updateBalanceToSale(expenseInvoice.getClientId(),totalPrice );
+
 
       warehouseStockService.updateQuantityOut(expenseInvoice.getStockCode(), expenseInvoice.getQuantity());
-      //   Balance b = balanceService.findBalanceByClientID(expenseInvoice.getClientId());
+      //Balance b = balanceService.findBalanceByClientID(expenseInvoice.getClientId());
    //   BigDecimal oldB=b.getTransactionalBalance();
     //  b.setTransactionalBalance(oldB.subtract(expenseInvoice.getPrice()));
       expenseInvoiceRepository.save(e);

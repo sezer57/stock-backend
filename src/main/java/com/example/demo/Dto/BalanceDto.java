@@ -11,11 +11,9 @@ import java.math.BigDecimal;
 public class BalanceDto {
     private Long clientID;
     private String debitCreditStatus;
-    private BigDecimal turnoverDebit;
-    private BigDecimal turnoverCredit;
-    private BigDecimal turnoverBalance;
-    private BigDecimal transactionalDebit;
-    private BigDecimal transactionalCredit;
-    private BigDecimal transactionalBalance;
+    private BigDecimal debit;
+    private BigDecimal credit;
+    private BigDecimal cash;
+    private BigDecimal balance;
     private String comment;
 }

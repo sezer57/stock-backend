@@ -28,7 +28,8 @@ public class BalanceService {
         if (isDuplicateClientID(balance.getClientID())) {
             return false;
         } else {
-            Balance b = new Balance(balance.getClientID(), balance.getDebitCreditStatus(), balance.getTurnoverDebit(), balance.getTurnoverCredit(), balance.getTurnoverBalance(), balance.getTransactionalDebit(), balance.getTransactionalCredit(), balance.getTransactionalBalance(), balance.getComment());
+            Balance b = new Balance(balance.getClientID(), balance.getDebitCreditStatus(), balance.getDebit(), balance.getCredit(), balance.getCash(),
+                    balance.getBalance(), balance.getComment());
             if (b.getClientID().equals(clients.getClientId())) {
                 balanceRepository.save(b);
                 return true;
@@ -62,54 +63,38 @@ public class BalanceService {
         Balance balance = balanceRepository.findBalanceByClientID(clientID);
         BigDecimal oldValue;
         switch (paymentType) {
-            case "turnoverDebit":
-                oldValue = balance.getTurnoverDebit();
+            case "Debit":
+                oldValue = balance.getDebit();
                 if (oldValue == null) {
                     oldValue = BigDecimal.ZERO;
                 }
                 BigDecimal newValue = oldValue.subtract(Value);
-                balance.setTurnoverDebit(newValue);
+                balance.setDebit(newValue);
                 break;
 
-            case "turnoverCredit":
-                oldValue = balance.getTurnoverCredit();
+            case "Credit":
+                oldValue = balance.getCredit();
                 if (oldValue == null) {
                     oldValue = BigDecimal.ZERO;
                 }
                 newValue = oldValue.subtract(Value);
-                balance.setTurnoverCredit(newValue);
+                balance.setCredit(newValue);
                 break;
-            case "turnoverBalance":
-                oldValue = balance.getTurnoverBalance();
+            case "Balance":
+                oldValue = balance.getBalance();
                 if (oldValue == null) {
                     oldValue = BigDecimal.ZERO;
                 }
                 newValue = oldValue.subtract(Value);
-                balance.setTurnoverBalance(newValue);
+                balance.setBalance(newValue);
                 break;
-            case "transactionalDebit":
-                oldValue = balance.getTransactionalDebit();
+            case "Cash":
+                oldValue = balance.getCash();
                 if (oldValue == null) {
                     oldValue = BigDecimal.ZERO;
                 }
                 newValue = oldValue.subtract(Value);
-                balance.setTransactionalDebit(newValue);
-                break;
-            case "transactionalCredit":
-                oldValue = balance.getTransactionalCredit();
-                if (oldValue == null) {
-                    oldValue = BigDecimal.ZERO;
-                }
-                newValue = oldValue.subtract(Value);
-                balance.setTransactionalCredit(newValue);
-                break;
-            case "transactionalBalance":
-                oldValue = balance.getTransactionalBalance();
-                if (oldValue == null) {
-                    oldValue = BigDecimal.ZERO;
-                }
-                newValue = oldValue.subtract(Value);
-                balance.setTransactionalBalance(newValue);
+                balance.setCash(newValue);
                 break;
             default:
                 // Handle invalid type selection
@@ -120,5 +105,19 @@ public class BalanceService {
 
     }
 
+    public boolean updateBalanceToSale(Long clientID, BigDecimal Value) {
+        Balance balance = balanceRepository.findBalanceByClientID(clientID);
+        BigDecimal oldValue;
+
+        oldValue = balance.getBalance();
+        if (oldValue == null) {
+            oldValue = BigDecimal.ZERO;
+        }
+        BigDecimal newValue = oldValue.add(Value);
+        balance.setBalance(newValue);
+
+        balanceRepository.save(balance);
+        return true;
+    }
 }
 
