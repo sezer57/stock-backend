@@ -7,7 +7,6 @@ import com.example.demo.repository.ClientRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -44,6 +43,9 @@ public class ClientService {
     public Client getClientWithName2(String name){
         Client clients = (Client) clientRepository.findClientByName(name);
         return clients;
+    }
+    public long getClientCode(){
+        return clientRepository.count()+1;
     }
 
 

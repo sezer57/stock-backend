@@ -87,7 +87,10 @@ public class Controller {
     public String getExpired() {
         return "true";
     }
-
+    @GetMapping("/getClientCode")
+    public long getClientCode() {
+        return clientService.getClientCode();
+    }
 
     // Stock ekleme
     @PostMapping("/stocks")
