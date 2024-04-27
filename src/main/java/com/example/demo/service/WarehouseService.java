@@ -21,7 +21,6 @@ public class WarehouseService {
         warehouseRepository.save(warehouse);
     }
     public List<Warehouse> getWarehouse(){
-
         return warehouseRepository.findAll();
     }
     public Warehouse getWarehouseWithId(Long id){

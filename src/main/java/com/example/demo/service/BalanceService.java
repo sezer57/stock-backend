@@ -62,13 +62,22 @@ public class BalanceService {
     public boolean updateBalance(Long clientID, String paymentType, BigDecimal Value) {
         Balance balance = balanceRepository.findBalanceByClientID(clientID);
         BigDecimal oldValue;
+
+        oldValue = balance.getBalance();
+        if (oldValue == null) {
+            oldValue = BigDecimal.ZERO;
+        }
+        BigDecimal newValue = oldValue.subtract(Value);
+        balance.setBalance(newValue);
+
+
         switch (paymentType) {
             case "Debit":
                 oldValue = balance.getDebit();
                 if (oldValue == null) {
                     oldValue = BigDecimal.ZERO;
                 }
-                BigDecimal newValue = oldValue.subtract(Value);
+                 newValue = oldValue.subtract(Value);
                 balance.setDebit(newValue);
                 break;
 
@@ -79,14 +88,6 @@ public class BalanceService {
                 }
                 newValue = oldValue.subtract(Value);
                 balance.setCredit(newValue);
-                break;
-            case "Balance":
-                oldValue = balance.getBalance();
-                if (oldValue == null) {
-                    oldValue = BigDecimal.ZERO;
-                }
-                newValue = oldValue.subtract(Value);
-                balance.setBalance(newValue);
                 break;
             case "Cash":
                 oldValue = balance.getCash();
@@ -101,6 +102,7 @@ public class BalanceService {
                 return false;
         }
         balanceRepository.save(balance);
+       // Payment p = new Payment(balance);
         return true;
 
     }

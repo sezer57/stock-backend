@@ -74,7 +74,6 @@ public class StockService {
 
     public List<StockWarehouseDto> getStockWithId(Long warehouse_transfer_id) {
         List<Stock> stocks =  stockRepository.findStocksByWarehouse_WarehouseId(warehouse_transfer_id);
-
         if (stocks.isEmpty()) {
             return Collections.emptyList(); // Return empty list if no results found
         } else {
@@ -114,7 +113,6 @@ public class StockService {
 
     public boolean deleteStock(DeleteDto deleteDto) {
         Stock s = stockRepository.findStockByStockId(deleteDto.getId());
-
         stockRepository.deleteById(s.getStockId());
         return true;
     }

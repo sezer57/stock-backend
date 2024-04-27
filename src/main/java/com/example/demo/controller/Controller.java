@@ -468,6 +468,7 @@ public class Controller {
             names.put("quantity",transfer.getQuantity().toString());
             names.put("comment",transfer.getComment());
             names.put("approvelstatus",transfer.getApprovalStatus());
+            names.put("date",transfer.getDate().toString());
             transferNames.add(names);
         }
         return ResponseEntity.ok(transferNames);
@@ -494,5 +495,5 @@ public class Controller {
         return reportService.getDailyExpenses(date);
     }
 
-    //asdashkdjahsd
+
 }

@@ -38,7 +38,13 @@ public class WarehouseTransferService {
         Integer oldQI=sourceWarehouseStock.getQuantityIn();
         Integer oldQR=sourceWarehouseStock.getQuantityRemaining();
 
+        System.out.println(oldQI);
+        System.out.println(oldQt);
+        System.out.println(oldQR);
         if(oldQI==0){
+            return "depoda yeterli ürün yok";
+        }
+        if (oldQI<oldQt){
             return "depoda yeterli ürün yok";
         }
         if(oldQR==0){
@@ -96,6 +102,7 @@ public class WarehouseTransferService {
         }
         warehouseStockService.savedb(sourceWarehouseStock);
         warehouseTransferRepository.save(transfer);
+
     }
 
     }
