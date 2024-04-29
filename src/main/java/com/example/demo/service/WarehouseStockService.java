@@ -143,7 +143,9 @@ public class WarehouseStockService {
         return (List<WarehouseStock>) warehouseStockRepository.findWarehouseStockByWarehouseStockId(warehouse_id);
     }
 
-
+    public Integer findWarehouseStockQuantity(Long stockId){
+        return  warehouseStockRepository.findWarehouseStockByStockStockId(stockId).getQuantityRemaining();
+    }
     public WarehouseStock findByWarehouseStock_stockId(Long stockId){
         return  warehouseStockRepository.findWarehouseStockByStockStockId(stockId);
     }

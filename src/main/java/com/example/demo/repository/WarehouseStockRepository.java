@@ -9,4 +9,5 @@ public interface WarehouseStockRepository extends JpaRepository<WarehouseStock,L
     WarehouseStock findWarehouseStockByStockStockId(Long stockId);
     WarehouseStock findWarehouseStockByStockStockNameAndWarehouseWarehouseId(String stockId,Long warehouseId);
     WarehouseStock findWarehouseStockByWarehouseStockId(Long stockId);
+
 }

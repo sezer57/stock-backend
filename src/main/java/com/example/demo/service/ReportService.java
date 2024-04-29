@@ -152,13 +152,81 @@ public class ReportService {
         List<Object> weekly = new ArrayList<>();
 
         List<ExpenseInvoice> expenseInvoices = expenseInvoiceRepository.getExpenseInvoicesByDateBetween(startDate,endDate);
-        weekly.addAll(expenseInvoices);
+        for (ExpenseInvoice expense : expenseInvoices) {
+            Map<String, Object> expenseMap = new HashMap<>();
+            expenseMap.put("expense_id", expense.getExpence_id());
+            expenseMap.put("stockName", expense.getStockCode().getStockName());
+            expenseMap.put("warehouseName", expense.getStockCode().getWarehouse().getName());
+            expenseMap.put("clientName", expense.getClientId().getName());
+            expenseMap.put("quantity", expense.getQuantity());
+            expenseMap.put("price", expense.getPrice());
+            expenseMap.put("date", expense.getDate());
+            weekly.add(expenseMap);
+        }
 
         List<PurchaseInvoice> purchaseInvoices = purchaseRepository.getPurchaseInvoicesByDateBetween(startDate,endDate);
-        weekly.addAll(purchaseInvoices);
+        for (PurchaseInvoice invoice : purchaseInvoices) {
+            Map<String, Object> expenseMap = new HashMap<>();
+            expenseMap.put("purchase_id", invoice.getPurchase_id());
+            expenseMap.put("stockName", invoice.getStockCode().getStockName());
+            expenseMap.put("warehouseName", invoice.getStockCode().getWarehouse().getName());
+            expenseMap.put("authorized", invoice.getWarehouseId().getAuthorized());
+            expenseMap.put("quantity", invoice.getQuantity());
+            expenseMap.put("price", invoice.getPrice());
+            expenseMap.put("date", invoice.getDate());
+            weekly.add(expenseMap);
+        }
 
         List<WarehouseTransfer> warehouseTransfers = warehouseTransferRepository.getWarehouseTransfersByDateBetween(startDate,endDate);
-        weekly.addAll(warehouseTransfers);
+        for (WarehouseTransfer warehouse : warehouseTransfers) {
+            Map<String, Object> expenseMap = new HashMap<>();
+            expenseMap.put("warehousetransfer_id", warehouse.getWarehouseTransferId());
+            expenseMap.put("approvalstatus", warehouse.getApprovalStatus());
+            expenseMap.put("source", warehouse.getSource().getName());
+            expenseMap.put("target", warehouse.getTarget().getName());
+            expenseMap.put("quantity", warehouse.getQuantity());
+            expenseMap.put("date", warehouse.getDate());
+            expenseMap.put("comment", warehouse.getComment());
+            weekly.add(expenseMap);
+        }
+
+
+
+
+
+        List<Client> clients = clientRepository.getClientsByRegistrationDateBetween(startDate,endDate);
+        for (Client client : clients) {
+            Map<String, Object> expenseMap = new HashMap<>();
+            expenseMap.put("clientId", client.getClientId());
+            expenseMap.put("name", client.getName()+client.getSurname());
+            System.out.println(client.getName());
+            expenseMap.put("address", client.getAddress());
+            expenseMap.put("country", client.getCountry());
+            expenseMap.put("city", client.getCity());
+            expenseMap.put("phone", client.getPhone());
+            expenseMap.put("gsm", client.getGsm());
+            expenseMap.put("registrationDate", client.getRegistrationDate());
+            weekly.add(expenseMap);
+        }
+
+        List<Stock> stocks = stockRepository.getStocksByRegistrationDateBetween(startDate,endDate);
+        for (Stock stock : stocks) {
+            Map<String, Object> expenseMap = new HashMap<>();
+            expenseMap.put("stockId", stock.getStockId());
+            expenseMap.put("stockCode", stock.getStockCode());
+            expenseMap.put("stockName", stock.getStockName());
+            expenseMap.put("barcode", stock.getBarcode());
+            expenseMap.put("groupName", stock.getGroupName());
+            expenseMap.put("middleGroupName", stock.getMiddleGroupName());
+            expenseMap.put("unit", stock.getUnit());
+            expenseMap.put("salesPrice", stock.getSalesPrice());
+            expenseMap.put("purchasePrice", stock.getSalesPrice());
+            expenseMap.put("registrationDate", stock.getRegistrationDate());
+
+            weekly.add(expenseMap);
+        }
+
+
 
         return weekly;
     }

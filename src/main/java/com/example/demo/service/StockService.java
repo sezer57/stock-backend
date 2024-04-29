@@ -22,11 +22,13 @@ public class StockService {
     private final StockRepository stockRepository;
     private final WarehouseRepository warehouseRepository;
     private final WarehouseStockRepository warehouseStockRepository;
+    private final WarehouseStockService warehouseStockService;
 
-    public StockService(StockRepository stockRepository, WarehouseRepository warehouseRepository, WarehouseStockRepository warehouseStockRepository) {
+    public StockService(StockRepository stockRepository, WarehouseRepository warehouseRepository, WarehouseStockRepository warehouseStockRepository, WarehouseStockService warehouseStockService) {
         this.stockRepository = stockRepository;
         this.warehouseRepository = warehouseRepository;
         this.warehouseStockRepository = warehouseStockRepository;
+        this.warehouseStockService = warehouseStockService;
     }
 
     public boolean addStock(StockDto stock) {
@@ -88,7 +90,8 @@ public class StockService {
                 .map(stock -> new StockWarehouseDto(
                         stock.getStockId(),
                         stock.getStockName(),
-                        stock.getWarehouse().getWarehouseId()))
+                        stock.getWarehouse().getWarehouseId(),
+                        warehouseStockService.findWarehouseStockQuantity(stock.getStockId())))
                 .collect(Collectors.toList());
     }
     //stock update
