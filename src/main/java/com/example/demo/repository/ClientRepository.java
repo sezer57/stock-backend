@@ -10,7 +10,6 @@ import java.util.List;
 public interface ClientRepository extends JpaRepository<Client,Long> {
 
     Client findClientByClientId(Long id);
-
     Client findClientByName(String name);
     List<Client> getClientsByRegistrationDate(LocalDate date);
     List<Client> getClientsByRegistrationDateBetween(LocalDate startDate, LocalDate endDate);

@@ -22,7 +22,7 @@ public class  Client {
     private Long clientId;
 
     @Column(name = "clientCode" , nullable = false)
-    private Integer clientCode;
+    private String clientCode;
 
     @Column(name = "commercialTitle" , nullable = false)
     private String commercialTitle;
@@ -53,7 +53,7 @@ public class  Client {
 
     public Client() {}
 
-    public Client(Integer clientCode,String commercialTitle,String name,String surname,String address,String country,String city,String phone,String gsm,LocalDate registrationDate) {
+    public Client(String clientCode,String commercialTitle,String name,String surname,String address,String country,String city,String phone,String gsm,LocalDate registrationDate) {
         this.clientCode=clientCode;
         this.commercialTitle=commercialTitle;
         this.name=name;
