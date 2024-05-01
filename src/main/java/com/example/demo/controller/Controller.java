@@ -439,10 +439,10 @@ public class Controller {
 
     //sales oluşturma
     @PostMapping("/Sales")
-    public ResponseEntity<Boolean> addPurchase(@RequestBody ExpenseInvoiceDto expenseInvoiceDto) {
-        boolean transferResult = expenseInvoiceService.addExpenseInvoice(expenseInvoiceDto);
+    public ResponseEntity<String> addPurchase(@RequestBody ExpenseInvoiceDto expenseInvoiceDto) {
+        String transferResult = expenseInvoiceService.addExpenseInvoice(expenseInvoiceDto);
 
-        if (transferResult==true) {
+        if (transferResult=="true") {
             // Transfer başarılıysa
             return ResponseEntity.status(HttpStatus.OK).body(transferResult);
         } else {

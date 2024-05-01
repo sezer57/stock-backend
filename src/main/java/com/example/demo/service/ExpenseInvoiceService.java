@@ -28,8 +28,10 @@ public class ExpenseInvoiceService {
         this.balanceService = balanceService;
         this.warehouseStockService = warehouseStockService;
     }
-  public boolean addExpenseInvoice(ExpenseInvoiceDto expenseInvoice){
-
+  public String addExpenseInvoice(ExpenseInvoiceDto expenseInvoice){
+      if(!warehouseStockService.updateQuantityOut(expenseInvoice.getStockCode(), expenseInvoice.getQuantity())){
+          return "quaintit remaning not exist";
+      };
       ExpenseInvoice e = new ExpenseInvoice(
               stockService.getstockjustid(expenseInvoice.getStockCode()),
               clientService.getClientWithId(expenseInvoice.getClientId()),
@@ -39,14 +41,11 @@ public class ExpenseInvoiceService {
       BigDecimal totalPrice = expenseInvoice.getPrice().multiply(BigDecimal.valueOf(expenseInvoice.getQuantity()));
 
       balanceService.updateBalanceToSale(expenseInvoice.getClientId(),totalPrice );
-
-
-      warehouseStockService.updateQuantityOut(expenseInvoice.getStockCode(), expenseInvoice.getQuantity());
       //Balance b = balanceService.findBalanceByClientID(expenseInvoice.getClientId());
    //   BigDecimal oldB=b.getTransactionalBalance();
     //  b.setTransactionalBalance(oldB.subtract(expenseInvoice.getPrice()));
       expenseInvoiceRepository.save(e);
-      return true;
+      return "success";
 
     }
 
