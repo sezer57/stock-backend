@@ -510,6 +510,16 @@ public class Controller {
         return stockService.getStockCode();
     }
 
+    //  stocklar  sales remaining
+    @GetMapping("/getStocksRemainigById")
+    public ResponseEntity<String> getStocksRemainigById(@RequestParam("warehouse_id") Long warehouse_id) {
+        String stocks = stockService.getStocksRemainigById(warehouse_id);
 
+        if (stocks.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(stocks);
+        }
+    }
     //asdashkdjahsd
 }

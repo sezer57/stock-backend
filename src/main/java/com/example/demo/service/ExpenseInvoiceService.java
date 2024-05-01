@@ -30,7 +30,7 @@ public class ExpenseInvoiceService {
     }
   public String addExpenseInvoice(ExpenseInvoiceDto expenseInvoice){
       if(!warehouseStockService.updateQuantityOut(expenseInvoice.getStockCode(), expenseInvoice.getQuantity())){
-          return "quaintit remaning not exist";
+          return "not enough products in warehouse";
       };
       ExpenseInvoice e = new ExpenseInvoice(
               stockService.getstockjustid(expenseInvoice.getStockCode()),

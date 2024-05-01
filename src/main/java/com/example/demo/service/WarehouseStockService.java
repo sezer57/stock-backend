@@ -149,8 +149,8 @@ public class WarehouseStockService {
     public Integer findWarehouseStockQuantity(Long stockId){
         return  warehouseStockRepository.findWarehouseStockByStockStockId(stockId).getQuantityRemaining();
     }
-    public WarehouseStock findByWarehouseStock_stockId(Long stockId){
-        return  warehouseStockRepository.findWarehouseStockByStockStockId(stockId);
+    public String findByWarehouseStock_stockId(Long stockId){
+        return  warehouseStockRepository.findWarehouseStockByStockStockId(stockId).getQuantityRemaining().toString();
     }
     public WarehouseStock findByWarehouseStock_name(String stockId,Long id){
         return  warehouseStockRepository.findWarehouseStockByStockStockNameAndWarehouseWarehouseId(stockId,id);

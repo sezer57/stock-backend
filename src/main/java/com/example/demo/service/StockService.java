@@ -126,4 +126,9 @@ public class StockService {
     public long getStockCode(){
         return stockRepository.count()+1;
     }
+
+    public String getStocksRemainigById(Long warehouse_id) {
+       return warehouseStockService.findByWarehouseStock_stockId(warehouse_id);
+
+    }
 }
