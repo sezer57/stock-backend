@@ -119,4 +119,8 @@ public class StockService {
         stockRepository.deleteById(s.getStockId());
         return true;
     }
+
+    public long getStockCode(){
+        return stockRepository.count()+1;
+    }
 }

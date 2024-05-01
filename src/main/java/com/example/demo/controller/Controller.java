@@ -494,5 +494,11 @@ public class Controller {
         return reportService.getDailyExpenses(date);
     }
 
+    @GetMapping("/getStockCode")
+    public long getStockCode() {
+        return stockService.getStockCode();
+    }
+
+
     //asdashkdjahsd
 }
