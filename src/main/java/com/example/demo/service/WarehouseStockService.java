@@ -83,7 +83,7 @@ public class WarehouseStockService {
         informationCode.setTransactionDate(LocalDate.now().format(DateTimeFormatter.ofPattern("d/MM/uuuu")));
         informationCode.setProcessAmount(Long.valueOf(quantity_out));
         informationCodeService.add_db(informationCode);
-        //
+
         warehouseStockRepository.save(warehouseStock);
         return true;
 
