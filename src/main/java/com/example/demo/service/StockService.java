@@ -74,7 +74,7 @@ public class StockService {
         return stockRepository.findAll();
     }
     public List<Stock> getStockWithIdProduct(Long warehouse_transfer_id) {
-        return   stockRepository.findStocksByWarehouse_WarehouseId(warehouse_transfer_id);
+        return  stockRepository.findStocksByWarehouse_WarehouseId(warehouse_transfer_id);
 
     }
     public List<StockWarehouseDto> getStockWithId(Long warehouse_transfer_id) {
