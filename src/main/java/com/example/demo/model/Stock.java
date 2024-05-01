@@ -49,6 +49,7 @@ public class Stock {
     @ManyToOne
     @JoinColumn(name = "warehouse_id", nullable = false)
     private Warehouse warehouse;
+
     public Stock() {}
 
     public Stock(String unit, String stockCode, String stockName, String groupName, String middleGroupName, String barcode, BigDecimal salesPrice, Warehouse p,BigDecimal purchasePrice,LocalDate registrationDate) {

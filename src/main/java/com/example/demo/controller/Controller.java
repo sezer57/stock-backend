@@ -494,13 +494,5 @@ public class Controller {
         return reportService.getDailyExpenses(date);
     }
 
-    @GetMapping("/getWeeklyPurchaseInvoices")
-    public List<Object> getWeeklyPurchaseInvoices(@RequestParam("startDate") LocalDate startDate, @RequestParam("endDate") LocalDate endDate) {
-        return reportService.getWeeklyPurchaseInvoices(startDate,endDate);
-    }
-
-
-
-
     //asdashkdjahsd
 }
