@@ -50,7 +50,7 @@ public class ReportService {
             expenseMap.put("purchase_id", invoice.getPurchase_id());
             expenseMap.put("stockName", invoice.getStockCode().getStockName());
             expenseMap.put("warehouseName", invoice.getStockCode().getWarehouse().getName());
-            expenseMap.put("authorized", invoice.getWarehouseId().getAuthorized());
+            expenseMap.put("clientName", invoice.getClientId().getName());
             expenseMap.put("quantity", invoice.getQuantity());
             expenseMap.put("price", invoice.getPrice());
             expenseMap.put("date", invoice.getDate());
@@ -170,7 +170,7 @@ public class ReportService {
             expenseMap.put("purchase_id", invoice.getPurchase_id());
             expenseMap.put("stockName", invoice.getStockCode().getStockName());
             expenseMap.put("warehouseName", invoice.getStockCode().getWarehouse().getName());
-            expenseMap.put("authorized", invoice.getWarehouseId().getAuthorized());
+            expenseMap.put("authorized", invoice.getClientId().getName());
             expenseMap.put("quantity", invoice.getQuantity());
             expenseMap.put("price", invoice.getPrice());
             expenseMap.put("date", invoice.getDate());

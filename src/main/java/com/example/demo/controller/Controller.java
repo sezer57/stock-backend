@@ -404,7 +404,8 @@ public class Controller {
 
     //purchase oluşturma
     @PostMapping("/purchase")
-    public ResponseEntity<Boolean> addPurchase(@RequestBody PurchaseDto purchaseDto) {
+    public ResponseEntity<Boolean> addPurchases(@RequestBody PurchaseDto purchaseDto) {
+
         boolean transferResult = purchaseService.addPurchase(purchaseDto);
 
         if (transferResult==true) {

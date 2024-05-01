@@ -15,7 +15,7 @@ public class PurchaseDto {
 
     private Integer quantity;
     private Long stockCode;
-    private Long warehouseId;
+    private Long clientId;
     private BigDecimal price;
     private LocalDate date;
 }

@@ -6,6 +6,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+
 @Getter
 @Setter
 public class PurchaseDto2 {
@@ -14,8 +15,8 @@ public class PurchaseDto2 {
     private String stockName;
     private BigDecimal price;
     private int quantity;
-    private String warehouseName;
-    private String warehouseAddress;
-    private String warehousePhone;
+    private String clientName;
+    private String clientAdress;
+    private String clientPhone;
     private LocalDate date;
 }

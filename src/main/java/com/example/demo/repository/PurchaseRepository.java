@@ -8,7 +8,8 @@ import java.util.List;
 
 public interface PurchaseRepository extends JpaRepository<PurchaseInvoice,Long> {
 
-    List<PurchaseInvoice> findPurchaseInvoicesByWarehouseId_WarehouseId(Long id);
+    List<PurchaseInvoice> findPurchaseInvoicesByClientId_ClientId(Long id);
+
     List<PurchaseInvoice> findPurchaseInvoicesByStockCodeStockId(Long id);
     List<PurchaseInvoice> getPurchaseInvoicesByDate(LocalDate date);
     List<PurchaseInvoice> getPurchaseInvoicesByDateBetween(LocalDate startDate, LocalDate endDate);

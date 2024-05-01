@@ -44,6 +44,7 @@ public class ClientService {
         Client clients = (Client) clientRepository.findClientByName(name);
         return clients;
     }
+
     public long getClientCode(){
         return clientRepository.count()+1;
     }
