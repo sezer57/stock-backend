@@ -236,6 +236,16 @@ public class Controller {
             return ResponseEntity.ok(stocks);
         }
     }
+    @GetMapping("/getStockWithIdProduct")
+    public ResponseEntity<List<Stock>> getStockWithIdProduct(@RequestParam("warehouse_id") Long warehouse_id) {
+        List<Stock> stocks  = stockService.getStockWithIdProduct(warehouse_id);
+
+        if (stocks.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(stocks);
+        }
+    }
 
     //stock update
     @PostMapping("/stockUpdate")

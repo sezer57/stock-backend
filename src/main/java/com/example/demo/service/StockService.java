@@ -73,7 +73,10 @@ public class StockService {
     public List<Stock> getAllStocks() {
         return stockRepository.findAll();
     }
+    public List<Stock> getStockWithIdProduct(Long warehouse_transfer_id) {
+        return   stockRepository.findStocksByWarehouse_WarehouseId(warehouse_transfer_id);
 
+    }
     public List<StockWarehouseDto> getStockWithId(Long warehouse_transfer_id) {
         List<Stock> stocks =  stockRepository.findStocksByWarehouse_WarehouseId(warehouse_transfer_id);
         if (stocks.isEmpty()) {
