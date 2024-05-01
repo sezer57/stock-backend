@@ -37,7 +37,9 @@ public class WarehouseTransferService {
         Integer oldQt=sourceWarehouseStock.getQuantityTransfer();
         Integer oldQI=sourceWarehouseStock.getQuantityIn();
         Integer oldQR=sourceWarehouseStock.getQuantityRemaining();
-
+        if(sourceWarehouseStock.getQuantityRemaining()<warehouseTransferDto.getQuantity()){
+            return "hedef depoda yeterli ürün yok";
+        }
         System.out.println(oldQI);
         System.out.println(oldQt);
         System.out.println(oldQR);
