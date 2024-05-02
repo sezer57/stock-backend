@@ -442,7 +442,7 @@ public class Controller {
     public ResponseEntity<String> addPurchase(@RequestBody ExpenseInvoiceDto expenseInvoiceDto) {
         String transferResult = expenseInvoiceService.addExpenseInvoice(expenseInvoiceDto);
 
-        if (transferResult=="true") {
+        if (Objects.equals(transferResult, "success")) {
             // Transfer başarılıysa
             return ResponseEntity.status(HttpStatus.OK).body(transferResult);
         } else {
