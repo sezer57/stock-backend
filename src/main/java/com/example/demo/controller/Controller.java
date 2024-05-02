@@ -98,7 +98,7 @@ public class Controller {
         if (stockService.addStock(stock)) {
             return ResponseEntity.ok("Stock added successfully");
         } else {
-            return ResponseEntity.ok("hata");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Stock not add");
         }
     }
 
@@ -124,7 +124,7 @@ public class Controller {
       if(clientService.addClient(client)){
       return ResponseEntity.ok("Client added successfully");
       }else{
-          return ResponseEntity.ok("Error of addition client");
+          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error of addition client");
       }
     }
     //transactionEkleme
@@ -133,7 +133,7 @@ public class Controller {
         if(transactionService.addTransaction(transaction)){
             return ResponseEntity.ok("Transaction added successfully");
         }else{
-            return ResponseEntity.ok("Error of addition Transaction");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error of addition Transaction");
         }
     }
 
@@ -144,7 +144,7 @@ public class Controller {
         if (informationCodeService.addInformationCode(informationCodeDto)) {
             return ResponseEntity.ok("InformationCode updated successfully");
         } else {
-            return ResponseEntity.ok("Error updating InformationCode");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error updating InformationCode");
         }
     }
 
@@ -154,7 +154,7 @@ public class Controller {
             if(bankAccountInfoService.addBankAccountInfo(bankAccountInfo)){
                 return ResponseEntity.ok("Bank account infos succeed");
             } else {
-                return ResponseEntity.ok("Bank account infos error");
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bank account infos error");
             }
     }
 
@@ -165,7 +165,7 @@ public class Controller {
 
             return ResponseEntity.ok( "Balance succeed");
         } else {
-            return ResponseEntity.ok("Balance error");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Balance error");
         }
     }
 
@@ -178,7 +178,7 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.OK).body(transferResult);
         } else {
             // Transfer başarısızsa veya bir hata oluştuysa
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hata transfer");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hata transfer");
         }
 
     }
@@ -191,16 +191,16 @@ public class Controller {
         if (warehouseStockService.updateQuantityIn(stockId, quantityIn)) {
             return ResponseEntity.status(HttpStatus.OK).body("WarehouseStock updateQuantityIn guncellendi:" + stockId);
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hata updateQuantityIn:" + stockId);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hata updateQuantityIn:" + stockId);
     }
 
     @PatchMapping("/{clientID}/updateBalance")
     public ResponseEntity<String> updateBalance(@PathVariable Long clientID,@RequestParam String paymentType, @RequestParam BigDecimal value){
         if(balanceService.updateBalance(clientID,paymentType,value)){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Updated UpdateBalance");
+            return ResponseEntity.status(HttpStatus.OK).body("Updated UpdateBalance");
         }
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Error UpdateBalance");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error UpdateBalance");
     }
 
     // Quantity çıkarma
@@ -210,7 +210,7 @@ public class Controller {
         if (warehouseStockService.updateQuantityOut(stockId, quantityOut)) {
             return ResponseEntity.status(HttpStatus.OK).body("WarehouseStock  updateQuantityOut guncellendi:" + stockId);
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Hata updateQuantityOut:" + stockId);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hata updateQuantityOut:" + stockId);
     }
 
     // bütün stocklar alma
@@ -505,6 +505,12 @@ public class Controller {
         return reportService.getDailyExpenses(date);
     }
 
+    @GetMapping("/getWeeklyPurchaseInvoices")
+    public List<Object> getWeeklyPurchaseInvoices(@RequestParam("startDate") LocalDate startDate, @RequestParam("endDate") LocalDate endDate) {
+        return reportService.getWeeklyPurchaseInvoices(startDate,endDate);
+    }
+
+
     @GetMapping("/getStockCode")
     public long getStockCode() {
         return stockService.getStockCode();
@@ -512,7 +518,7 @@ public class Controller {
 
     //  stocklar  sales remaining
     @GetMapping("/getStocksRemainigById")
-    public ResponseEntity<String> getStocksRemainigById(@RequestParam("warehouse_id") Long warehouse_id) {
+    public ResponseEntity<String> getStocksRemainigById(@RequestParam("stock_id") Long warehouse_id) {
         String stocks = stockService.getStocksRemainigById(warehouse_id);
 
         if (stocks.isEmpty()) {
