@@ -5,16 +5,17 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Getter
 @Setter
 public class PurchaseDto2 {
     private Long purchase_id;
-    private Long stockId;
-    private String stockName;
-    private BigDecimal price;
-    private int quantity;
+    private List<Long> stockId;
+    private List<String> stockName;
+    private List<BigDecimal> price;
+    private List<Integer> quantity;
     private String clientName;
     private String clientAdress;
     private String clientPhone;

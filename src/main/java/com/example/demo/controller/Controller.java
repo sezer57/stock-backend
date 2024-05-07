@@ -440,6 +440,8 @@ public class Controller {
     //sales oluşturma
     @PostMapping("/Sales")
     public ResponseEntity<String> addPurchase(@RequestBody ExpenseInvoiceDto expenseInvoiceDto) {
+        System.out.println(expenseInvoiceDto);
+
         String transferResult = expenseInvoiceService.addExpenseInvoice(expenseInvoiceDto);
 
         if (Objects.equals(transferResult, "success")) {

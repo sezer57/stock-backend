@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ReportService {
@@ -34,12 +35,21 @@ public class ReportService {
         List<ExpenseInvoice> expenseInvoices = expenseInvoiceRepository.getExpenseInvoicesByDate(date);
         for (ExpenseInvoice expense : expenseInvoices) {
             Map<String, Object> expenseMap = new HashMap<>();
-            expenseMap.put("expense_id", expense.getExpence_id());
-            expenseMap.put("stockName", expense.getStockCode().getStockName());
-            expenseMap.put("warehouseName", expense.getStockCode().getWarehouse().getName());
-            expenseMap.put("clientName", expense.getClientId().getName());
-            expenseMap.put("quantity", expense.getQuantity());
-            expenseMap.put("price", expense.getPrice());
+            expenseMap.put("expense_id", expense.getExpenseId());
+            expenseMap.put("stockName", expense.getInvoices().stream()
+                    .map(invoice -> invoice.getStock().getStockName() )
+                    .collect(Collectors.toList()));
+            expenseMap.put("warehouseName", expense.getInvoices().stream()
+                    .map(invoice -> invoice.getStock().getWarehouse().getName() )
+                    .collect(Collectors.toList()));
+            expenseMap.put("clientName", expense.getClient().getName());
+            expenseMap.put("quantity", expense.getInvoices().stream()
+                    .map(invoice -> invoice.getQuantity().toString())
+                    .collect(Collectors.toList()));
+
+            expenseMap.put("price", expense.getInvoices().stream()
+                    .map(Invoice::getPrice)
+                    .collect(Collectors.toList()));
             expenseMap.put("date", expense.getDate());
             dailyExpenses.add(expenseMap);
         }
@@ -48,11 +58,18 @@ public class ReportService {
         for (PurchaseInvoice invoice : purchaseInvoices) {
             Map<String, Object> expenseMap = new HashMap<>();
             expenseMap.put("purchase_id", invoice.getPurchase_id());
-            expenseMap.put("stockName", invoice.getStockCode().getStockName());
-            expenseMap.put("warehouseName", invoice.getStockCode().getWarehouse().getName());
+            expenseMap.put("stockName", invoice.getInvoices().stream()
+                    .map(invoices -> invoices.getStock().getStockName().toString())
+                    .collect(Collectors.toList()));
+            expenseMap.put("warehouseName", invoice.getInvoices().stream()
+                    .map(invoices -> invoices.getStock().getWarehouse().getName())
+                    .collect(Collectors.toList()));
             expenseMap.put("clientName", invoice.getClientId().getName());
-            expenseMap.put("quantity", invoice.getQuantity());
-            expenseMap.put("price", invoice.getPrice());
+            expenseMap.put("quantity", invoice.getInvoices().stream()
+                    .map(InvoiceP::getQuantity)
+                    .collect(Collectors.toList()));
+            expenseMap.put("price", invoice.getInvoices().stream()
+                    .map(InvoiceP::getPrice).toList().toString());
             expenseMap.put("date", invoice.getDate());
             dailyExpenses.add(expenseMap);
         }
@@ -154,12 +171,16 @@ public class ReportService {
         List<ExpenseInvoice> expenseInvoices = expenseInvoiceRepository.getExpenseInvoicesByDateBetween(startDate,endDate);
         for (ExpenseInvoice expense : expenseInvoices) {
             Map<String, Object> expenseMap = new HashMap<>();
-            expenseMap.put("expense_id", expense.getExpence_id());
-            expenseMap.put("stockName", expense.getStockCode().getStockName());
-            expenseMap.put("warehouseName", expense.getStockCode().getWarehouse().getName());
-            expenseMap.put("clientName", expense.getClientId().getName());
-            expenseMap.put("quantity", expense.getQuantity());
-            expenseMap.put("price", expense.getPrice());
+            expenseMap.put("expense_id", expense.getExpenseId());
+       //     expenseMap.put("stockName", expense.getStockCode().getStockName());
+       //     expenseMap.put("warehouseName", expense.getStockCode().getWarehouse().getName());
+            expenseMap.put("clientName", expense.getClient().getName());
+            expenseMap.put("quantity", expense.getInvoices().stream()
+                    .map(invoice -> invoice.getQuantity().toString())
+                    .collect(Collectors.toList()));
+
+            expenseMap.put("price", expense.getInvoices().stream()
+                            .map(invoice -> invoice.getPrice().toString()));
             expenseMap.put("date", expense.getDate());
             weekly.add(expenseMap);
         }
@@ -168,11 +189,19 @@ public class ReportService {
         for (PurchaseInvoice invoice : purchaseInvoices) {
             Map<String, Object> expenseMap = new HashMap<>();
             expenseMap.put("purchase_id", invoice.getPurchase_id());
-            expenseMap.put("stockName", invoice.getStockCode().getStockName());
-            expenseMap.put("warehouseName", invoice.getStockCode().getWarehouse().getName());
+            expenseMap.put("stockName", invoice.getInvoices().stream()
+                    .map(invoices -> invoices.getStock().getStockName().toString())
+                    .collect(Collectors.toList()));
+            expenseMap.put("warehouseName", invoice.getInvoices().stream()
+                    .map(invoices -> invoices.getStock().getWarehouse().getName())
+                    .collect(Collectors.toList()));
             expenseMap.put("authorized", invoice.getClientId().getName());
-            expenseMap.put("quantity", invoice.getQuantity());
-            expenseMap.put("price", invoice.getPrice());
+            expenseMap.put("quantity", invoice.getInvoices().stream()
+                    .map(InvoiceP::getQuantity)
+                    .collect(Collectors.toList()));
+            expenseMap.put("price", invoice.getInvoices().stream()
+                    .map(InvoiceP::getPrice)
+                    .collect(Collectors.toList()));
             expenseMap.put("date", invoice.getDate());
             weekly.add(expenseMap);
         }

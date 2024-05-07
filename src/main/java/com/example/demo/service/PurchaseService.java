@@ -2,10 +2,15 @@ package com.example.demo.service;
 
 import com.example.demo.Dto.PurchaseDto;
 import com.example.demo.Dto.PurchaseDto2;
+import com.example.demo.model.Invoice;
+import com.example.demo.model.InvoiceP;
 import com.example.demo.model.PurchaseInvoice;
+import com.example.demo.model.Stock;
 import com.example.demo.repository.PurchaseRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,8 +34,24 @@ public class PurchaseService {
 
     public boolean addPurchase(PurchaseDto purchase) {
 
-        PurchaseInvoice p = new PurchaseInvoice(stockService.getstockjustid(purchase.getStockCode()),clientService.getClientWithId(purchase.getClientId()), purchase.getQuantity(), purchase.getDate(), purchase.getPrice());
-        warehouseStockService.updateQuantityIn(purchase.getStockCode(), purchase.getQuantity());
+        PurchaseInvoice p = new PurchaseInvoice(clientService.getClientWithId(purchase.getClientId()), purchase.getDate(),new ArrayList<>());
+        List<Integer> quantities = purchase.getQuantity();
+        List<BigDecimal> prices = purchase.getPrice();
+        List<Long> stockCodes = purchase.getStockCode();
+        for (int i = 0; i < stockCodes.size(); i++) {
+
+            warehouseStockService.updateQuantityIn(stockCodes.get(i), quantities.get(i));
+        }
+        List<InvoiceP> invoices = new ArrayList<>();
+        for (int i = 0; i < stockCodes.size(); i++) {
+            Stock stock = stockService.getstockjustid(stockCodes.get(i));
+            InvoiceP invoice = new InvoiceP(stock, quantities.get(i), prices.get(i));
+            invoice.setPurchase(p); // Set the ExpenseInvoice object
+            invoices.add(invoice);
+        }
+        p.setInvoices(invoices);
+
+
         //   Balance b = balanceService.findBalanceByClientID(purchase.getClientId());
         //    BigDecimal oldB=b.getTransactionalBalance();
         //   b.setTransactionalBalance(oldB.add(purchase.getPrice()));
@@ -48,10 +69,18 @@ public class PurchaseService {
     private PurchaseDto2 convertToDTO(PurchaseInvoice purchases) {
         PurchaseDto2 dto = new PurchaseDto2();
         dto.setPurchase_id(purchases.getPurchase_id());
-        dto.setStockId(purchases.getStockCode().getStockId());
-        dto.setStockName(purchases.getStockCode().getStockName());
-        dto.setPrice(purchases.getPrice());
-        dto.setQuantity(purchases.getQuantity());
+        dto.setStockId(purchases.getInvoices().stream()
+                .map(invoice -> invoice.getStock().getStockId())
+                .collect(Collectors.toList()));
+        dto.setStockName(purchases.getInvoices().stream()
+                .map(invoice -> invoice.getStock().getStockName())
+                .collect(Collectors.toList()));
+        dto.setPrice(purchases.getInvoices().stream()
+                .map(InvoiceP::getPrice) // Convert BigDecimal to String
+                .collect(Collectors.toList()));
+        dto.setQuantity(purchases.getInvoices().stream()
+                .map(InvoiceP::getQuantity) // Convert Integer to String
+                .collect(Collectors.toList()));
         dto.setDate(purchases.getDate());
         dto.setClientName(purchases.getClientId().getName()+" "+purchases.getClientId().getSurname());
         dto.setClientAdress(purchases.getClientId().getAddress());

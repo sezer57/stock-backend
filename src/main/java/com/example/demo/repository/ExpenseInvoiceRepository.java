@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ExpenseInvoiceRepository extends JpaRepository<ExpenseInvoice,Long> {
-    List<ExpenseInvoice>  findExpenseInvoicesByClientId_ClientId(Long id);
+    List<ExpenseInvoice>  findExpenseInvoicesByClient_ClientId(Long id);
     List<ExpenseInvoice>  getExpenseInvoicesByDate(LocalDate date);
     List<ExpenseInvoice> getExpenseInvoicesByDateBetween(LocalDate startDate, LocalDate endDate);
 }
