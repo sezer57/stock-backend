@@ -14,6 +14,7 @@ import java.util.List;
 public class ExpenseInvoiceDto {
     private Long clientId;
     private  List<Integer>  quantity;
+    private String autherized;
     private List<Long> stockCodes;
     private List<BigDecimal> price  ;
     private LocalDate date;

@@ -29,18 +29,20 @@ public class PurchaseInvoice {
     private Client clientId;
     @OneToMany(mappedBy = "purchase", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InvoiceP> invoices;
-
+    @Column(name = "autherized", nullable = false)
+    private String autherized;
     @Column(name = "date" , nullable = false)
     private LocalDate date;
     public PurchaseInvoice(){}
 
-    public PurchaseInvoice(  Client clientId,  LocalDate date, List<InvoiceP> invoices) {
+    public PurchaseInvoice(  Client clientId,  LocalDate date, List<InvoiceP> invoices,String autherized) {
 
         this.clientId=clientId;
 
         //      this.unit=unit;
         this.date=date;
         this.invoices= invoices;
+        this.autherized=autherized;
     }
 }
 

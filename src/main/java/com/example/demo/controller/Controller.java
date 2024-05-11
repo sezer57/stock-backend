@@ -202,6 +202,14 @@ public class Controller {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error UpdateBalance");
     }
+    @PatchMapping("/{clientID}/updateBalance2")
+    public ResponseEntity<String> updateBalance2(@PathVariable Long clientID,@RequestParam String paymentType, @RequestParam BigDecimal value){
+        if(balanceService.updateBalance2(clientID,paymentType,value)){
+            return ResponseEntity.status(HttpStatus.OK).body("Updated UpdateBalance");
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error UpdateBalance");
+    }
 
     // Quantity çıkarma
     @PatchMapping("/{stockId}/updateQuantityOut")

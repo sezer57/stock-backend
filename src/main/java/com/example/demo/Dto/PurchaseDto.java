@@ -17,6 +17,7 @@ public class PurchaseDto {
     private List<Integer> quantity;
     private List<Long> stockCode;
     private Long clientId;
+    private String autherized;
     private List<BigDecimal> price;
     private LocalDate date;
 }

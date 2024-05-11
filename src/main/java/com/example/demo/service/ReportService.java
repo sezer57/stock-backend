@@ -43,6 +43,7 @@ public class ReportService {
                     .map(invoice -> invoice.getStock().getWarehouse().getName() )
                     .collect(Collectors.toList()));
             expenseMap.put("clientName", expense.getClient().getName());
+            expenseMap.put("autherized", expense.getAutherized());
             expenseMap.put("quantity", expense.getInvoices().stream()
                     .map(invoice -> invoice.getQuantity().toString())
                     .collect(Collectors.toList()));
@@ -65,6 +66,7 @@ public class ReportService {
                     .map(invoices -> invoices.getStock().getWarehouse().getName())
                     .collect(Collectors.toList()));
             expenseMap.put("clientName", invoice.getClientId().getName());
+            expenseMap.put("autherized", invoice.getAutherized());
             expenseMap.put("quantity", invoice.getInvoices().stream()
                     .map(InvoiceP::getQuantity)
                     .collect(Collectors.toList()));

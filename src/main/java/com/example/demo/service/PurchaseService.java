@@ -2,10 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.Dto.PurchaseDto;
 import com.example.demo.Dto.PurchaseDto2;
-import com.example.demo.model.Invoice;
-import com.example.demo.model.InvoiceP;
-import com.example.demo.model.PurchaseInvoice;
-import com.example.demo.model.Stock;
+import com.example.demo.model.*;
 import com.example.demo.repository.PurchaseRepository;
 import org.springframework.stereotype.Service;
 
@@ -34,13 +31,26 @@ public class PurchaseService {
 
     public boolean addPurchase(PurchaseDto purchase) {
 
-        PurchaseInvoice p = new PurchaseInvoice(clientService.getClientWithId(purchase.getClientId()), purchase.getDate(),new ArrayList<>());
+        PurchaseInvoice p = new PurchaseInvoice(
+                clientService.getClientWithId(purchase.getClientId()),
+                purchase.getDate(),
+                new ArrayList<>(),
+                purchase.getAutherized()
+        );
         List<Integer> quantities = purchase.getQuantity();
         List<BigDecimal> prices = purchase.getPrice();
         List<Long> stockCodes = purchase.getStockCode();
+        BigDecimal totalPrice = BigDecimal.valueOf(0);
+
+        for (int i = 0; i < prices.size(); i++) {
+
+            totalPrice= totalPrice.add(prices.get(i));
+
+        }
         for (int i = 0; i < stockCodes.size(); i++) {
 
             warehouseStockService.updateQuantityIn(stockCodes.get(i), quantities.get(i));
+
         }
         List<InvoiceP> invoices = new ArrayList<>();
         for (int i = 0; i < stockCodes.size(); i++) {
@@ -52,9 +62,9 @@ public class PurchaseService {
         p.setInvoices(invoices);
 
 
-        //   Balance b = balanceService.findBalanceByClientID(purchase.getClientId());
-        //    BigDecimal oldB=b.getTransactionalBalance();
-        //   b.setTransactionalBalance(oldB.add(purchase.getPrice()));
+           Balance b = balanceService.findBalanceByClientID(purchase.getClientId());
+            BigDecimal oldB=b.getBalance();
+           b.setBalance(oldB.add(totalPrice));
         purchaseRepository.save(p);
         return true;
     }
@@ -78,6 +88,7 @@ public class PurchaseService {
         dto.setPrice(purchases.getInvoices().stream()
                 .map(InvoiceP::getPrice) // Convert BigDecimal to String
                 .collect(Collectors.toList()));
+        dto.setAutherized(purchases.getAutherized());
         dto.setQuantity(purchases.getInvoices().stream()
                 .map(InvoiceP::getQuantity) // Convert Integer to String
                 .collect(Collectors.toList()));

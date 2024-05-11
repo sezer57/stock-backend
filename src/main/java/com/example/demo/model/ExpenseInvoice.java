@@ -29,6 +29,8 @@ public class ExpenseInvoice {
     @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
+    @Column(name = "autherized", nullable = false)
+    private String autherized;
     @Column(name = "date", nullable = false)
     private LocalDate date;
 
@@ -38,11 +40,12 @@ public class ExpenseInvoice {
     public ExpenseInvoice() {
     }
 
-    public ExpenseInvoice(  Client client,  List<Invoice> invoices,LocalDate date) {
+    public ExpenseInvoice(  Client client,  List<Invoice> invoices,LocalDate date,String autherized) {
 
         this.client = client;
         this.date = date;
         this.invoices = invoices;
+        this.autherized= autherized;
     }
 }
 

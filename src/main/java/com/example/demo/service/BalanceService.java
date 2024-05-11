@@ -106,6 +106,53 @@ public class BalanceService {
         return true;
 
     }
+    public boolean updateBalance2(Long clientID, String paymentType, BigDecimal Value) {
+        Balance balance = balanceRepository.findBalanceByClientID(clientID);
+        BigDecimal oldValue;
+
+        oldValue = balance.getBalance();
+        if (oldValue == null) {
+            oldValue = BigDecimal.ZERO;
+        }
+        BigDecimal newValue = oldValue.add(Value);
+        balance.setBalance(newValue);
+
+
+        switch (paymentType) {
+            case "Debit":
+                oldValue = balance.getDebit();
+                if (oldValue == null) {
+                    oldValue = BigDecimal.ZERO;
+                }
+                newValue = oldValue.add(Value);
+                balance.setDebit(newValue);
+                break;
+
+            case "Credit":
+                oldValue = balance.getCredit();
+                if (oldValue == null) {
+                    oldValue = BigDecimal.ZERO;
+                }
+                newValue = oldValue.add(Value);
+                balance.setCredit(newValue);
+                break;
+            case "Cash":
+                oldValue = balance.getCash();
+                if (oldValue == null) {
+                    oldValue = BigDecimal.ZERO;
+                }
+                newValue = oldValue.add(Value);
+                balance.setCash(newValue);
+                break;
+            default:
+                // Handle invalid type selection
+                return false;
+        }
+        balanceRepository.save(balance);
+        // Payment p = new Payment(balance);
+        return true;
+
+    }
 
     public boolean updateBalanceToSale(Long clientID, BigDecimal Value) {
         Balance balance = balanceRepository.findBalanceByClientID(clientID);
@@ -115,7 +162,7 @@ public class BalanceService {
         if (oldValue == null) {
             oldValue = BigDecimal.ZERO;
         }
-        BigDecimal newValue = oldValue.add(Value);
+        BigDecimal newValue = oldValue.subtract(Value);
         balance.setBalance(newValue);
 
         balanceRepository.save(balance);

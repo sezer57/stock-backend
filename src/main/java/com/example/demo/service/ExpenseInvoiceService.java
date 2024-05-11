@@ -30,6 +30,9 @@ public class ExpenseInvoiceService {
       List<Long> stockCodes = expenseInvoice.getStockCodes();
       List<Integer> quantities = expenseInvoice.getQuantity();
       List<BigDecimal> prices = expenseInvoice.getPrice();
+      if(stockCodes.size()!=quantities.size()&&prices.size()!=quantities.size()&&stockCodes.size()!=prices.size()){
+          return "size error ";
+      }
       for (int i = 0; i < stockCodes.size(); i++) {
           Long stockCode = stockCodes.get(i);
           Integer quantity = quantities.get(i);
@@ -39,9 +42,8 @@ public class ExpenseInvoiceService {
               return "not enough products in warehouse";
           }
 
-          BigDecimal totalPrice = price.multiply(BigDecimal.valueOf(quantity));
 
-          balanceService.updateBalanceToSale(expenseInvoice.getClientId(), totalPrice);
+          balanceService.updateBalanceToSale(expenseInvoice.getClientId(), price);
       }
       List<Stock> stocks = new ArrayList<>();
       for (Long stockCode : stockCodes) {
@@ -53,7 +55,9 @@ public class ExpenseInvoiceService {
       ExpenseInvoice e = new ExpenseInvoice(
               clientService.getClientWithId(expenseInvoice.getClientId()),
               new ArrayList<>(), // Initialize the list of invoices
-              expenseInvoice.getDate()
+              expenseInvoice.getDate(),
+              expenseInvoice.getAutherized()
+
       );
 
       List<Invoice> invoices = new ArrayList<>();
@@ -95,6 +99,7 @@ public class ExpenseInvoiceService {
                 .map(invoice -> invoice.getQuantity().toString()) // Convert Integer to String
                 .collect(Collectors.toList()));
         dto.setDate(expenseInvoice.getDate());
+        dto.setAutherized(expenseInvoice.getAutherized());
         dto.setClientName(expenseInvoice.getClient().getName()+" "+expenseInvoice.getClient().getSurname());
         dto.setClientAdress(expenseInvoice.getClient().getAddress());
         dto.setClientPhone(expenseInvoice.getClient().getPhone());
