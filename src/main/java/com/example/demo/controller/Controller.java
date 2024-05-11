@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -60,7 +62,6 @@ public class Controller {
         this.reportService = reportService;
     }
 
-
     //login
     //Authentication Endpoints
     @PostMapping("/addNewUser")
@@ -72,8 +73,6 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("User already signed up");
         }
     }
-
-
     @PostMapping("/login")
     public String authenticateAndGetToken(@RequestBody AuthRequestDto authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
@@ -231,6 +230,19 @@ public class Controller {
         } else {
             return ResponseEntity.ok(stocks);
         }
+    }
+    @GetMapping("/getStocksByPage")
+    public ResponseEntity<List<Stock>> getUrunler(@RequestParam(defaultValue = "0") int page,
+                                                  @RequestParam(defaultValue = "10") int size) {
+        List<Stock> urunler = stockService.getAllStocks(); // Tüm ürünleri getir
+
+        int startIndex = page * size;
+        int endIndex = Math.min(startIndex + size, urunler.size());
+
+        // İstenen sayfadaki ürünleri al
+        List<Stock> istenenUrunler = urunler.subList(startIndex, endIndex);
+
+        return new ResponseEntity<>(istenenUrunler, HttpStatus.OK);
     }
 
     //  stocklar alma warehouse transfer için yapılan sadece id ve isim
