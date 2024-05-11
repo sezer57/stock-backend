@@ -224,20 +224,17 @@ public class Controller {
         }
     }
     @GetMapping("/getStocksByPage")
-    public List<List<Stock>> getUrunler(@RequestParam(defaultValue = "0") int page,
-                                        @RequestParam(defaultValue = "10") int size) {
+    public ResponseEntity<List<Stock>> getUrunler(@RequestParam(defaultValue = "0") int page,
+                                                  @RequestParam(defaultValue = "10") int size) {
         List<Stock> urunler = stockService.getAllStocks(); // Tüm ürünleri getir
 
-        int totalPages = (int) Math.ceil((double) urunler.size() / size);
-        // Sayfa sınırlarını belirleme
         int startIndex = page * size;
         int endIndex = Math.min(startIndex + size, urunler.size());
+
         // İstenen sayfadaki ürünleri al
         List<Stock> istenenUrunler = urunler.subList(startIndex, endIndex);
-        // Her 10 ürünü ayrı bir liste olarak döndür
-        return IntStream.range(0, (int) Math.ceil((double) istenenUrunler.size() / size))
-                .mapToObj(i -> istenenUrunler.subList(i * size, Math.min((i + 1) * size, istenenUrunler.size())))
-                .collect(Collectors.toList());
+
+        return new ResponseEntity<>(istenenUrunler, HttpStatus.OK);
     }
 
     //  stocklar alma warehouse transfer için yapılan sadece id ve isim
