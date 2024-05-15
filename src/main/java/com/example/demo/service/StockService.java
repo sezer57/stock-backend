@@ -32,42 +32,48 @@ public class StockService {
     }
 
     public boolean addStock(StockDto stock) {
-        List<Long> warehouseIds = stock.getWarehouse_id();
-        for (Long warehouseId : warehouseIds) {
-            try {
-                Long warehouseIdLong = Long.valueOf(warehouseId);
-                Optional<Warehouse> warehouseOptional = warehouseRepository.findById(warehouseIdLong);
-                if (warehouseOptional.isEmpty()) {
-                    return false; // Warehouse bulunamadı, işlem başarısız
-                } else {
-                    if (isDuplicateStock(warehouseId, stock.getStockName())) {
-                        return false; // Aynı depoda aynı isimde stok var
-                    }
-                    Warehouse warehouse = warehouseOptional.get();
-                    Stock newStock = new Stock(
-                            stock.getUnit(),
-                            stock.getStockCode(),
-                            stock.getStockName(),
-                            stock.getGroupName(),
-                            stock.getMiddleGroupName(),
-                            stock.getBarcode(),
-                            stock.getSalesPrice(),
-                            warehouse,
-                            stock.getPurchasePrice(),
-                            stock.getRegistrationDate()
-                    );
-                    stockRepository.save(newStock);
-                    WarehouseStock warehouseStock = new WarehouseStock(warehouse, newStock);
-                    warehouseStockRepository.save(warehouseStock);
-                    System.out.println(newStock.getRegistrationDate());
-                }
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-                // Sayısal değere dönüştürmede hata, işlem başarısız
-                return false;
-            }
+        if(stock.getWarehouse_id().isEmpty()){
+            return false;
         }
-        return true;
+        else
+        {
+            List<Long> warehouseIds = stock.getWarehouse_id();
+            for (Long warehouseId : warehouseIds) {
+                try {
+                    Long warehouseIdLong = Long.valueOf(warehouseId);
+                    Optional<Warehouse> warehouseOptional = warehouseRepository.findById(warehouseIdLong);
+                    if (warehouseOptional.isEmpty()) {
+                        return false; // Warehouse bulunamadı, işlem başarısız
+                    } else {
+                        if (isDuplicateStock(warehouseId, stock.getStockName())) {
+                            return false; // Aynı depoda aynı isimde stok var
+                        }
+                        Warehouse warehouse = warehouseOptional.get();
+                        Stock newStock = new Stock(
+                                stock.getUnit(),
+                                stock.getStockCode(),
+                                stock.getStockName(),
+                                stock.getGroupName(),
+                                stock.getMiddleGroupName(),
+                                stock.getBarcode(),
+                                stock.getSalesPrice(),
+                                warehouse,
+                                stock.getPurchasePrice(),
+                                stock.getRegistrationDate()
+                        );
+                        stockRepository.save(newStock);
+                        WarehouseStock warehouseStock = new WarehouseStock(warehouse, newStock);
+                        warehouseStockRepository.save(warehouseStock);
+                        System.out.println(newStock.getRegistrationDate());
+                    }
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                    // Sayısal değere dönüştürmede hata, işlem başarısız
+                    return false;
+                }
+            }
+            return true;
+        }
     }
 
     public List<Stock> getAllStocks() {
