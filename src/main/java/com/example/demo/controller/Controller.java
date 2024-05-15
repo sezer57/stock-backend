@@ -266,6 +266,19 @@ public class Controller {
             return ResponseEntity.ok(stocks);
         }
     }
+    @GetMapping("/getStockWithIdProductByPage")
+    public ResponseEntity<List<Stock>> getStockWithIdProductByPage(@RequestParam(defaultValue = "0") int page,
+                                                  @RequestParam(defaultValue = "10") int size,@RequestParam("warehouse_id") Long warehouse_id) {
+        List<Stock> stock = stockService.getStockWithIdProduct(warehouse_id);
+
+        int startIndex = page * size;
+        int endIndex = Math.min(startIndex + size, stock.size());
+
+        // İstenen sayfadaki ürünleri al
+        List<Stock> stocks = stock.subList(startIndex, endIndex);
+
+        return new ResponseEntity<>(stocks, HttpStatus.OK);
+    }
 
     //stock update
     @PostMapping("/stockUpdate")
@@ -344,6 +357,18 @@ public class Controller {
             return ResponseEntity.ok(purchases);
         }
     }
+    @GetMapping("/getPurchaseInvoiceClientByPage")
+    public ResponseEntity<List<PurchaseDto2>> getPurchaseInvoiceClientByPage(@RequestParam(defaultValue = "0") int page,
+                                                                                                           @RequestParam(defaultValue = "10") int size,@RequestParam("client_id") Long client_id) {
+        List<PurchaseDto2> purchase = purchaseService.getPurchaseWithId(client_id); // Tüm ürünleri getir
+
+        int startIndex = page * size;
+        int endIndex = Math.min(startIndex + size, purchase.size());
+        // İstenen sayfadaki ürünleri al
+        List<PurchaseDto2> purchases = purchase.subList(startIndex, endIndex);
+
+        return new ResponseEntity<>(purchases, HttpStatus.OK);
+    }
     //  kullanıcıdan  satılanların listesi ödeme için
     @GetMapping("/getSalesInvoiceClient")
     public ResponseEntity<List<ExpenseInvoiceDto2>> getClientSalesInvoicewithid(@RequestParam("client_id") Long client_id) {
@@ -353,6 +378,18 @@ public class Controller {
         } else {
             return ResponseEntity.ok(expenses);
         }
+    }
+    @GetMapping("/getSalesInvoiceClientByPage")
+    public ResponseEntity<List<ExpenseInvoiceDto2>> getSalesInvoiceClientByPage(@RequestParam(defaultValue = "0") int page,
+                                                  @RequestParam(defaultValue = "10") int size,@RequestParam("client_id") Long client_id) {
+        List<ExpenseInvoiceDto2> invoice = expenseInvoiceService.getExpenseWithId(client_id); // Tüm ürünleri getir
+
+        int startIndex = page * size;
+        int endIndex = Math.min(startIndex + size, invoice.size());
+        // İstenen sayfadaki ürünleri al
+        List<ExpenseInvoiceDto2> invoices = invoice.subList(startIndex, endIndex);
+
+        return new ResponseEntity<>(invoices, HttpStatus.OK);
     }
 
     @GetMapping("getClientByName")
@@ -399,6 +436,19 @@ public class Controller {
             return ResponseEntity.ok(clients);
         }
     }
+    @GetMapping("getClientsByPage")
+    public ResponseEntity<List<Client>> getClientsByPage(@RequestParam(defaultValue = "0") int page,
+                                                                 @RequestParam(defaultValue = "10") int size) {
+        List<Client> client = clientService.getAllClients(); // Tüm ürünleri getir
+
+        int startIndex = page * size;
+        int endIndex = Math.min(startIndex + size, client.size());
+
+        // İstenen sayfadaki ürünleri al
+        List<Client> clients = client.subList(startIndex, endIndex);
+
+        return new ResponseEntity<>(clients, HttpStatus.OK);
+    }
     //Transaction Alma
     @GetMapping("getTransactions")
     public ResponseEntity<List<Transaction>> getAllTransactions(){
@@ -432,6 +482,20 @@ public class Controller {
         }
     }
 
+    @GetMapping("/getPurchasesByPage")
+    public ResponseEntity<List<PurchaseDto2>> getPurchasesByPage(@RequestParam(defaultValue = "0") int page,
+                                                  @RequestParam(defaultValue = "10") int size) {
+        List<PurchaseDto2> purchase = purchaseService.getAllPurchases(); // Tüm ürünleri getir
+
+        int startIndex = page * size;
+        int endIndex = Math.min(startIndex + size, purchase.size());
+
+        // İstenen sayfadaki ürünleri al
+        List<PurchaseDto2> purchases = purchase.subList(startIndex, endIndex);
+
+        return new ResponseEntity<>(purchases, HttpStatus.OK);
+    }
+
     //purchase oluşturma
     @PostMapping("/purchase")
     public ResponseEntity<Boolean> addPurchases(@RequestBody PurchaseDto purchaseDto) {
@@ -455,6 +519,19 @@ public class Controller {
         } else {
             return ResponseEntity.ok(Sales);
         }
+    }
+    @GetMapping("/getSalesByPage")
+    public ResponseEntity<List<ExpenseInvoiceDto2>> getSalesByPage(@RequestParam(defaultValue = "0") int page,
+                                                                 @RequestParam(defaultValue = "10") int size) {
+        List<ExpenseInvoiceDto2> sale = expenseInvoiceService.getAllExpenseInvoice(); // Tüm ürünleri getir
+
+        int startIndex = page * size;
+        int endIndex = Math.min(startIndex + size, sale.size());
+
+        // İstenen sayfadaki ürünleri al
+        List<ExpenseInvoiceDto2> sales = sale.subList(startIndex, endIndex);
+
+        return new ResponseEntity<>(sales, HttpStatus.OK);
     }
 
     //sales oluşturma
