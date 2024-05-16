@@ -20,19 +20,17 @@ public class BalanceTransfer {
     @Column(name = "balance_transfer_ID")
     private Long balance_transfer_ID;
 
-    @ManyToOne
-    @JoinColumn(name = "client", nullable = false)
-    private Balance client;
+    @JoinColumn(name = "clientId", nullable = false)
+    private Long clientId;
 
-    @ManyToOne
     @JoinColumn(name = "system", nullable = false)
-    private Balance system;
+    private BigDecimal balance;
 
-    @Column(name = "transferDebitAmount" )
-    private BigDecimal turnoverDebitAmount;
+    @Column(name = "Amount" )
+    private BigDecimal amount;
 
-    @Column(name = "transferCreditAmount" )
-    private BigDecimal turnoverCreditAmount;
+    @Column(name = "paymentType" )
+    private String paymentType;
 
     @Column(name = "transfer_date")
     private LocalDate date;
@@ -41,11 +39,11 @@ public class BalanceTransfer {
     private String comment;
 
     public BalanceTransfer(){}
-    public BalanceTransfer(Balance client, Balance system, BigDecimal turnoverDebitAmount, BigDecimal turnoverCreditAmount, LocalDate date, String comment) {
-        this.client = client;
-        this.system = system;
-        this.turnoverDebitAmount = turnoverDebitAmount;
-        this.turnoverCreditAmount = turnoverCreditAmount;
+    public BalanceTransfer(Long clientId, BigDecimal balance, BigDecimal amount, String paymentType, LocalDate date, String comment) {
+        this.clientId = clientId;
+        this.balance = balance;
+        this.amount = amount;
+        this.paymentType = paymentType;
         this.date = date;
         this.comment=comment;
     }

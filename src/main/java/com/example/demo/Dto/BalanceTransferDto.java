@@ -10,9 +10,9 @@ import java.time.LocalDate;
 public class BalanceTransferDto {
     private Long balanceTransferId;
     private Long client;
-    private Long system;
-    private BigDecimal turnoverDebitAmount;
-    private BigDecimal turnoverCreditAmount;
+    private BigDecimal system;
+    private BigDecimal amount;
+    private String paymentType;
     private String comment;
     private LocalDate date;
 }

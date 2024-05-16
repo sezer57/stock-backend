@@ -3,24 +3,28 @@ package com.example.demo.service;
 
 import com.example.demo.Dto.BalanceDto;
 import com.example.demo.model.Balance;
+import com.example.demo.model.BalanceTransfer;
 import com.example.demo.model.Client;
 import com.example.demo.repository.BalanceRepository;
+import com.example.demo.repository.BalanceTransferRepository;
 import com.example.demo.repository.ClientRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class BalanceService {
     private final BalanceRepository balanceRepository;
     private final ClientRepository clientRepository;
+    private final BalanceTransferRepository balanceTransferRepository;
 
-    public BalanceService(BalanceRepository balanceRepository, ClientRepository clientRepository) {
+    LocalDate currentDate = LocalDate.now();
+    public BalanceService(BalanceRepository balanceRepository, ClientRepository clientRepository, BalanceTransferRepository balanceTransferRepository) {
         this.balanceRepository = balanceRepository;
         this.clientRepository = clientRepository;
-
-
+        this.balanceTransferRepository = balanceTransferRepository;
     }
 
     public boolean addBalance(BalanceDto balance, String name) {
@@ -102,6 +106,16 @@ public class BalanceService {
                 return false;
         }
         balanceRepository.save(balance);
+
+        BalanceTransfer balanceTransfer = new BalanceTransfer(
+                balance.getClientID(),
+                balance.getBalance(),
+                Value,
+                paymentType,
+                currentDate,
+                balance.getComment()
+                );
+        balanceTransferRepository.save(balanceTransfer);
        // Payment p = new Payment(balance);
         return true;
 
@@ -150,6 +164,15 @@ public class BalanceService {
         }
         balanceRepository.save(balance);
         // Payment p = new Payment(balance);
+        BalanceTransfer balanceTransfer = new BalanceTransfer(
+                balance.getClientID(),
+                balance.getBalance(),
+                Value,
+                paymentType,
+                currentDate,
+                balance.getComment()
+        );
+        balanceTransferRepository.save(balanceTransfer);
         return true;
 
     }

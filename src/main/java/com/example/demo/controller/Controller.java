@@ -168,19 +168,19 @@ public class Controller {
         }
     }
 
-    @PostMapping("/balance/transfer")
-    public ResponseEntity<String> balancetransfer(@RequestBody BalanceTransferDto balanceTransferDto) {
-        String transferResult = balanceTransferService.transfer(balanceTransferDto);
-
-        if (transferResult != null) {
-            // Transfer başarılıysa
-            return ResponseEntity.status(HttpStatus.OK).body(transferResult);
-        } else {
-            // Transfer başarısızsa veya bir hata oluştuysa
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hata transfer");
-        }
-
-    }
+//    @PostMapping("/balance/transfer")
+//    public ResponseEntity<String> balancetransfer(@RequestBody BalanceTransferDto balanceTransferDto) {
+//        String transferResult = balanceTransferService.transfer(balanceTransferDto);
+//
+//        if (transferResult != null) {
+//            // Transfer başarılıysa
+//            return ResponseEntity.status(HttpStatus.OK).body(transferResult);
+//        } else {
+//            // Transfer başarısızsa veya bir hata oluştuysa
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hata transfer");
+//        }
+//
+//    }
 
 
     // Quantity ekleme
@@ -626,5 +626,5 @@ public class Controller {
             return ResponseEntity.ok(stocks);
         }
     }
-    //asdashkdjahsd
+
 }

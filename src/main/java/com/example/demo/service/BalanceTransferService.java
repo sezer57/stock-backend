@@ -22,56 +22,56 @@ public class BalanceTransferService {
         this.balanceService = balanceService;
     }
 
-    public String transfer(BalanceTransferDto balanceTransferDto) {
-
-
-        Balance sourceBalance = balanceService.findByBalance_balanceId(balanceTransferDto.getSystem());
-        Balance targetBalance = balanceService.findByBalance_balanceId(balanceTransferDto.getClient());
-
-        if(sourceBalance==null)
-        {
-            return "kaynak bulunamadı";
-
-        } else if (targetBalance==null)
-        {
-            return "target bulunamadı";
-        }
-
-        BigDecimal oldQc=sourceBalance.getCredit();
-        BigDecimal oldQd=sourceBalance.getDebit();
-
-        BigDecimal oldTc=targetBalance.getCredit();
-        BigDecimal oldTd=targetBalance.getDebit();
-
-
-//        if(Objects.equals(oldQc, BigDecimal.valueOf(0))){
-//            return "depoda yeterli ürün yok";
+//    public String transfer(BalanceTransferDto balanceTransferDto) {
+//
+//
+//        Balance sourceBalance = balanceService.findByBalance_balanceId(balanceTransferDto.getSystem());
+//        Balance targetBalance = balanceService.findByBalance_balanceId(balanceTransferDto.getClient());
+//
+//        if(sourceBalance==null)
+//        {
+//            return "kaynak bulunamadı";
+//
+//        } else if (targetBalance==null)
+//        {
+//            return "target bulunamadı";
 //        }
-//        if(Objects.equals(oldQc, BigDecimal.valueOf(0))){
-//            return "depoda yeterli remainin ürün yok";
-//        }
-        sourceBalance.setCredit(oldQc.subtract(balanceTransferDto.getTurnoverCreditAmount()));
-        sourceBalance.setDebit(oldQd.subtract(balanceTransferDto.getTurnoverDebitAmount()));
-
-
-        targetBalance.setCredit(oldTc.add(balanceTransferDto.getTurnoverCreditAmount()));
-        targetBalance.setDebit(oldTd.add(balanceTransferDto.getTurnoverDebitAmount()));
-        balanceService.savedb(sourceBalance);
-        balanceService.savedb(targetBalance);
-
-
-        BalanceTransfer balanceTransfer =new BalanceTransfer(
-                sourceBalance,
-                targetBalance,
-                balanceTransferDto.getTurnoverDebitAmount(),
-                balanceTransferDto.getTurnoverCreditAmount(),
-                balanceTransferDto.getDate(),
-                balanceTransferDto.getComment()
-        );
-
-        balanceTransferRepository.save(balanceTransfer);
-
-        return "from :"+ sourceBalance.getClientID() + " to:"+targetBalance.getClientID()+ " transfer success";
-    }
+//
+//        BigDecimal oldQc=sourceBalance.getCredit();
+//        BigDecimal oldQd=sourceBalance.getDebit();
+//
+//        BigDecimal oldTc=targetBalance.getCredit();
+//        BigDecimal oldTd=targetBalance.getDebit();
+//
+//
+////        if(Objects.equals(oldQc, BigDecimal.valueOf(0))){
+////            return "depoda yeterli ürün yok";
+////        }
+////        if(Objects.equals(oldQc, BigDecimal.valueOf(0))){
+////            return "depoda yeterli remainin ürün yok";
+////        }
+//        sourceBalance.setCredit(oldQc.subtract(balanceTransferDto.getTurnoverCreditAmount()));
+//        sourceBalance.setDebit(oldQd.subtract(balanceTransferDto.getTurnoverDebitAmount()));
+//
+//
+//        targetBalance.setCredit(oldTc.add(balanceTransferDto.getTurnoverCreditAmount()));
+//        targetBalance.setDebit(oldTd.add(balanceTransferDto.getTurnoverDebitAmount()));
+//        balanceService.savedb(sourceBalance);
+//        balanceService.savedb(targetBalance);
+//
+//
+//        BalanceTransfer balanceTransfer =new BalanceTransfer(
+//                sourceBalance,
+//                targetBalance,
+//                balanceTransferDto.getTurnoverDebitAmount(),
+//                balanceTransferDto.getTurnoverCreditAmount(),
+//                balanceTransferDto.getDate(),
+//                balanceTransferDto.getComment()
+//        );
+//
+//        balanceTransferRepository.save(balanceTransfer);
+//
+//        return "from :"+ sourceBalance.getClientID() + " to:"+targetBalance.getClientID()+ " transfer success";
+//    }
 
 }
