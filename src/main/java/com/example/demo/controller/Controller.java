@@ -181,6 +181,19 @@ public class Controller {
 //        }
 //
 //    }
+@GetMapping("/getBalanceTransferByPage")
+public ResponseEntity<List<BalanceTransfer>> getBalanceTransfers(@RequestParam(defaultValue = "0") int page,
+                                              @RequestParam(defaultValue = "10") int size) {
+    List<BalanceTransfer> balance = balanceTransferService.getAllBalanceTransfers(); // Tüm ürünleri getir
+
+    int startIndex = page * size;
+    int endIndex = Math.min(startIndex + size, balance.size());
+
+    // İstenen sayfadaki ürünleri al
+    List<BalanceTransfer> balances = balance.subList(startIndex, endIndex);
+
+    return new ResponseEntity<>(balances, HttpStatus.OK);
+}
 
 
     // Quantity ekleme

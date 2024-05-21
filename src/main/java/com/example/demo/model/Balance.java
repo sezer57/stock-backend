@@ -38,8 +38,6 @@ public class Balance {
     @Column(name = "Balance" , nullable = false)
     private BigDecimal balance;
 
-
-
     @Column(name = "comment" , nullable = false)
     private String comment;
 

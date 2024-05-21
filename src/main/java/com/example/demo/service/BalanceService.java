@@ -65,6 +65,7 @@ public class BalanceService {
 
     public boolean updateBalance(Long clientID, String paymentType, BigDecimal Value) {
         Balance balance = balanceRepository.findBalanceByClientID(clientID);
+        Client client = clientRepository.findClientByClientId(clientID);
         BigDecimal oldValue;
 
         oldValue = balance.getBalance();
@@ -106,14 +107,17 @@ public class BalanceService {
                 return false;
         }
         balanceRepository.save(balance);
-
+        String balanceType = "Purchase";
         BalanceTransfer balanceTransfer = new BalanceTransfer(
                 balance.getClientID(),
+                client.getName(),
+                client.getSurname(),
+                client.getCommercialTitle(),
                 balance.getBalance(),
                 Value,
                 paymentType,
                 currentDate,
-                balance.getComment()
+                balanceType
                 );
         balanceTransferRepository.save(balanceTransfer);
        // Payment p = new Payment(balance);
@@ -122,6 +126,7 @@ public class BalanceService {
     }
     public boolean updateBalance2(Long clientID, String paymentType, BigDecimal Value) {
         Balance balance = balanceRepository.findBalanceByClientID(clientID);
+        Client client = clientRepository.findClientByClientId(clientID);
         BigDecimal oldValue;
 
         oldValue = balance.getBalance();
@@ -164,13 +169,17 @@ public class BalanceService {
         }
         balanceRepository.save(balance);
         // Payment p = new Payment(balance);
+        String balanceType = "Sale";
         BalanceTransfer balanceTransfer = new BalanceTransfer(
                 balance.getClientID(),
+                client.getName(),
+                client.getSurname(),
+                client.getCommercialTitle(),
                 balance.getBalance(),
                 Value,
                 paymentType,
                 currentDate,
-                balance.getComment()
+                balanceType
         );
         balanceTransferRepository.save(balanceTransfer);
         return true;

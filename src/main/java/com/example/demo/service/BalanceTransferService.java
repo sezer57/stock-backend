@@ -3,6 +3,7 @@ package com.example.demo.service;
 import com.example.demo.Dto.BalanceTransferDto;
 import com.example.demo.model.Balance;
 import com.example.demo.model.BalanceTransfer;
+import com.example.demo.model.Stock;
 import com.example.demo.repository.BalanceTransferRepository;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 
 @Service
@@ -20,6 +22,10 @@ public class BalanceTransferService {
     public BalanceTransferService(BalanceTransferRepository balanceTransferRepository, BalanceService balanceService) {
         this.balanceTransferRepository = balanceTransferRepository;
         this.balanceService = balanceService;
+    }
+
+    public List<BalanceTransfer> getAllBalanceTransfers() {
+        return balanceTransferRepository.findAll();
     }
 
 //    public String transfer(BalanceTransferDto balanceTransferDto) {

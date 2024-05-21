@@ -23,6 +23,15 @@ public class BalanceTransfer {
     @JoinColumn(name = "clientId", nullable = false)
     private Long clientId;
 
+    @JoinColumn(name = "clientName", nullable = false)
+    private String clientName;
+
+    @JoinColumn(name = "clientSurname", nullable = false)
+    private String clientSurname;
+
+    @JoinColumn(name = "commericalTitle", nullable = false)
+    private String commericalTitle;
+
     @JoinColumn(name = "system", nullable = false)
     private BigDecimal balance;
 
@@ -39,12 +48,16 @@ public class BalanceTransfer {
     private String comment;
 
     public BalanceTransfer(){}
-    public BalanceTransfer(Long clientId, BigDecimal balance, BigDecimal amount, String paymentType, LocalDate date, String comment) {
+    public BalanceTransfer(Long clientId, String clientName, String clientSurname, String commericalTitle, BigDecimal balance, BigDecimal amount, String paymentType, LocalDate date, String comment) {
         this.clientId = clientId;
+        this.clientName = clientName;
+        this.clientSurname = clientSurname;
+        this.commericalTitle = commericalTitle;
         this.balance = balance;
         this.amount = amount;
         this.paymentType = paymentType;
         this.date = date;
         this.comment=comment;
     }
+
 }
