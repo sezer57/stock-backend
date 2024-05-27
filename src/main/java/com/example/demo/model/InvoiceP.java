@@ -31,14 +31,19 @@ public class InvoiceP {
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
+
+    @Column(name = "vat ", nullable = false)
+    private BigDecimal vat;
     public InvoiceP(){}
 
-    public InvoiceP(Stock stock, Integer quantity, BigDecimal price) {
+
+    public InvoiceP(Stock stock, Integer quantity, BigDecimal price,BigDecimal vat) {
 
         this.purchase = purchase;
         this.stock = stock;
         this.quantity = quantity;
         this.price = price;
+        this.vat =vat;
     }
 
 }

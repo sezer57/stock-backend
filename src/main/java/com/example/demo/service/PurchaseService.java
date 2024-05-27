@@ -7,6 +7,7 @@ import com.example.demo.repository.PurchaseRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +40,7 @@ public class PurchaseService {
         );
         List<Integer> quantities = purchase.getQuantity();
         List<BigDecimal> prices = purchase.getPrice();
+        BigDecimal vats = purchase.getVat();
         List<Long> stockCodes = purchase.getStockCode();
         BigDecimal totalPrice = BigDecimal.valueOf(0);
 
@@ -55,7 +57,7 @@ public class PurchaseService {
         List<InvoiceP> invoices = new ArrayList<>();
         for (int i = 0; i < stockCodes.size(); i++) {
             Stock stock = stockService.getstockjustid(stockCodes.get(i));
-            InvoiceP invoice = new InvoiceP(stock, quantities.get(i), prices.get(i));
+            InvoiceP invoice = new InvoiceP(stock, quantities.get(i), prices.get(i),vats);
             invoice.setPurchase(p); // Set the ExpenseInvoice object
             invoices.add(invoice);
         }
@@ -87,6 +89,9 @@ public class PurchaseService {
                 .collect(Collectors.toList()));
         dto.setPrice(purchases.getInvoices().stream()
                 .map(InvoiceP::getPrice) // Convert BigDecimal to String
+                .collect(Collectors.toList()));
+        dto.setVat(purchases.getInvoices().stream()
+                .map(InvoiceP::getVat) // Convert BigDecimal to String
                 .collect(Collectors.toList()));
         dto.setAutherized(purchases.getAutherized());
         dto.setQuantity(purchases.getInvoices().stream()

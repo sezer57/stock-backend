@@ -30,17 +30,18 @@ public class ExpenseInvoiceService {
       List<Long> stockCodes = expenseInvoice.getStockCodes();
       List<Integer> quantities = expenseInvoice.getQuantity();
       List<BigDecimal> prices = expenseInvoice.getPrice();
-      if(stockCodes.size()!=quantities.size()&&prices.size()!=quantities.size()&&stockCodes.size()!=prices.size()){
-          return "size error ";
-      }
+      BigDecimal vats = expenseInvoice.getVat();
+//      if(stockCodes.size()!=quantities.size()&&prices.size()!=quantities.size()&&stockCodes.size()!=prices.size()){
+//          return "size error ";
+//      }
       for (int i = 0; i < stockCodes.size(); i++) {
           Long stockCode = stockCodes.get(i);
           Integer quantity = quantities.get(i);
           BigDecimal price = prices.get(i);
-
-          if (!warehouseStockService.updateQuantityOut(stockCode, quantity)) {
-              return "not enough products in warehouse";
-          }
+          warehouseStockService.updateQuantityOut(stockCode, quantity);
+//          if (!warehouseStockService.updateQuantityOut(stockCode, quantity)) {
+//              return "not enough products in warehouse";
+//          }
 
 
           balanceService.updateBalanceToSale(expenseInvoice.getClientId(), price);
@@ -63,7 +64,7 @@ public class ExpenseInvoiceService {
       List<Invoice> invoices = new ArrayList<>();
       for (int i = 0; i < stockCodes.size(); i++) {
           Stock stock = stockService.getstockjustid(stockCodes.get(i));
-          Invoice invoice = new Invoice(stock, quantities.get(i), prices.get(i));
+          Invoice invoice = new Invoice(stock, quantities.get(i), prices.get(i),vats);
           invoice.setExpense(e); // Set the ExpenseInvoice object
           invoices.add(invoice);
       }
@@ -97,6 +98,9 @@ public class ExpenseInvoiceService {
                 .collect(Collectors.toList()));
         dto.setQuantity(expenseInvoice.getInvoices().stream()
                 .map(invoice -> invoice.getQuantity().toString()) // Convert Integer to String
+                .collect(Collectors.toList()));
+        dto.setVat(expenseInvoice.getInvoices().stream()
+                .map(invoice -> invoice.getVat().toString()) // Convert Integer to String
                 .collect(Collectors.toList()));
         dto.setDate(expenseInvoice.getDate());
         dto.setAutherized(expenseInvoice.getAutherized());

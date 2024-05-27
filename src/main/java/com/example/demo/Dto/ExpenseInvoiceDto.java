@@ -17,5 +17,6 @@ public class ExpenseInvoiceDto {
     private String autherized;
     private List<Long> stockCodes;
     private List<BigDecimal> price  ;
+    private BigDecimal vat  ;
     private LocalDate date;
 }

@@ -19,5 +19,6 @@ public class PurchaseDto {
     private Long clientId;
     private String autherized;
     private List<BigDecimal> price;
+    private BigDecimal vat;
     private LocalDate date;
 }

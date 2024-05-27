@@ -60,9 +60,9 @@ public class WarehouseStockService {
         WarehouseStock warehouseStock = warehouseStockRepository.findWarehouseStockByStockStockId(stockId);
         Integer oldQout=warehouseStock.getQuantityOut();
         Integer oldR=warehouseStock.getQuantityRemaining();
-        if(quantity_out>oldR){
-            return false;
-        }
+//        if(quantity_out>oldR){
+//            return false;
+//        }
         if(oldQout==null){
             oldQout=0;
         }
