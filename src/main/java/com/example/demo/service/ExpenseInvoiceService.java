@@ -7,9 +7,12 @@ import com.example.demo.repository.ExpenseInvoiceRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.lang.String.valueOf;
 
 @Service
 public class ExpenseInvoiceService {
@@ -30,21 +33,29 @@ public class ExpenseInvoiceService {
       List<Long> stockCodes = expenseInvoice.getStockCodes();
       List<Integer> quantities = expenseInvoice.getQuantity();
       List<BigDecimal> prices = expenseInvoice.getPrice();
-      BigDecimal vats = expenseInvoice.getVat();
+      double vats = expenseInvoice.getVat().doubleValue();
 //      if(stockCodes.size()!=quantities.size()&&prices.size()!=quantities.size()&&stockCodes.size()!=prices.size()){
 //          return "size error ";
 //      }
+      BigDecimal totalPrice = BigDecimal.valueOf(0);
+
       for (int i = 0; i < stockCodes.size(); i++) {
+
+
+          double price = prices.get(i).doubleValue();
+         // BigDecimal vatAmount = prices.get(i) * (1 + vatRate)
+
+          totalPrice = BigDecimal.valueOf(price * (1 + vats/100));
           Long stockCode = stockCodes.get(i);
           Integer quantity = quantities.get(i);
-          BigDecimal price = prices.get(i);
+
           warehouseStockService.updateQuantityOut(stockCode, quantity);
 //          if (!warehouseStockService.updateQuantityOut(stockCode, quantity)) {
 //              return "not enough products in warehouse";
 //          }
 
 
-          balanceService.updateBalanceToSale(expenseInvoice.getClientId(), price);
+          balanceService.updateBalanceToSale(expenseInvoice.getClientId(), totalPrice);
       }
       List<Stock> stocks = new ArrayList<>();
       for (Long stockCode : stockCodes) {
@@ -63,8 +74,9 @@ public class ExpenseInvoiceService {
 
       List<Invoice> invoices = new ArrayList<>();
       for (int i = 0; i < stockCodes.size(); i++) {
+          double price = prices.get(i).doubleValue();
           Stock stock = stockService.getstockjustid(stockCodes.get(i));
-          Invoice invoice = new Invoice(stock, quantities.get(i), prices.get(i),vats);
+          Invoice invoice = new Invoice(stock, quantities.get(i), BigDecimal.valueOf(price * (1 + vats/100)) ,vats);
           invoice.setExpense(e); // Set the ExpenseInvoice object
           invoices.add(invoice);
       }
@@ -100,7 +112,7 @@ public class ExpenseInvoiceService {
                 .map(invoice -> invoice.getQuantity().toString()) // Convert Integer to String
                 .collect(Collectors.toList()));
         dto.setVat(expenseInvoice.getInvoices().stream()
-                .map(invoice -> invoice.getVat().toString()) // Convert Integer to String
+                .map(Invoice::getVat) // Convert Integer to String
                 .collect(Collectors.toList()));
         dto.setDate(expenseInvoice.getDate());
         dto.setAutherized(expenseInvoice.getAutherized());

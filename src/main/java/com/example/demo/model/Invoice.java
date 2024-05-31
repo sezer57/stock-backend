@@ -33,10 +33,10 @@ public class Invoice {
     private BigDecimal price;
 
     @Column(name = "vat", nullable = false)
-    private BigDecimal vat;
+    private Double vat;
     public Invoice(){}
 
-    public Invoice(    Stock stock, Integer quantity, BigDecimal price,BigDecimal vat) {
+    public Invoice(    Stock stock, Integer quantity, BigDecimal price,Double vat) {
 
         this.expense = expense;
         this.stock = stock;
@@ -44,5 +44,6 @@ public class Invoice {
         this.price = price;
         this.vat = vat;
     }
+
 
 }

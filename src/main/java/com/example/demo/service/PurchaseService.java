@@ -8,9 +8,12 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.lang.String.valueOf;
 
 @Service
 public class PurchaseService {
@@ -40,15 +43,17 @@ public class PurchaseService {
         );
         List<Integer> quantities = purchase.getQuantity();
         List<BigDecimal> prices = purchase.getPrice();
-        BigDecimal vats = purchase.getVat();
+        double vats = purchase.getVat().doubleValue();
         List<Long> stockCodes = purchase.getStockCode();
         BigDecimal totalPrice = BigDecimal.valueOf(0);
 
         for (int i = 0; i < prices.size(); i++) {
+            double price = prices.get(i).doubleValue();
+            // BigDecimal vatAmount = prices.get(i) * (1 + vatRate)
 
-            totalPrice= totalPrice.add(prices.get(i));
-
+            totalPrice = BigDecimal.valueOf(price * (1 + vats/100));
         }
+
         for (int i = 0; i < stockCodes.size(); i++) {
 
             warehouseStockService.updateQuantityIn(stockCodes.get(i), quantities.get(i));
@@ -56,8 +61,9 @@ public class PurchaseService {
         }
         List<InvoiceP> invoices = new ArrayList<>();
         for (int i = 0; i < stockCodes.size(); i++) {
+            double price = prices.get(i).doubleValue();
             Stock stock = stockService.getstockjustid(stockCodes.get(i));
-            InvoiceP invoice = new InvoiceP(stock, quantities.get(i), prices.get(i),vats);
+            InvoiceP invoice = new InvoiceP(stock, quantities.get(i),BigDecimal.valueOf(price * (1 + vats/100)),vats);
             invoice.setPurchase(p); // Set the ExpenseInvoice object
             invoices.add(invoice);
         }
@@ -66,6 +72,7 @@ public class PurchaseService {
 
            Balance b = balanceService.findBalanceByClientID(purchase.getClientId());
             BigDecimal oldB=b.getBalance();
+
            b.setBalance(oldB.add(totalPrice));
         purchaseRepository.save(p);
         return true;
@@ -91,7 +98,7 @@ public class PurchaseService {
                 .map(InvoiceP::getPrice) // Convert BigDecimal to String
                 .collect(Collectors.toList()));
         dto.setVat(purchases.getInvoices().stream()
-                .map(InvoiceP::getVat) // Convert BigDecimal to String
+                .map(InvoiceP::getVat) // Convert Integer to String
                 .collect(Collectors.toList()));
         dto.setAutherized(purchases.getAutherized());
         dto.setQuantity(purchases.getInvoices().stream()
