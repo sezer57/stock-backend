@@ -55,7 +55,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
     public UserDetails userDetails(String username){
         Optional<UserInfo> userDetail = userDetailsService.findByName(username);
-        System.out.println(userDetail);
+     //   System.out.println(userDetail);
         return userDetail.map(UserInfoDetails::new)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found " + username));
     }

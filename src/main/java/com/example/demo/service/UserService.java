@@ -43,4 +43,43 @@ public class UserService implements UserDetailsService {
 
 
     }
+    public Optional<UserInfo> findByUsername(String username)  {
+
+        return repository.findByName(username);
+    }
+
+    public boolean setUsername(String username,String info1, String info2) {
+        Optional<UserInfo> s= repository.findByName(username);
+        if (s.isPresent()) {
+            UserInfo userInfo = s.get();
+            userInfo.setName(info1);
+            userInfo.setEmail(info2);
+            repository.save(userInfo);
+            return true; // E-posta başarıyla güncellendiğinde true döndürülür
+        } else {
+            return false; // Kullanıcı bulunamazsa false döndürülür
+        }
+
+    }
+    public boolean setPassword(String username, String info2) {
+        Optional<UserInfo> s= repository.findByName(username);
+        s.ifPresent(userInfo -> {
+            userInfo.setPassword(info2);
+            repository.save(userInfo);
+        });
+        return false;
+    }
+
+
+    public boolean deleteUser(String username) {
+        Optional<UserInfo> s= repository.findByName(username);
+        if (s.isPresent()){
+            UserInfo userInfo = s.get();
+            repository.deleteById((long) userInfo.getId());
+            return  true;
+        }
+        else{
+        return false;
+        }
+    }
 }

@@ -64,8 +64,7 @@ public class StockService {
                         stockRepository.save(newStock);
                         WarehouseStock warehouseStock = new WarehouseStock(warehouse, newStock);
                         warehouseStockRepository.save(warehouseStock);
-                        System.out.println(newStock.getRegistrationDate());
-                    }
+                                           }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                     // Sayısal değere dönüştürmede hata, işlem başarısız

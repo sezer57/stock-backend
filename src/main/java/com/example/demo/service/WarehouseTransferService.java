@@ -40,9 +40,7 @@ public class WarehouseTransferService {
         if(sourceWarehouseStock.getQuantityRemaining()<warehouseTransferDto.getQuantity()){
             return "hedef depoda yeterli ürün yok";
         }
-        System.out.println(oldQI);
-        System.out.println(oldQt);
-        System.out.println(oldQR);
+
         if(oldQI==0){
             return "depoda yeterli ürün yok";
         }

@@ -6,13 +6,13 @@ import com.example.demo.service.*;
 import com.example.demo.service.Jwt.JwtService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -36,13 +36,13 @@ public class Controller {
     private final BalanceService balanceService;
     private final PurchaseService purchaseService;
     private final ExpenseInvoiceService expenseInvoiceService;
-
+    private final UserService userService;
     private final InformationCodeService informationCodeService;
     public final BankAccountInfoService bankAccountInfoService;
     public final BalanceTransferService balanceTransferService;
     private final TransactionService transactionService;
     private final ReportService reportService;
-    public Controller(UserService service, JwtService jwtService, AuthenticationManager authenticationManager, StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService, ClientService clientService, ExpenseInvoiceService expenseInvoiceService, InformationCodeService informationCodeService, BankAccountInfoService bankAccountInfoService, BalanceService balanceService, PurchaseService purchaseService, BalanceTransferService balanceTransferService, TransactionService transactionService, ReportService reportService) {
+    public Controller(UserService service, JwtService jwtService, AuthenticationManager authenticationManager, StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService, ClientService clientService, ExpenseInvoiceService expenseInvoiceService, InformationCodeService informationCodeService, BankAccountInfoService bankAccountInfoService, BalanceService balanceService, PurchaseService purchaseService, UserService userService, BalanceTransferService balanceTransferService, TransactionService transactionService, ReportService reportService) {
         this.service = service;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
@@ -57,6 +57,7 @@ public class Controller {
         this.bankAccountInfoService = bankAccountInfoService;
         this.balanceService = balanceService;
         this.purchaseService = purchaseService;
+        this.userService = userService;
         this.balanceTransferService = balanceTransferService;
         this.transactionService = transactionService;
         this.reportService = reportService;
@@ -337,7 +338,7 @@ public ResponseEntity<List<BalanceTransfer>> getBalanceTransfers(@RequestParam(d
     //product delete
     @PostMapping("/productDelete")
     public ResponseEntity<Boolean> productDelete(@RequestBody DeleteDto deleteDto) {
-        System.out.println(deleteDto.getId());
+      //  System.out.println(deleteDto.getId());
         boolean transferResult = stockService.deleteStock(deleteDto);
 
         if (transferResult==true) {
@@ -550,7 +551,7 @@ public ResponseEntity<List<BalanceTransfer>> getBalanceTransfers(@RequestParam(d
     //sales oluşturma
     @PostMapping("/Sales")
     public ResponseEntity<String> addPurchase(@RequestBody ExpenseInvoiceDto expenseInvoiceDto) {
-        System.out.println(expenseInvoiceDto);
+      //  System.out.println(expenseInvoiceDto);
 
         String transferResult = expenseInvoiceService.addExpenseInvoice(expenseInvoiceDto);
 
@@ -637,6 +638,69 @@ public ResponseEntity<List<BalanceTransfer>> getBalanceTransfers(@RequestParam(d
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.ok(stocks);
+        }
+    }
+
+    @GetMapping("/getUserInfos")
+    public ResponseEntity<String> getUserInfos() {
+        String currentUsername = getCurrentUsername();
+        Optional<UserInfo> userInfoOptional = userService.findByUsername(currentUsername);
+
+        if (userInfoOptional.isPresent()) {
+            UserInfo userInfo = userInfoOptional.get();
+
+            String name = userInfo.getName();
+            String email = userInfo.getEmail();
+            String responseJson = "{\"name\":\"" + name + "\",\"email\":\"" + email + "\"}";
+            return ResponseEntity.ok(responseJson);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
+
+    @PostMapping("/editUsername")
+    public ResponseEntity<String> editUsername(@RequestBody UserInfoEditDto editUsernameRequest) {
+        String currentUsername = getCurrentUsername();
+        boolean result = userService.setUsername(currentUsername, editUsernameRequest.getInfo1(),editUsernameRequest.getInfo2());
+
+      //  System.out.println(result);
+        if (result) {
+            return ResponseEntity.ok("Username and Email updated successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
+
+
+
+    @PostMapping("/editPassword")
+    public ResponseEntity<String> editPassword(@RequestBody UserInfoEditDto editPasswordRequest) {
+        String currentUsername = getCurrentUsername();
+        boolean result = userService.setPassword(currentUsername, editPasswordRequest.getInfo2());
+        if (result) {
+            return ResponseEntity.ok("Password updated successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
+        }
+    }
+
+    @DeleteMapping("/deleteAccount")
+    public ResponseEntity<String> deleteAccount() {
+        String currentUsername = getCurrentUsername();
+        boolean result = userService.deleteUser(currentUsername);
+        if (result) {
+            return ResponseEntity.ok("User account deleted successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User account not found");
+        }
+    }
+    private String getCurrentUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        if (principal instanceof UserDetails) {
+            return ((UserDetails) principal).getUsername();
+        } else {
+            return principal.toString();
         }
     }
 

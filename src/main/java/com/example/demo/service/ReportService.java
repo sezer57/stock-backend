@@ -95,7 +95,7 @@ public class ReportService {
             Map<String, Object> expenseMap = new HashMap<>();
             expenseMap.put("clientId", client.getClientId());
             expenseMap.put("name", client.getName()+client.getSurname());
-            System.out.println(client.getName());
+        //    System.out.println(client.getName());
             expenseMap.put("address", client.getAddress());
             expenseMap.put("country", client.getCountry());
             expenseMap.put("city", client.getCity());
@@ -174,8 +174,10 @@ public class ReportService {
         for (ExpenseInvoice expense : expenseInvoices) {
             Map<String, Object> expenseMap = new HashMap<>();
             expenseMap.put("expense_id", expense.getExpenseId());
-       //     expenseMap.put("stockName", expense.getStockCode().getStockName());
-       //     expenseMap.put("warehouseName", expense.getStockCode().getWarehouse().getName());
+            expenseMap.put("stockName",expense.getInvoices().stream()
+                    .map(invoices -> invoices.getStock().getStockName().toString())
+                    .collect(Collectors.toList()));
+            expenseMap.put("warehouseName", expense.getInvoices().stream().map(invoice -> invoice.getStock().getWarehouse().getName()).collect(Collectors.toList()));
             expenseMap.put("clientName", expense.getClient().getName());
             expenseMap.put("quantity", expense.getInvoices().stream()
                     .map(invoice -> invoice.getQuantity().toString())
@@ -184,6 +186,7 @@ public class ReportService {
             expenseMap.put("price", expense.getInvoices().stream()
                             .map(invoice -> invoice.getPrice().toString()));
             expenseMap.put("date", expense.getDate());
+            expenseMap.put("autherized", expense.getAutherized());
             weekly.add(expenseMap);
         }
 
@@ -205,6 +208,7 @@ public class ReportService {
                     .map(InvoiceP::getPrice)
                     .collect(Collectors.toList()));
             expenseMap.put("date", invoice.getDate());
+            expenseMap.put("autherized", invoice.getAutherized());
             weekly.add(expenseMap);
         }
 
@@ -230,7 +234,7 @@ public class ReportService {
             Map<String, Object> expenseMap = new HashMap<>();
             expenseMap.put("clientId", client.getClientId());
             expenseMap.put("name", client.getName()+client.getSurname());
-            System.out.println(client.getName());
+          //  System.out.println(client.getName());
             expenseMap.put("address", client.getAddress());
             expenseMap.put("country", client.getCountry());
             expenseMap.put("city", client.getCity());
