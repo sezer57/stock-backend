@@ -11,6 +11,7 @@ import com.example.demo.repository.StockRepository;
 import com.example.demo.repository.WarehouseRepository;
 import com.example.demo.repository.WarehouseStockRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
@@ -79,11 +80,11 @@ public class StockService {
         return stockRepository.findAll();
     }
     public List<Stock> getStockWithIdProduct(Long warehouse_transfer_id) {
-        return  stockRepository.findStocksByWarehouse_WarehouseId(warehouse_transfer_id);
+        return  stockRepository.findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalse(warehouse_transfer_id);
     }
 
     public List<StockWarehouseDto> getStockWithId(Long warehouse_transfer_id) {
-        List<Stock> stocks =  stockRepository.findStocksByWarehouse_WarehouseId(warehouse_transfer_id);
+        List<Stock> stocks =  stockRepository.findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalse(warehouse_transfer_id);
         if (stocks.isEmpty()) {
             return Collections.emptyList(); // Return empty list if no results found
         } else {
@@ -122,10 +123,18 @@ public class StockService {
         return stockRepository.existsStocksByWarehouseWarehouseIdAndStockName(Long.valueOf(warehouseId.toString()), stockName);
     }
 
-    public boolean deleteStock(DeleteDto deleteDto) {
-        Stock s = stockRepository.findStockByStockId(deleteDto.getId());
-        stockRepository.deleteById(s.getStockId());
-        return true;
+   // public boolean deleteStock(DeleteDto deleteDto) {
+   //     Stock s = stockRepository.findStockByStockId(deleteDto.getId());
+   //     stockRepository.deleteById(s.getStockId());
+   //     return true;
+   // }
+
+    @Transactional
+    public boolean deleteStock(Long stockId) {
+        Stock stock = stockRepository.findStockByStockId(stockId);
+
+        stock.setDeleted(true);
+        stockRepository.save(stock);   return true;
     }
 
     public long getStockCode(){
@@ -135,5 +144,9 @@ public class StockService {
     public String getStocksRemainigById(Long warehouse_id) {
        return warehouseStockService.findByWarehouseStock_stockId(warehouse_id);
 
+    }
+
+    public List<Stock> findAllActiveStocks() {
+        return  stockRepository.findStocksByIsDeletedIsFalse();
     }
 }

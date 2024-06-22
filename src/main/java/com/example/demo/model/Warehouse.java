@@ -32,5 +32,6 @@ public class Warehouse {
     @Column(name = "user_authorities", nullable = false)
     private String userAuthorities;
 
-
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 }

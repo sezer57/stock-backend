@@ -23,11 +23,8 @@ import org.springframework.security.core.Authentication;
 public class Controller {
 
     private final UserService service;
-
     private final JwtService jwtService;
-
     private final AuthenticationManager authenticationManager;
-
     private final StockService stockService;
     private final WarehouseService warehouseService;
     private final WarehouseStockService warehouseStockService;
@@ -46,7 +43,6 @@ public class Controller {
         this.service = service;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
-
         this.stockService = stockService;
         this.warehouseService = warehouseService;
         this.warehouseStockService = warehouseStockService;
@@ -62,7 +58,6 @@ public class Controller {
         this.transactionService = transactionService;
         this.reportService = reportService;
     }
-
     //login
     //Authentication Endpoints
     @PostMapping("/addNewUser")
@@ -91,7 +86,6 @@ public class Controller {
     public long getClientCode() {
         return clientService.getClientCode();
     }
-
     // Stock ekleme
     @PostMapping("/stocks")
     public ResponseEntity<String> addStock(@RequestBody StockDto stock) {
@@ -101,12 +95,21 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Stock not add");
         }
     }
-
     // Warehouse ekleme
     @PostMapping("/warehouse")
     public ResponseEntity<String> addStock(@RequestBody Warehouse Warehouse) {
         warehouseService.addWarehouse(Warehouse);
         return ResponseEntity.ok("Stock added successfully");
+    }
+    //warehouse edit
+    @PutMapping("/warehouse/{warehouseId}")
+    public ResponseEntity<String> updateWarehouse(@PathVariable Long warehouseId,  @RequestBody WarehouseEditDto updatedWarehouse) {
+
+        if (warehouseService.updateWarehouse(warehouseId, updatedWarehouse)) {
+            return ResponseEntity.ok("warehouse updated successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update warehouse");
+        }
     }
 
     // Warehouse alma
@@ -115,10 +118,23 @@ public class Controller {
         List<Warehouse> Warehouse = warehouseService.getWarehouse();
         return ResponseEntity.ok(Warehouse) ;
     }
+    // warehouse silme
+    //client silme
+    @PostMapping("/deleteWarehouse")
+    public ResponseEntity<Boolean> deleteWarehouse(@RequestBody DeleteDto deleteDto) {
+        //  System.out.println(deleteDto.getId());
+        boolean transferResult = warehouseService.deleteWarehouse(deleteDto.getId());
 
+        if (transferResult==true) {
+            // Transfer başarılıysa
+            return ResponseEntity.status(HttpStatus.OK).body(transferResult);
+        } else {
+            // Transfer başarısızsa veya bir hata oluştuysa
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(transferResult);
+        }
+    }
 
     //client ekleme
-
     @PostMapping("/clients")
     public ResponseEntity<String> addClient(@RequestBody ClientDto client){
       if(clientService.addClient(client)){
@@ -127,6 +143,32 @@ public class Controller {
           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error of addition client");
       }
     }
+    // client düzenleme
+    @PutMapping("/clients/{clientId}")
+    public ResponseEntity<String> updateClient(@PathVariable Long clientId, @RequestBody ClientDto clientDto) {
+        if (clientService.updateClient(clientId, clientDto)) {
+            return ResponseEntity.ok("Client updated successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update client");
+        }
+    }
+    //client silme
+    @PostMapping("/clientDelete")
+    public ResponseEntity<Boolean> clientDelete(@RequestBody DeleteDto deleteDto) {
+        //  System.out.println(deleteDto.getId());
+        boolean transferResult = clientService.deleteClient(deleteDto.getId());
+
+        if (transferResult==true) {
+            // Transfer başarılıysa
+            return ResponseEntity.status(HttpStatus.OK).body(transferResult);
+        } else {
+            // Transfer başarısızsa veya bir hata oluştuysa
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(transferResult);
+        }
+    }
+
+
+
     //transactionEkleme
     @PostMapping("/transactions")
     public ResponseEntity<String> addTransaction(@RequestBody TransactionDto transaction){
@@ -136,8 +178,6 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error of addition Transaction");
         }
     }
-
-
     //InformationCode sorguları
     @PostMapping("/information-codes")
     public ResponseEntity<String> addInformationCode(@RequestBody InformationCodeDto informationCodeDto) {
@@ -147,7 +187,6 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error updating InformationCode");
         }
     }
-
     //Add bank Account Info
     @PostMapping("/bankAccountInfos")
     public ResponseEntity<String> addBankAccountInfo (@RequestBody BankAccountInfoDto bankAccountInfo){
@@ -157,18 +196,15 @@ public class Controller {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bank account infos error");
             }
     }
-
     //Add balance
     @PostMapping("/balances")
     public ResponseEntity<String> addBalance(@RequestBody BalanceDto balance,@RequestParam("name") String name){
         if(balanceService.addBalance(balance,name)){
-
             return ResponseEntity.ok( "Balance succeed");
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Balance error");
         }
     }
-
 //    @PostMapping("/balance/transfer")
 //    public ResponseEntity<String> balancetransfer(@RequestBody BalanceTransferDto balanceTransferDto) {
 //        String transferResult = balanceTransferService.transfer(balanceTransferDto);
@@ -182,21 +218,19 @@ public class Controller {
 //        }
 //
 //    }
-@GetMapping("/getBalanceTransferByPage")
-public ResponseEntity<List<BalanceTransfer>> getBalanceTransfers(@RequestParam(defaultValue = "0") int page,
-                                              @RequestParam(defaultValue = "10") int size) {
-    List<BalanceTransfer> balance = balanceTransferService.getAllBalanceTransfers(); // Tüm ürünleri getir
+    @GetMapping("/getBalanceTransferByPage")
+    public ResponseEntity<List<BalanceTransfer>> getBalanceTransfers(@RequestParam(defaultValue = "0") int page,
+                                                  @RequestParam(defaultValue = "10") int size) {
+        List<BalanceTransfer> balance = balanceTransferService.getAllBalanceTransfers(); // Tüm ürünleri getir
 
-    int startIndex = page * size;
-    int endIndex = Math.min(startIndex + size, balance.size());
+        int startIndex = page * size;
+        int endIndex = Math.min(startIndex + size, balance.size());
 
-    // İstenen sayfadaki ürünleri al
-    List<BalanceTransfer> balances = balance.subList(startIndex, endIndex);
+        // İstenen sayfadaki ürünleri al
+        List<BalanceTransfer> balances = balance.subList(startIndex, endIndex);
 
-    return new ResponseEntity<>(balances, HttpStatus.OK);
-}
-
-
+        return new ResponseEntity<>(balances, HttpStatus.OK);
+    }
     // Quantity ekleme
     @PatchMapping("/{stockId}/updateQuantityIn")
     public ResponseEntity<String> updateQuantityIn(@PathVariable Long stockId, @RequestParam Integer quantityIn) {
@@ -237,7 +271,7 @@ public ResponseEntity<List<BalanceTransfer>> getBalanceTransfers(@RequestParam(d
     // bütün stocklar alma
     @GetMapping("/getStocks")
     public ResponseEntity<List<Stock>> getAllStocks() {
-        List<Stock> stocks = stockService.getAllStocks();
+        List<Stock> stocks = stockService.findAllActiveStocks();
 
         if (stocks.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -248,7 +282,7 @@ public ResponseEntity<List<BalanceTransfer>> getBalanceTransfers(@RequestParam(d
     @GetMapping("/getStocksByPage")
     public ResponseEntity<List<Stock>> getUrunler(@RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "10") int size) {
-        List<Stock> urunler = stockService.getAllStocks(); // Tüm ürünleri getir
+        List<Stock> urunler = stockService.findAllActiveStocks(); // Tüm ürünleri getir
 
         int startIndex = page * size;
         int endIndex = Math.min(startIndex + size, urunler.size());
@@ -339,7 +373,7 @@ public ResponseEntity<List<BalanceTransfer>> getBalanceTransfers(@RequestParam(d
     @PostMapping("/productDelete")
     public ResponseEntity<Boolean> productDelete(@RequestBody DeleteDto deleteDto) {
       //  System.out.println(deleteDto.getId());
-        boolean transferResult = stockService.deleteStock(deleteDto);
+        boolean transferResult = stockService.deleteStock(deleteDto.getId());
 
         if (transferResult==true) {
             // Transfer başarılıysa
@@ -405,7 +439,6 @@ public ResponseEntity<List<BalanceTransfer>> getBalanceTransfers(@RequestParam(d
 
         return new ResponseEntity<>(invoices, HttpStatus.OK);
     }
-
     @GetMapping("getClientByName")
     public ResponseEntity<Client> findClientByName(@RequestParam("name") String name){
         Client clients = clientService.getClientWithName(name);
@@ -577,9 +610,7 @@ public ResponseEntity<List<BalanceTransfer>> getBalanceTransfers(@RequestParam(d
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(transferResult);
         }
     }
-
     // get waiting warehouse transfer
-
     @GetMapping("/warehouseStock/get_waiting_transfer")
     public ResponseEntity<List<Map<String, String>>>getwaitngtransfer(){
         List<WarehouseTransfer> warehouseTransfers = warehouseTransferService.getallwaitingtransfer();
@@ -596,7 +627,6 @@ public ResponseEntity<List<BalanceTransfer>> getBalanceTransfers(@RequestParam(d
         }
         return ResponseEntity.ok(transferNames);
     }
-
     // approvelStatus change
     @PatchMapping("/{warehouse_transfer_id}/approvelStatus")
     public ResponseEntity<String> change_approvelStatus(@PathVariable Long warehouse_transfer_id, @RequestParam String status) {
@@ -612,23 +642,18 @@ public ResponseEntity<List<BalanceTransfer>> getBalanceTransfers(@RequestParam(d
             return ResponseEntity.badRequest().body("yanlış değer");
 
     }
-
     @GetMapping("/getDailyExpenses")
     public List<Object> getDailyExpenses(@RequestParam("date") LocalDate date) {
         return reportService.getDailyExpenses(date);
     }
-
     @GetMapping("/getWeeklyPurchaseInvoices")
     public List<Object> getWeeklyPurchaseInvoices(@RequestParam("startDate") LocalDate startDate, @RequestParam("endDate") LocalDate endDate) {
         return reportService.getWeeklyPurchaseInvoices(startDate,endDate);
     }
-
-
     @GetMapping("/getStockCode")
     public long getStockCode() {
         return stockService.getStockCode();
     }
-
     //  stocklar  sales remaining
     @GetMapping("/getStocksRemainigById")
     public ResponseEntity<String> getStocksRemainigById(@RequestParam("stock_id") Long warehouse_id) {
@@ -640,7 +665,6 @@ public ResponseEntity<List<BalanceTransfer>> getBalanceTransfers(@RequestParam(d
             return ResponseEntity.ok(stocks);
         }
     }
-
     @GetMapping("/getUserInfos")
     public ResponseEntity<String> getUserInfos() {
         String currentUsername = getCurrentUsername();
@@ -657,7 +681,6 @@ public ResponseEntity<List<BalanceTransfer>> getBalanceTransfers(@RequestParam(d
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
     }
-
     @PostMapping("/editUsername")
     public ResponseEntity<String> editUsername(@RequestBody UserInfoEditDto editUsernameRequest) {
         String currentUsername = getCurrentUsername();
@@ -670,9 +693,6 @@ public ResponseEntity<List<BalanceTransfer>> getBalanceTransfers(@RequestParam(d
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
     }
-
-
-
     @PostMapping("/editPassword")
     public ResponseEntity<String> editPassword(@RequestBody UserInfoEditDto editPasswordRequest) {
         String currentUsername = getCurrentUsername();
@@ -694,6 +714,9 @@ public ResponseEntity<List<BalanceTransfer>> getBalanceTransfers(@RequestParam(d
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User account not found");
         }
     }
+
+
+
     private String getCurrentUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Object principal = authentication.getPrincipal();
@@ -703,5 +726,4 @@ public ResponseEntity<List<BalanceTransfer>> getBalanceTransfers(@RequestParam(d
             return principal.toString();
         }
     }
-
 }

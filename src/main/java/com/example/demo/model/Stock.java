@@ -1,6 +1,6 @@
 package com.example.demo.model;
 
-import  jakarta.persistence.*;
+import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -50,18 +50,22 @@ public class Stock {
     @JoinColumn(name = "warehouse_id", nullable = false)
     private Warehouse warehouse;
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
     public Stock() {}
 
-    public Stock(String unit, String stockCode, String stockName, String groupName, String middleGroupName, String barcode, BigDecimal salesPrice, Warehouse p,BigDecimal purchasePrice,LocalDate registrationDate) {
-        this.unit=unit;
-        this.stockCode=stockCode;
-        this.stockName=stockName;
-        this.groupName=groupName;
-        this.middleGroupName=middleGroupName;
-        this.barcode=barcode;
-        this.salesPrice=salesPrice;
-        this.warehouse=p;
-        this.purchasePrice=purchasePrice;
-        this.registrationDate=registrationDate;
+    public Stock(String unit, String stockCode, String stockName, String groupName, String middleGroupName, String barcode, BigDecimal salesPrice, Warehouse p, BigDecimal purchasePrice, LocalDate registrationDate) {
+        this.unit = unit;
+        this.stockCode = stockCode;
+        this.stockName = stockName;
+        this.groupName = groupName;
+        this.middleGroupName = middleGroupName;
+        this.barcode = barcode;
+        this.salesPrice = salesPrice;
+        this.warehouse = p;
+        this.purchasePrice = purchasePrice;
+        this.registrationDate = registrationDate;
+        this.isDeleted = false;
     }
 }

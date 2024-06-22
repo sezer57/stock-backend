@@ -140,7 +140,8 @@ public class WarehouseStockService {
 
     }
     public List<WarehouseStock> getAllWarehouseStock() {
-        return warehouseStockRepository.findAll();
+        // 1.1 return warehouseStockRepository.findAll();
+        return  warehouseStockRepository.findAllActiveStocks();
     }
     public List<WarehouseStock> getWithIdWarehouseStock(Long warehouse_id) {
         return (List<WarehouseStock>) warehouseStockRepository.findWarehouseStockByWarehouseStockId(warehouse_id);

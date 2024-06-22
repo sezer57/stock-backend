@@ -51,6 +51,9 @@ public class  Client {
     @Column(name = "registrationDate" , nullable = false)
     private LocalDate registrationDate;
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
     public Client() {}
 
     public Client(String clientCode,String commercialTitle,String name,String surname,String address,String country,String city,String phone,String gsm,LocalDate registrationDate) {
@@ -64,6 +67,7 @@ public class  Client {
         this.phone=phone;
         this.gsm=gsm;
         this.registrationDate=registrationDate;
+        this.isDeleted = false;
     }
 
 
