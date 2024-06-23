@@ -46,12 +46,17 @@ public class PurchaseService {
         double vats = purchase.getVat().doubleValue();
         List<Long> stockCodes = purchase.getStockCode();
         BigDecimal totalPrice = BigDecimal.valueOf(0);
+        Balance b = balanceService.findBalanceByClientID(purchase.getClientId());
 
         for (int i = 0; i < prices.size(); i++) {
             double price = prices.get(i).doubleValue();
             // BigDecimal vatAmount = prices.get(i) * (1 + vatRate)
 
             totalPrice = BigDecimal.valueOf(price * (1 + vats/100));
+           BigDecimal oldB=b.getBalance();
+
+            b.setBalance(oldB.add(totalPrice));
+
         }
 
         for (int i = 0; i < stockCodes.size(); i++) {
@@ -70,10 +75,7 @@ public class PurchaseService {
         p.setInvoices(invoices);
 
 
-           Balance b = balanceService.findBalanceByClientID(purchase.getClientId());
-            BigDecimal oldB=b.getBalance();
 
-           b.setBalance(oldB.add(totalPrice));
         purchaseRepository.save(p);
         return true;
     }
