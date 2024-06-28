@@ -10,6 +10,8 @@ import com.example.demo.model.WarehouseStock;
 import com.example.demo.repository.StockRepository;
 import com.example.demo.repository.WarehouseRepository;
 import com.example.demo.repository.WarehouseStockRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -146,7 +148,11 @@ public class StockService {
 
     }
 
-    public List<Stock> findAllActiveStocks() {
-        return  stockRepository.findStocksByIsDeletedIsFalse();
+    public Page<Stock> findAllActiveStocks(Pageable pageable) {
+        return  stockRepository.findStocksByIsDeletedIsFalse(pageable);
+    }
+
+    public Page<Stock> searchItems(String keyword, Pageable pageable) {
+        return stockRepository.findStocksByStockNameContainingAndIsDeletedIsFalse(keyword, pageable);
     }
 }

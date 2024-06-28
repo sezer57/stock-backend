@@ -5,6 +5,8 @@ import com.example.demo.model.Balance;
 import com.example.demo.model.Client;
 import com.example.demo.model.Stock;
 import com.example.demo.repository.ClientRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,8 +35,8 @@ public class ClientService {
     public Client getClientWithId(Long id){
         return clientRepository.findClientByClientId(id);
     }
-    public List<Client> getAllClients(){
-        return clientRepository.findClientByIsDeletedIsFalse();
+    public Page<Client> getAllClients(Pageable pageable){
+        return clientRepository.findClientByIsDeletedIsFalse(pageable);
     }
 
 
@@ -81,5 +83,10 @@ public class ClientService {
 
         client.setDeleted(true);
         clientRepository.save(client);   return true;
+    }
+
+    public Page<Client> searchItems(String keyword, Pageable pageable) {
+        return clientRepository.findClientsByNameContainingOrSurnameContainingAndIsDeletedIsFalse(keyword,keyword ,  pageable);
+
     }
 }

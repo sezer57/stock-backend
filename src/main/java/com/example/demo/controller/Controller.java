@@ -4,6 +4,10 @@ import com.example.demo.Dto.*;
 import com.example.demo.model.*;
 import com.example.demo.service.*;
 import com.example.demo.service.Jwt.JwtService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -268,29 +272,49 @@ public class Controller {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hata updateQuantityOut:" + stockId);
     }
 
-    // bütün stocklar alma
-    @GetMapping("/getStocks")
-    public ResponseEntity<List<Stock>> getAllStocks() {
-        List<Stock> stocks = stockService.findAllActiveStocks();
-
-        if (stocks.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(stocks);
-        }
-    }
+    // bütün stocklar alma şuan gereksiz gibi
+//    @GetMapping("/getStocks")
+//    public ResponseEntity<List<Stock>> getAllStocks() {
+//        List<Stock> stocks = stockService.findAllActiveStocks();
+//
+//        if (stocks.isEmpty()) {
+//            return ResponseEntity.noContent().build();
+//        } else {
+//            return ResponseEntity.ok(stocks);
+//        }
+//    }
+//    @GetMapping("/getStocksByPage")
+//    public ResponseEntity<List<Stock>> getUrunler(@RequestParam(defaultValue = "0") int page,
+//                                                  @RequestParam(defaultValue = "10") int size) {
+//        List<Stock> urunler = stockService.findAllActiveStocks(); // Tüm ürünleri getir
+//
+//        int startIndex = page * size;
+//        int endIndex = Math.min(startIndex + size, urunler.size());
+//
+//        // İstenen sayfadaki ürünleri al
+//        List<Stock> istenenUrunler = urunler.subList(startIndex, endIndex);
+//
+//        return new ResponseEntity<>(istenenUrunler, HttpStatus.OK);
+//    }  yeniii
     @GetMapping("/getStocksByPage")
-    public ResponseEntity<List<Stock>> getUrunler(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<Page<Stock>> getUrunler(@RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "10") int size) {
-        List<Stock> urunler = stockService.findAllActiveStocks(); // Tüm ürünleri getir
 
-        int startIndex = page * size;
-        int endIndex = Math.min(startIndex + size, urunler.size());
 
-        // İstenen sayfadaki ürünleri al
-        List<Stock> istenenUrunler = urunler.subList(startIndex, endIndex);
-
-        return new ResponseEntity<>(istenenUrunler, HttpStatus.OK);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("stockName").ascending());
+        Page<Stock> urunler = stockService.findAllActiveStocks(pageable);
+      //  System.out.println(urunler);
+        return new ResponseEntity<>(urunler, HttpStatus.OK);
+    }
+    @GetMapping("/getStocksBySearch")
+    public ResponseEntity<Page<Stock>> getUrunler(
+            @RequestParam("keyword") String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("stockName").ascending());
+        Page<Stock> urunler = stockService.searchItems(keyword, pageable);
+        System.out.println(urunler);
+        return new ResponseEntity<>(urunler, HttpStatus.OK);
     }
 
     //  stocklar alma warehouse transfer için yapılan sadece id ve isim
@@ -473,29 +497,36 @@ public class Controller {
 
 
     // get all Clients
-    @GetMapping("/getClients")
-    public ResponseEntity<List<Client>> getAllClients() {
-        List<Client> clients = clientService.getAllClients();
-
-        if (clients.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(clients);
-        }
-    }
+//    @GetMapping("/getClients")
+//    public ResponseEntity<List<Client>> getAllClients() {
+//        List<Client> clients = clientService.getAllClients();
+//
+//        if (clients.isEmpty()) {
+//            return ResponseEntity.noContent().build();
+//        } else {
+//            return ResponseEntity.ok(clients);
+//        }
+//    }
     @GetMapping("getClientsByPage")
-    public ResponseEntity<List<Client>> getClientsByPage(@RequestParam(defaultValue = "0") int page,
+    public ResponseEntity<Page<Client>> getClientsByPage(@RequestParam(defaultValue = "0") int page,
                                                                  @RequestParam(defaultValue = "10") int size) {
-        List<Client> client = clientService.getAllClients(); // Tüm ürünleri getir
 
-        int startIndex = page * size;
-        int endIndex = Math.min(startIndex + size, client.size());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("Name").ascending());
+        Page<Client> client = clientService.getAllClients(pageable);
 
-        // İstenen sayfadaki ürünleri al
-        List<Client> clients = client.subList(startIndex, endIndex);
-
-        return new ResponseEntity<>(clients, HttpStatus.OK);
+        return new ResponseEntity<>(client, HttpStatus.OK);
     }
+    @GetMapping("/getClientsBySearch")
+    public ResponseEntity<Page<Client>> getclientssearch(
+            @RequestParam("keyword") String keyword,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("Name").ascending());
+        Page<Client> urunler = clientService.searchItems(keyword, pageable);
+        System.out.println(urunler);
+        return new ResponseEntity<>(urunler, HttpStatus.OK);
+    }
+
     //Transaction Alma
     @GetMapping("getTransactions")
     public ResponseEntity<List<Transaction>> getAllTransactions(){
