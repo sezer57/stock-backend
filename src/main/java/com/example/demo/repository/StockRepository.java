@@ -14,13 +14,15 @@ import java.util.List;
 public interface StockRepository extends JpaRepository<Stock,Long> {
     boolean existsStocksByWarehouseWarehouseIdAndStockName(Long warehouseId, String stockName);
     Stock findStockByStockId(Long id);
-    List<Stock> findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalse(Long warehouseId) ;
+    Page<Stock> findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalse(Long warehouseId,Pageable pageable) ;
     List<Stock> getStocksByRegistrationDate(LocalDate date);
     List<Stock> getStocksByRegistrationDateBetween(LocalDate startDate, LocalDate endDate);
-
+    List<Stock> findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalse(Long warehouseId);
    // @Query("SELECT s FROM Stock s WHERE s.isDeleted = false")
   //  List<Stock> findAllActiveStocks();
   //  List<Stock> findStocksByIsDeletedIsFalse();
    Page<Stock> findStocksByIsDeletedIsFalse(Pageable pageable);
     Page<Stock> findStocksByStockNameContainingAndIsDeletedIsFalse(String stockName, Pageable pageable);
+
+    Page<Stock> findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalseAndStockNameContaining(Long warehouseId, Pageable pageable,String stockName);
 }

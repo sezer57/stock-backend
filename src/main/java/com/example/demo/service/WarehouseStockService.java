@@ -6,6 +6,8 @@ import com.example.demo.Dto.StockWarehouseUpdateDto;
 import com.example.demo.model.InformationCode;
 import com.example.demo.model.WarehouseStock;
 import com.example.demo.repository.WarehouseStockRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -139,9 +141,9 @@ public class WarehouseStockService {
         return true;
 
     }
-    public List<WarehouseStock> getAllWarehouseStock() {
+    public Page<WarehouseStock> getAllWarehouseStock(Pageable pageable) {
         // 1.1 return warehouseStockRepository.findAll();
-        return  warehouseStockRepository.findAllActiveStocks();
+        return  warehouseStockRepository.findAllActiveStocks(pageable);
     }
     public List<WarehouseStock> getWithIdWarehouseStock(Long warehouse_id) {
         return (List<WarehouseStock>) warehouseStockRepository.findWarehouseStockByWarehouseStockId(warehouse_id);
@@ -159,4 +161,14 @@ public class WarehouseStockService {
     public void savedb(WarehouseStock warehouseStock){
         warehouseStockRepository.save(warehouseStock);
     }
+
+    public Page<WarehouseStock> searchItems(String keyword, Pageable pageable) {
+        return warehouseStockRepository.findWarehouseStockByStockStockNameContainingAndStockIsDeletedIsFalse(keyword, pageable);
+
+    }
+    public Page<WarehouseStock> searchItemsW(String keyword,String warehouse, Pageable pageable) {
+        return warehouseStockRepository.findWarehouseStockByStockStockNameContainingAndWarehouseNameContainingAndStockIsDeletedIsFalse(keyword,warehouse, pageable);
+
+    }
+
 }

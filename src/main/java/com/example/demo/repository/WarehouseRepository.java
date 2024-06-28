@@ -11,4 +11,5 @@ public interface WarehouseRepository  extends JpaRepository<Warehouse,Long> {
     Warehouse findWarehouseByWarehouseId(Long id);
     Optional<Warehouse> findWarehouseByWarehouseIdAndIsDeletedFalse(Long id);
     List<Warehouse> findWarehouseByIsDeletedFalse();
+
 }

@@ -81,8 +81,8 @@ public class StockService {
     public List<Stock> getAllStocks() {
         return stockRepository.findAll();
     }
-    public List<Stock> getStockWithIdProduct(Long warehouse_transfer_id) {
-        return  stockRepository.findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalse(warehouse_transfer_id);
+    public Page<Stock> getStockWithIdProduct(Long warehouse_transfer_id,Pageable pageable) {
+        return  stockRepository.findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalse(warehouse_transfer_id,pageable);
     }
 
     public List<StockWarehouseDto> getStockWithId(Long warehouse_transfer_id) {
@@ -154,5 +154,10 @@ public class StockService {
 
     public Page<Stock> searchItems(String keyword, Pageable pageable) {
         return stockRepository.findStocksByStockNameContainingAndIsDeletedIsFalse(keyword, pageable);
+    }
+
+    public Page<Stock> searchItemswithid(Long warehouse_id, Pageable pageable, String keyword) {
+      return  stockRepository.findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalseAndStockNameContaining(warehouse_id,pageable,keyword);
+
     }
 }

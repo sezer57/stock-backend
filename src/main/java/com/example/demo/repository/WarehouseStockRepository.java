@@ -2,6 +2,8 @@ package com.example.demo.repository;
 
 import com.example.demo.model.Stock;
 import com.example.demo.model.WarehouseStock;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -27,6 +29,7 @@ public interface WarehouseStockRepository extends JpaRepository<WarehouseStock,L
     @Query("SELECT ws FROM WarehouseStock ws WHERE ws.warehouseStockId = :warehouseStockId AND ws.stock.isDeleted = false")
     WarehouseStock findWarehouseStockByWarehouseStockId(@Param("warehouseStockId") Long warehouseStockId);
     @Query("SELECT s FROM WarehouseStock s WHERE s.stock.isDeleted = false")
-    List<WarehouseStock> findAllActiveStocks();
-
+    Page<WarehouseStock> findAllActiveStocks(Pageable pageable);
+    Page<WarehouseStock> findWarehouseStockByStockStockNameContainingAndWarehouseNameContainingAndStockIsDeletedIsFalse(String keyword,String warehouseName, Pageable pageable);
+    Page<WarehouseStock> findWarehouseStockByStockStockNameContainingAndStockIsDeletedIsFalse(String keyword, Pageable pageable);
 }

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class WarehouseService {
@@ -52,6 +53,11 @@ public class WarehouseService {
 
         warehouse.setDeleted(true);
         warehouseRepository.save(warehouse);   return true;
+    }
+    public List<String> getWarehouseNames(){
+        List<Warehouse> warehouses = warehouseRepository.findWarehouseByIsDeletedFalse();
+        return warehouses.stream()
+                .map(Warehouse::getName).collect(Collectors.toList());
     }
 
 }
