@@ -4,6 +4,9 @@ import com.example.demo.Dto.ExpenseInvoiceDto;
 import com.example.demo.Dto.ExpenseInvoiceDto2;
 import com.example.demo.model.*;
 import com.example.demo.repository.ExpenseInvoiceRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -89,11 +92,14 @@ public class ExpenseInvoiceService {
     }
 
 
-    public List<ExpenseInvoiceDto2> getAllExpenseInvoice() {
-        List<ExpenseInvoice> expenseInvoices = expenseInvoiceRepository.findAll();
-        return expenseInvoices.stream()
+
+    public Page<ExpenseInvoiceDto2> getAllExpenseInvoice(Pageable pageable,String keyword) {
+        Page<ExpenseInvoice> expenseInvoices = expenseInvoiceRepository.findWithNS(keyword,pageable);
+        List<ExpenseInvoiceDto2> expenseInvoiceDtos = expenseInvoices.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+
+        return new PageImpl<>(expenseInvoiceDtos, pageable, expenseInvoices.getTotalElements());
     }
 
     private ExpenseInvoiceDto2 convertToDTO(ExpenseInvoice expenseInvoice) {
@@ -116,7 +122,7 @@ public class ExpenseInvoiceService {
                 .collect(Collectors.toList()));
         dto.setDate(expenseInvoice.getDate());
         dto.setAutherized(expenseInvoice.getAutherized());
-        dto.setClientName(expenseInvoice.getClient().getName()+" "+expenseInvoice.getClient().getSurname());
+        dto.setClientName(expenseInvoice.getClient().getName() + " " + expenseInvoice.getClient().getSurname());
         dto.setClientAdress(expenseInvoice.getClient().getAddress());
         dto.setClientPhone(expenseInvoice.getClient().getPhone());
         return dto;

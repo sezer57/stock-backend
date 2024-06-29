@@ -1,9 +1,13 @@
 package com.example.demo.service;
 
+import com.example.demo.Dto.ExpenseInvoiceDto2;
 import com.example.demo.Dto.PurchaseDto;
 import com.example.demo.Dto.PurchaseDto2;
 import com.example.demo.model.*;
 import com.example.demo.repository.PurchaseRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -118,6 +122,27 @@ public class PurchaseService {
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
+    public Page<PurchaseDto2> getPurchaseWithIdAndPages(Pageable pageable,String keyword,Long id) {
+
+        Page<PurchaseInvoice> purchaseInvoices = purchaseRepository.findPurchaseInvoicesByClientId_ClientId(id,pageable);
+        List<PurchaseDto2> purchaseDto2s=purchaseInvoices.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(purchaseDto2s, pageable, purchaseInvoices.getTotalElements());
 
 
+    }
+
+
+
+
+    public Page<PurchaseDto2> getAllPurchasesInvoices(Pageable pageable, String keyword) {
+        Page<PurchaseInvoice> purchaseInvoices = purchaseRepository.findWithNS(keyword,pageable);
+        List<PurchaseDto2> purchaseInvoicesDtos = purchaseInvoices.stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+        return new PageImpl<>(purchaseInvoicesDtos, pageable, purchaseInvoices.getTotalElements());
+
+    }
 }

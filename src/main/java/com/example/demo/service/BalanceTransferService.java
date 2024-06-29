@@ -5,6 +5,8 @@ import com.example.demo.model.Balance;
 import com.example.demo.model.BalanceTransfer;
 import com.example.demo.model.Stock;
 import com.example.demo.repository.BalanceTransferRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -24,8 +26,9 @@ public class BalanceTransferService {
         this.balanceService = balanceService;
     }
 
-    public List<BalanceTransfer> getAllBalanceTransfers() {
-        return balanceTransferRepository.findAll();
+    public Page<BalanceTransfer> getAllBalanceTransfers(Pageable pageable, String keyword) {
+
+        return balanceTransferRepository.findByKeyword(keyword,pageable);
     }
 
 //    public String transfer(BalanceTransferDto balanceTransferDto) {

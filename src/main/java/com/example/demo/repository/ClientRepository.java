@@ -6,6 +6,7 @@ import com.example.demo.model.Stock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -17,5 +18,7 @@ public interface ClientRepository extends JpaRepository<Client,Long> {
     List<Client> getClientsByRegistrationDate(LocalDate date);
     List<Client> getClientsByRegistrationDateBetween(LocalDate startDate, LocalDate endDate);
 
-    Page<Client> findClientsByNameContainingOrSurnameContainingAndIsDeletedIsFalse(String Name,String Surname, Pageable pageable);
+    @Query("SELECT c FROM Client c WHERE LOWER(CONCAT(c.name, ' ', c.surname)) LIKE LOWER(CONCAT('%', :keyword, '%')) AND c.isDeleted = false")
+    Page<Client> findsClientNameSurnameAndDeleted(String keyword,  Pageable pageable);
+    //Page<Client> findClientsByNameContainingOrSurnameContainingAndIsDeletedIsFalse(String Name,String Surname, Pageable pageable);
 }

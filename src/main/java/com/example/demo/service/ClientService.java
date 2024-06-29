@@ -86,7 +86,7 @@ public class ClientService {
     }
 
     public Page<Client> searchItems(String keyword, Pageable pageable) {
-        return clientRepository.findClientsByNameContainingOrSurnameContainingAndIsDeletedIsFalse(keyword,keyword ,  pageable);
+        return clientRepository.findsClientNameSurnameAndDeleted(keyword ,  pageable);
 
     }
 }

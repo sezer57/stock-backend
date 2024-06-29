@@ -119,7 +119,7 @@ public class Controller {
     public ResponseEntity<List<String>> getWarehouseName() {
 
         List<String> Warehouse = warehouseService.getWarehouseNames();
-        System.out.println(Warehouse);
+      //  System.out.println(Warehouse);
         return ResponseEntity.ok(Warehouse) ;
     }
     // Warehouse alma
@@ -229,17 +229,16 @@ public class Controller {
 //
 //    }
     @GetMapping("/getBalanceTransferByPage")
-    public ResponseEntity<List<BalanceTransfer>> getBalanceTransfers(@RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "10") int size) {
-        List<BalanceTransfer> balance = balanceTransferService.getAllBalanceTransfers(); // Tüm ürünleri getir
+    public ResponseEntity<Page<BalanceTransfer>> getBalanceTransfers(@RequestParam(defaultValue = "0") int page,
+                                                  @RequestParam(defaultValue = "10") int size
+            , @RequestParam("keyword") String keyword ) {
 
-        int startIndex = page * size;
-        int endIndex = Math.min(startIndex + size, balance.size());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
 
-        // İstenen sayfadaki ürünleri al
-        List<BalanceTransfer> balances = balance.subList(startIndex, endIndex);
 
-        return new ResponseEntity<>(balances, HttpStatus.OK);
+        Page<BalanceTransfer> balance = balanceTransferService.getAllBalanceTransfers(pageable,keyword); // Tüm ürünleri getir
+
+        return new ResponseEntity<>(balance, HttpStatus.OK);
     }
     // Quantity ekleme
     @PatchMapping("/{stockId}/updateQuantityIn")
@@ -319,7 +318,7 @@ public class Controller {
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("stockName").ascending());
         Page<Stock> urunler = stockService.searchItems(keyword, pageable);
-        System.out.println(urunler);
+     //   System.out.println(urunler);
         return new ResponseEntity<>(urunler, HttpStatus.OK);
     }
 
@@ -446,16 +445,17 @@ public class Controller {
         }
     }
     @GetMapping("/getPurchaseInvoiceClientByPage")
-    public ResponseEntity<List<PurchaseDto2>> getPurchaseInvoiceClientByPage(@RequestParam(defaultValue = "0") int page,
-                                                                                                           @RequestParam(defaultValue = "10") int size,@RequestParam("client_id") Long client_id) {
-        List<PurchaseDto2> purchase = purchaseService.getPurchaseWithId(client_id); // Tüm ürünleri getir
+    public ResponseEntity<Page<PurchaseDto2>> getPurchaseInvoiceClientByPage(@RequestParam(defaultValue = "0") int page,
+                                                                             @RequestParam(defaultValue = "10") int size,
+                                                                             @RequestParam("client_id") Long client_id,
+             @RequestParam("keyword") String keyword ) {
 
-        int startIndex = page * size;
-        int endIndex = Math.min(startIndex + size, purchase.size());
-        // İstenen sayfadaki ürünleri al
-        List<PurchaseDto2> purchases = purchase.subList(startIndex, endIndex);
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
 
-        return new ResponseEntity<>(purchases, HttpStatus.OK);
+        Page<PurchaseDto2> purchase = purchaseService.getPurchaseWithIdAndPages(pageable,keyword,client_id); // Tüm ürünleri getir
+
+
+        return new ResponseEntity<>(purchase, HttpStatus.OK);
     }
     //  kullanıcıdan  satılanların listesi ödeme için
     @GetMapping("/getSalesInvoiceClient")
@@ -535,9 +535,9 @@ public class Controller {
         Pageable pageable = PageRequest.of(page, size, Sort.by("stock.stockName").ascending());
         Page<WarehouseStock> stocks = warehouseStockService.searchItemsW(keyword,wharehouse, pageable);
         if (stocks.isEmpty()) {
-            System.out.println("asdasd");
+
             return ResponseEntity.noContent().build();
-        } else {  System.out.println("aaaa");
+        } else {
              return new ResponseEntity<>(stocks, HttpStatus.OK);
         }
 
@@ -580,9 +580,9 @@ public class Controller {
             @RequestParam("keyword") String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("Name").ascending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
         Page<Client> urunler = clientService.searchItems(keyword, pageable);
-        System.out.println(urunler);
+      //  System.out.println(urunler);
         return new ResponseEntity<>(urunler, HttpStatus.OK);
     }
 
@@ -620,17 +620,14 @@ public class Controller {
     }
 
     @GetMapping("/getPurchasesByPage")
-    public ResponseEntity<List<PurchaseDto2>> getPurchasesByPage(@RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "10") int size) {
-        List<PurchaseDto2> purchase = purchaseService.getAllPurchases(); // Tüm ürünleri getir
+    public ResponseEntity<Page<PurchaseDto2>> getPurchasesByPage(@RequestParam(defaultValue = "0") int page,
+                                                  @RequestParam(defaultValue = "10") int size,
+             @RequestParam("keyword") String keyword) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
 
-        int startIndex = page * size;
-        int endIndex = Math.min(startIndex + size, purchase.size());
+        Page<PurchaseDto2> purchase = purchaseService.getAllPurchasesInvoices(pageable,keyword); // Tüm ürünleri getir
 
-        // İstenen sayfadaki ürünleri al
-        List<PurchaseDto2> purchases = purchase.subList(startIndex, endIndex);
-
-        return new ResponseEntity<>(purchases, HttpStatus.OK);
+        return new ResponseEntity<>(purchase, HttpStatus.OK);
     }
 
     //purchase oluşturma
@@ -647,28 +644,28 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(transferResult);
         }
     }
-    //sales satın alma faturası eklenecek
-    @GetMapping("/getSales")
-    public ResponseEntity<List<ExpenseInvoiceDto2>> getAllSales() {
-        List<ExpenseInvoiceDto2> Sales = expenseInvoiceService.getAllExpenseInvoice();
-        if (Sales.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(Sales);
-        }
-    }
+    //sales satın alma faturası eklenecek   gerek kalmadı eskidin artık
+//    @GetMapping("/getSales")
+//    public ResponseEntity<List<ExpenseInvoiceDto2>> getAllSales() {
+//        List<ExpenseInvoiceDto2> Sales = expenseInvoiceService.getAllExpenseInvoice();
+//        if (Sales.isEmpty()) {
+//            return ResponseEntity.noContent().build();
+//        } else {
+//            return ResponseEntity.ok(Sales);
+//        }
+//    }
     @GetMapping("/getSalesByPage")
-    public ResponseEntity<List<ExpenseInvoiceDto2>> getSalesByPage(@RequestParam(defaultValue = "0") int page,
-                                                                 @RequestParam(defaultValue = "10") int size) {
-        List<ExpenseInvoiceDto2> sale = expenseInvoiceService.getAllExpenseInvoice(); // Tüm ürünleri getir
+    public ResponseEntity<Page<ExpenseInvoiceDto2>> getSalesByPage(@RequestParam(defaultValue = "0") int page,
+                                                                 @RequestParam(defaultValue = "10") int size
+        , @RequestParam("keyword") String keyword
+    ){
 
-        int startIndex = page * size;
-        int endIndex = Math.min(startIndex + size, sale.size());
+         // Tüm ürünleri getir
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+        Page<ExpenseInvoiceDto2> sale = expenseInvoiceService.getAllExpenseInvoice(pageable,keyword);
 
-        // İstenen sayfadaki ürünleri al
-        List<ExpenseInvoiceDto2> sales = sale.subList(startIndex, endIndex);
 
-        return new ResponseEntity<>(sales, HttpStatus.OK);
+        return new ResponseEntity<>(sale, HttpStatus.OK);
     }
 
     //sales oluşturma
