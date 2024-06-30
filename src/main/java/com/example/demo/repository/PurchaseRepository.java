@@ -16,7 +16,8 @@ public interface PurchaseRepository extends JpaRepository<PurchaseInvoice,Long> 
     List<PurchaseInvoice> findPurchaseInvoicesByClientId_ClientId(Long id);
 
    // List<PurchaseInvoice> findPurchaseInvoicesByStockCodeStockId(Long id);
-    List<PurchaseInvoice> getPurchaseInvoicesByDate(LocalDateTime date);
+   @Query("SELECT e FROM PurchaseInvoice e WHERE e.date >= :startOfDay AND e.date <= :endOfDay")
+    List<PurchaseInvoice> getPurchaseInvoicesByDate( LocalDateTime startOfDay,   LocalDateTime endOfDay);
     List<PurchaseInvoice> getPurchaseInvoicesByDateBetween(LocalDateTime  startDate, LocalDateTime  endDate);
     @Query("SELECT c FROM PurchaseInvoice c WHERE LOWER(CONCAT(c.clientId.name, ' ', c.clientId.surname)) LIKE LOWER(CONCAT('%', :keyword, '%'))  ")
     Page<PurchaseInvoice> findWithNS(String keyword, Pageable pageable);

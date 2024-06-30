@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,8 +33,10 @@ public class ReportService {
 
     public List<Object> getDailyExpenses(LocalDateTime date) {
         List<Object> dailyExpenses = new ArrayList<>();
-
-        List<ExpenseInvoice> expenseInvoices = expenseInvoiceRepository.getExpenseInvoicesByDate(date);
+        LocalDate localDate = date.toLocalDate();
+        LocalDateTime startOfDay = localDate.atStartOfDay();
+        LocalDateTime endOfDay = localDate.atTime(LocalTime.MAX);
+        List<ExpenseInvoice> expenseInvoices = expenseInvoiceRepository.findExpenseInvoicesByDate(startOfDay,endOfDay);
         for (ExpenseInvoice expense : expenseInvoices) {
             Map<String, Object> expenseMap = new HashMap<>();
             expenseMap.put("expense_id", expense.getExpenseId());
@@ -56,7 +59,7 @@ public class ReportService {
             dailyExpenses.add(expenseMap);
         }
 
-        List<PurchaseInvoice> purchaseInvoices = purchaseRepository.getPurchaseInvoicesByDate(date);
+        List<PurchaseInvoice> purchaseInvoices = purchaseRepository.getPurchaseInvoicesByDate(startOfDay,endOfDay);
         for (PurchaseInvoice invoice : purchaseInvoices) {
             Map<String, Object> expenseMap = new HashMap<>();
             expenseMap.put("purchase_id", invoice.getPurchase_id());
@@ -78,7 +81,7 @@ public class ReportService {
         }
 
 
-        List<WarehouseTransfer> warehouseTransfers = warehouseTransferRepository.getWarehouseTransfersByDate(date);
+        List<WarehouseTransfer> warehouseTransfers = warehouseTransferRepository.getWarehouseTransfersByDate(startOfDay,endOfDay);
         for (WarehouseTransfer warehouse : warehouseTransfers) {
             Map<String, Object> expenseMap = new HashMap<>();
             expenseMap.put("warehousetransfer_id", warehouse.getWarehouseTransferId());
@@ -122,6 +125,7 @@ public class ReportService {
 
             dailyExpenses.add(expenseMap);
         }
+
 
         return dailyExpenses;
     }
@@ -201,7 +205,7 @@ public class ReportService {
             expenseMap.put("warehouseName", invoice.getInvoices().stream()
                     .map(invoices -> invoices.getStock().getWarehouse().getName())
                     .collect(Collectors.toList()));
-            expenseMap.put("authorized", invoice.getClientId().getName());
+            expenseMap.put("clientName", invoice.getClientId().getName());
             expenseMap.put("quantity", invoice.getInvoices().stream()
                     .map(InvoiceP::getQuantity)
                     .collect(Collectors.toList()));

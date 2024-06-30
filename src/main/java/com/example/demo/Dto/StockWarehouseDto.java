@@ -13,10 +13,12 @@ public class StockWarehouseDto {
     public Long warehouseId;
     public Integer quantity;
     public BigDecimal salesPrice;
-    public StockWarehouseDto(Long stockId, String stockName,BigDecimal salesPrice, Long warehouseId, Integer quantity) {
+    public BigDecimal purchasePrice;
+    public StockWarehouseDto(Long stockId, String stockName,BigDecimal salesPrice,BigDecimal purchasePrice, Long warehouseId, Integer quantity) {
         this.stockId = stockId;
         this.stockName = stockName;
         this.salesPrice=salesPrice;
+        this.purchasePrice=purchasePrice;
         this.warehouseId = warehouseId;
         this.quantity=quantity;
     }

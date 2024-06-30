@@ -107,6 +107,7 @@ public class StockService {
                 stock.getStockId(),
                 stock.getStockName(),
                 stock.getSalesPrice(),
+                stock.getPurchasePrice(),
                 stock.getWarehouse().getWarehouseId(),
                 warehouseStockService.findWarehouseStockQuantity(stock.getStockId()));
     }

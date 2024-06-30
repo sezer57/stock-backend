@@ -30,7 +30,7 @@ public class WarehouseTransferService {
         WarehouseStock sourceWarehouseStock = warehouseStockService.findByWarehouseStock_name(s.getStockName(),warehouseTransferDto.getSource_id());
         WarehouseStock targetWarehouseStock = warehouseStockService.findByWarehouseStock_name(s.getStockName(),warehouseTransferDto.getTarget_id());//hatalı bulamıyor
         if(targetWarehouseStock==null){
-            return "hedef depoya aynı ürünü ekleyin";
+            return "add the same product to the target warehouse";
         }
 
 
@@ -38,17 +38,17 @@ public class WarehouseTransferService {
         Integer oldQI=sourceWarehouseStock.getQuantityIn();
         Integer oldQR=sourceWarehouseStock.getQuantityRemaining();
         if(sourceWarehouseStock.getQuantityRemaining()<warehouseTransferDto.getQuantity()){
-            return "hedef depoda yeterli ürün yok";
+            return "There are not enough products in the target warehouse";
         }
 
         if(oldQI==0){
-            return "depoda yeterli ürün yok";
+            return "There are not enough products in the warehouse";
         }
         if (oldQI<oldQt){
-            return "depoda yeterli ürün yok";
+            return "There are not enough products in the warehouse";
         }
         if(oldQR==0){
-            return "depoda yeterli remainin ürün yok";
+            return "There is not enough product left in the warehouse";
         }
 
 
@@ -68,7 +68,7 @@ public class WarehouseTransferService {
 
         warehouseTransferRepository.save(newWarehouseTransfer);
 
-        return "transfer basarılı";
+        return "Transfer successful";
     }
 
     // onay bekleyen transferleri çekme

@@ -13,7 +13,9 @@ import java.util.List;
 
 public interface ExpenseInvoiceRepository extends JpaRepository<ExpenseInvoice,Long> {
     List<ExpenseInvoice>  findExpenseInvoicesByClient_ClientId(Long id);
-    List<ExpenseInvoice>  getExpenseInvoicesByDate(LocalDateTime date);
+    @Query("SELECT e FROM ExpenseInvoice e WHERE e.date >= :startOfDay AND e.date <= :endOfDay")
+    List<ExpenseInvoice> findExpenseInvoicesByDate( LocalDateTime startOfDay,   LocalDateTime endOfDay);
+
     List<ExpenseInvoice> getExpenseInvoicesByDateBetween(LocalDateTime startDate, LocalDateTime endDate);
     Page<ExpenseInvoice> findAllByClient_NameContaining(Pageable pageable,String stockName);
     @Query("SELECT c FROM ExpenseInvoice c WHERE LOWER(CONCAT(c.client.name, ' ', c.client.surname)) LIKE LOWER(CONCAT('%', :keyword, '%'))  ")
