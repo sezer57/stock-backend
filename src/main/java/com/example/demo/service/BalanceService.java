@@ -11,7 +11,7 @@ import com.example.demo.repository.ClientRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -20,7 +20,7 @@ public class BalanceService {
     private final ClientRepository clientRepository;
     private final BalanceTransferRepository balanceTransferRepository;
 
-    LocalDate currentDate = LocalDate.now();
+    LocalDateTime currentDate = LocalDateTime.now();
     public BalanceService(BalanceRepository balanceRepository, ClientRepository clientRepository, BalanceTransferRepository balanceTransferRepository) {
         this.balanceRepository = balanceRepository;
         this.clientRepository = clientRepository;

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface PurchaseRepository extends JpaRepository<PurchaseInvoice,Long> {
@@ -15,8 +16,8 @@ public interface PurchaseRepository extends JpaRepository<PurchaseInvoice,Long> 
     List<PurchaseInvoice> findPurchaseInvoicesByClientId_ClientId(Long id);
 
    // List<PurchaseInvoice> findPurchaseInvoicesByStockCodeStockId(Long id);
-    List<PurchaseInvoice> getPurchaseInvoicesByDate(LocalDate date);
-    List<PurchaseInvoice> getPurchaseInvoicesByDateBetween(LocalDate startDate, LocalDate endDate);
+    List<PurchaseInvoice> getPurchaseInvoicesByDate(LocalDateTime date);
+    List<PurchaseInvoice> getPurchaseInvoicesByDateBetween(LocalDateTime  startDate, LocalDateTime  endDate);
     @Query("SELECT c FROM PurchaseInvoice c WHERE LOWER(CONCAT(c.clientId.name, ' ', c.clientId.surname)) LIKE LOWER(CONCAT('%', :keyword, '%'))  ")
     Page<PurchaseInvoice> findWithNS(String keyword, Pageable pageable);
     //Page<PurchaseInvoice> findPurchaseInvoicesByClientId_NameContaining(String keyword, Pageable pageable);

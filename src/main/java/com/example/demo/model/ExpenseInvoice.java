@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 // bu kısımda operation type kısmı var bu eksik.
@@ -32,7 +32,7 @@ public class ExpenseInvoice {
     @Column(name = "autherized", nullable = false)
     private String autherized;
     @Column(name = "date", nullable = false)
-    private LocalDate date;
+    private LocalDateTime date;
 
     @OneToMany(mappedBy = "expense", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Invoice> invoices;
@@ -40,7 +40,7 @@ public class ExpenseInvoice {
     public ExpenseInvoice() {
     }
 
-    public ExpenseInvoice(  Client client,  List<Invoice> invoices,LocalDate date,String autherized) {
+    public ExpenseInvoice(  Client client,  List<Invoice> invoices,LocalDateTime date,String autherized) {
 
         this.client = client;
         this.date = date;

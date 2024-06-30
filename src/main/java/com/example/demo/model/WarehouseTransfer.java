@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Date;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -37,7 +37,7 @@ public class WarehouseTransfer {
     private String comment;
 
     @Column(name = "transfer_date", nullable = false)
-    private LocalDate date;
+    private LocalDateTime date;
 
     @Column(name = "approval_status")
     private String approvalStatus; // "Onay Bekliyor", "Onaylandı", "Reddedildi"
@@ -46,7 +46,7 @@ public class WarehouseTransfer {
     public WarehouseTransfer() {
 
     }
-    public WarehouseTransfer( Warehouse source, Warehouse target,Long stock_id, Integer quantity,LocalDate date, String comment, String approvalStatus) {
+    public WarehouseTransfer( Warehouse source, Warehouse target,Long stock_id, Integer quantity,LocalDateTime date, String comment, String approvalStatus) {
         this.stock_id=stock_id;
         this.source = source;
         this.target = target;

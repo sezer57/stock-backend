@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -324,8 +325,30 @@ public class Controller {
 
     //  stocklar alma warehouse transfer için yapılan sadece id ve isim
     @GetMapping("/getStocksById")
-    public ResponseEntity<List<StockWarehouseDto>> getstockwithid(@RequestParam("warehouse_id") Long warehouse_id) {
-        List<StockWarehouseDto> stocks = stockService.getStockWithId(warehouse_id);
+    public ResponseEntity<Page<StockWarehouseDto>> getstockwithid(@RequestParam(defaultValue = "0") int page,
+                                                                  @RequestParam(defaultValue = "10") int size,
+                                                                  @RequestParam("warehouse_id") Long warehouse_id
+                                                                  ) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("stockName").ascending());
+
+        Page<StockWarehouseDto> stocks = stockService.getStockWithId(warehouse_id,pageable);
+
+        if (stocks.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(stocks);
+        }
+    }
+    @GetMapping("/getStocksByIdSearch")
+    public ResponseEntity<Page<StockWarehouseDto>> getStocksByIdSearch(@RequestParam(defaultValue = "0") int page,
+                                                                  @RequestParam(defaultValue = "10") int size,
+                                                                  @RequestParam("warehouse_id") Long warehouse_id,
+                                                                  @RequestParam("keyword") String keyword) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("stockName").ascending());
+
+        Page<StockWarehouseDto> stocks = stockService.getStocksByIdSearch(warehouse_id,pageable,keyword);
 
         if (stocks.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -730,11 +753,11 @@ public class Controller {
 
     }
     @GetMapping("/getDailyExpenses")
-    public List<Object> getDailyExpenses(@RequestParam("date") LocalDate date) {
+    public List<Object> getDailyExpenses(@RequestParam("date") LocalDateTime date) {
         return reportService.getDailyExpenses(date);
     }
     @GetMapping("/getWeeklyPurchaseInvoices")
-    public List<Object> getWeeklyPurchaseInvoices(@RequestParam("startDate") LocalDate startDate, @RequestParam("endDate") LocalDate endDate) {
+    public List<Object> getWeeklyPurchaseInvoices(@RequestParam("startDate") LocalDateTime startDate, @RequestParam("endDate") LocalDateTime endDate) {
         return reportService.getWeeklyPurchaseInvoices(startDate,endDate);
     }
     @GetMapping("/getStockCode")

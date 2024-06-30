@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -32,10 +32,10 @@ public class PurchaseInvoice {
     @Column(name = "autherized", nullable = false)
     private String autherized;
     @Column(name = "date" , nullable = false)
-    private LocalDate date;
+    private LocalDateTime date;
     public PurchaseInvoice(){}
 
-    public PurchaseInvoice(  Client clientId,  LocalDate date, List<InvoiceP> invoices,String autherized) {
+    public PurchaseInvoice(  Client clientId,  LocalDateTime date, List<InvoiceP> invoices,String autherized) {
 
         this.clientId=clientId;
 

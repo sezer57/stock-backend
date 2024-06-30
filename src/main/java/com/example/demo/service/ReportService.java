@@ -5,6 +5,7 @@ import com.example.demo.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,7 @@ public class ReportService {
 
     // Constructor, Dependency Injection kullanılabilir
 
-    public List<Object> getDailyExpenses(LocalDate date) {
+    public List<Object> getDailyExpenses(LocalDateTime date) {
         List<Object> dailyExpenses = new ArrayList<>();
 
         List<ExpenseInvoice> expenseInvoices = expenseInvoiceRepository.getExpenseInvoicesByDate(date);
@@ -90,20 +91,20 @@ public class ReportService {
             dailyExpenses.add(expenseMap);
         }
 
-        List<Client> clients = clientRepository.getClientsByRegistrationDate(date);
-        for (Client client : clients) {
-            Map<String, Object> expenseMap = new HashMap<>();
-            expenseMap.put("clientId", client.getClientId());
-            expenseMap.put("name", client.getName()+client.getSurname());
-        //    System.out.println(client.getName());
-            expenseMap.put("address", client.getAddress());
-            expenseMap.put("country", client.getCountry());
-            expenseMap.put("city", client.getCity());
-            expenseMap.put("phone", client.getPhone());
-            expenseMap.put("gsm", client.getGsm());
-            expenseMap.put("registrationDate", client.getRegistrationDate());
-            dailyExpenses.add(expenseMap);
-        }
+//        List<Client> clients = clientRepository.getClientsByRegistrationDate(date);
+//        for (Client client : clients) {
+//            Map<String, Object> expenseMap = new HashMap<>();
+//            expenseMap.put("clientId", client.getClientId());
+//            expenseMap.put("name", client.getName()+client.getSurname());
+//        //    System.out.println(client.getName());
+//            expenseMap.put("address", client.getAddress());
+//            expenseMap.put("country", client.getCountry());
+//            expenseMap.put("city", client.getCity());
+//            expenseMap.put("phone", client.getPhone());
+//            expenseMap.put("gsm", client.getGsm());
+//            expenseMap.put("registrationDate", client.getRegistrationDate());
+//            dailyExpenses.add(expenseMap);
+//        }
 
         List<Stock> stocks = stockRepository.getStocksByRegistrationDate(date);
         for (Stock stock : stocks) {
@@ -125,7 +126,7 @@ public class ReportService {
         return dailyExpenses;
     }
 
-//    public List<Object> getDailyExpensesForClient(LocalDate date) {
+//    public List<Object> getDailyExpensesForClient(LocalDateTime date) {
 //        List<Object> dailyExpenses = new ArrayList<>();
 //
 //        List<Client> clients = clientRepository.getClientsByRegistrationDate(date);
@@ -145,7 +146,7 @@ public class ReportService {
 //        return dailyExpenses;
 //    }
 
-//    public List<Object> getDailyExpensesForStock(LocalDate date) {
+//    public List<Object> getDailyExpensesForStock(LocalDateTime date) {
 //        List<Object> dailyExpenses = new ArrayList<>();
 //
 //        List<Stock> stocks = stockRepository.getStocksByRegistrationDate(date);
@@ -167,7 +168,7 @@ public class ReportService {
 //        return dailyExpenses;
 //    }
 
-    public List<Object> getWeeklyPurchaseInvoices(LocalDate startDate, LocalDate endDate) {
+    public List<Object> getWeeklyPurchaseInvoices(LocalDateTime startDate, LocalDateTime endDate) {
         List<Object> weekly = new ArrayList<>();
 
         List<ExpenseInvoice> expenseInvoices = expenseInvoiceRepository.getExpenseInvoicesByDateBetween(startDate,endDate);
@@ -229,20 +230,20 @@ public class ReportService {
 
 
 
-        List<Client> clients = clientRepository.getClientsByRegistrationDateBetween(startDate,endDate);
-        for (Client client : clients) {
-            Map<String, Object> expenseMap = new HashMap<>();
-            expenseMap.put("clientId", client.getClientId());
-            expenseMap.put("name", client.getName()+client.getSurname());
-          //  System.out.println(client.getName());
-            expenseMap.put("address", client.getAddress());
-            expenseMap.put("country", client.getCountry());
-            expenseMap.put("city", client.getCity());
-            expenseMap.put("phone", client.getPhone());
-            expenseMap.put("gsm", client.getGsm());
-            expenseMap.put("registrationDate", client.getRegistrationDate());
-            weekly.add(expenseMap);
-        }
+//        List<Client> clients = clientRepository.getClientsByRegistrationDateBetween(startDate,endDate);
+//        for (Client client : clients) {
+//            Map<String, Object> expenseMap = new HashMap<>();
+//            expenseMap.put("clientId", client.getClientId());
+//            expenseMap.put("name", client.getName()+client.getSurname());
+//          //  System.out.println(client.getName());
+//            expenseMap.put("address", client.getAddress());
+//            expenseMap.put("country", client.getCountry());
+//            expenseMap.put("city", client.getCity());
+//            expenseMap.put("phone", client.getPhone());
+//            expenseMap.put("gsm", client.getGsm());
+//            expenseMap.put("registrationDate", client.getRegistrationDate());
+//            weekly.add(expenseMap);
+//        }
 
         List<Stock> stocks = stockRepository.getStocksByRegistrationDateBetween(startDate,endDate);
         for (Stock stock : stocks) {

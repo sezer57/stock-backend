@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.math.BigDecimal;
 
 
@@ -42,13 +42,13 @@ public class BalanceTransfer {
     private String paymentType;
 
     @Column(name = "transfer_date")
-    private LocalDate date;
+    private LocalDateTime date;
 
     @Column(name = "comment")
     private String comment;
 
     public BalanceTransfer(){}
-    public BalanceTransfer(Long clientId, String clientName, String clientSurname, String commericalTitle, BigDecimal balance, BigDecimal amount, String paymentType, LocalDate date, String comment) {
+    public BalanceTransfer(Long clientId, String clientName, String clientSurname, String commericalTitle, BigDecimal balance, BigDecimal amount, String paymentType, LocalDateTime date, String comment) {
         this.clientId = clientId;
         this.clientName = clientName;
         this.clientSurname = clientSurname;

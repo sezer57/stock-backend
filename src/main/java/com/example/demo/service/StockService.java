@@ -1,9 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.Dto.DeleteDto;
-import com.example.demo.Dto.StockDto;
-import com.example.demo.Dto.StockUpdateDto;
-import com.example.demo.Dto.StockWarehouseDto;
+import com.example.demo.Dto.*;
 import com.example.demo.model.Stock;
 import com.example.demo.model.Warehouse;
 import com.example.demo.model.WarehouseStock;
@@ -11,6 +8,7 @@ import com.example.demo.repository.StockRepository;
 import com.example.demo.repository.WarehouseRepository;
 import com.example.demo.repository.WarehouseStockRepository;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,26 +83,37 @@ public class StockService {
         return  stockRepository.findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalse(warehouse_transfer_id,pageable);
     }
 
-    public List<StockWarehouseDto> getStockWithId(Long warehouse_transfer_id) {
-        List<Stock> stocks =  stockRepository.findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalse(warehouse_transfer_id);
-        if (stocks.isEmpty()) {
-            return Collections.emptyList(); // Return empty list if no results found
-        } else {
-            return convertToStockWarehouseDto(stocks);
-        }
+    public Page<StockWarehouseDto> getStockWithId(Long warehouse_transfer_id, Pageable pageable) {
+        List<Stock> stocks = stockRepository.findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalse(warehouse_transfer_id);
+
+        List<StockWarehouseDto> stockWarehouseDtos = stocks.stream()
+                .map(this::convertToStockWarehouseDto)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(stockWarehouseDtos, pageable, stockWarehouseDtos.size());
+    }
+    public Page<StockWarehouseDto> getStocksByIdSearch(Long warehouse_transfer_id, Pageable pageable,String keyword) {
+        Page<Stock> stocks = stockRepository.findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalseAndStockNameContaining(warehouse_transfer_id,pageable,keyword);
+
+        List<StockWarehouseDto> stockWarehouseDtos = stocks.stream()
+                .map(this::convertToStockWarehouseDto)
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(stockWarehouseDtos, pageable, stockWarehouseDtos.size());
+    }
+
+    private StockWarehouseDto convertToStockWarehouseDto(Stock stock) {
+        return new StockWarehouseDto(
+                stock.getStockId(),
+                stock.getStockName(),
+                stock.getSalesPrice(),
+                stock.getWarehouse().getWarehouseId(),
+                warehouseStockService.findWarehouseStockQuantity(stock.getStockId()));
     }
     public Stock getstockjustid(Long id){
         return stockRepository.findStockByStockId(id);
     }
-    private List<StockWarehouseDto> convertToStockWarehouseDto(List<Stock> stocks) {
-        return stocks.stream()
-                .map(stock -> new StockWarehouseDto(
-                        stock.getStockId(),
-                        stock.getStockName(),
-                        stock.getWarehouse().getWarehouseId(),
-                        warehouseStockService.findWarehouseStockQuantity(stock.getStockId())))
-                .collect(Collectors.toList());
-    }
+
     //stock update
     public boolean stockUpdate(StockUpdateDto stockUpdateDto){
         Stock s= stockRepository.findStockByStockId(stockUpdateDto.getStock_id());

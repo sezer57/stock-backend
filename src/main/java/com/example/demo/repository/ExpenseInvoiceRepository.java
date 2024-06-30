@@ -8,12 +8,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface ExpenseInvoiceRepository extends JpaRepository<ExpenseInvoice,Long> {
     List<ExpenseInvoice>  findExpenseInvoicesByClient_ClientId(Long id);
-    List<ExpenseInvoice>  getExpenseInvoicesByDate(LocalDate date);
-    List<ExpenseInvoice> getExpenseInvoicesByDateBetween(LocalDate startDate, LocalDate endDate);
+    List<ExpenseInvoice>  getExpenseInvoicesByDate(LocalDateTime date);
+    List<ExpenseInvoice> getExpenseInvoicesByDateBetween(LocalDateTime startDate, LocalDateTime endDate);
     Page<ExpenseInvoice> findAllByClient_NameContaining(Pageable pageable,String stockName);
     @Query("SELECT c FROM ExpenseInvoice c WHERE LOWER(CONCAT(c.client.name, ' ', c.client.surname)) LIKE LOWER(CONCAT('%', :keyword, '%'))  ")
     Page<ExpenseInvoice> findWithNS(String keyword, Pageable pageable);

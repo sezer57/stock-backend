@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 @Getter
 @Setter
 public class BalanceTransferDto {
@@ -14,5 +14,5 @@ public class BalanceTransferDto {
     private BigDecimal amount;
     private String paymentType;
     private String comment;
-    private LocalDate date;
+    private LocalDateTime date;
 }
