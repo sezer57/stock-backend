@@ -22,7 +22,7 @@ public interface ExpenseInvoiceRepository extends JpaRepository<ExpenseInvoice,L
     Page<ExpenseInvoice> findWithNS(String keyword, Pageable pageable);
 
     // Page<ExpenseInvoice> findExpenseInvoicesByClient_NameContaining(String Name,Pageable pageable);
-    Page<ExpenseInvoice> findExpenseInvoicesByClientId_ClientId(Long id, Pageable pageable);
+    Page<ExpenseInvoice> findExpenseInvoicesByClient_ClientId(Long id, Pageable pageable);
 
 
 

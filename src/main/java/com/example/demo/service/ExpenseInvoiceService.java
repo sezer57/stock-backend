@@ -130,7 +130,7 @@ public class ExpenseInvoiceService {
     }
 
     public Page<ExpenseInvoiceDto2> getExpenseWithId(Pageable pageable, String keyword, Long id) {
-        Page<ExpenseInvoice> purchaseInvoices = expenseInvoiceRepository.findExpenseInvoicesByClientId_ClientId(id, pageable);
+        Page<ExpenseInvoice> purchaseInvoices = expenseInvoiceRepository.findExpenseInvoicesByClient_ClientId(id, pageable);
         List<ExpenseInvoiceDto2> expenseInvoiceDto2s= purchaseInvoices.stream().map(this::convertToDTO).collect(Collectors.toList());
 
         return new PageImpl<>(expenseInvoiceDto2s, pageable, purchaseInvoices.getTotalElements());
