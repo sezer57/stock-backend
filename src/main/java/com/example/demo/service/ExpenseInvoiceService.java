@@ -25,6 +25,7 @@ public class ExpenseInvoiceService {
     private final ClientService clientService;
     private final BalanceService balanceService;
     private final WarehouseStockService warehouseStockService;
+
     public ExpenseInvoiceService(ExpenseInvoiceRepository expenseInvoiceRepository, StockService stockService, ClientService clientService, BalanceService balanceService, WarehouseStockService warehouseStockService) {
         this.expenseInvoiceRepository = expenseInvoiceRepository;
         this.stockService = stockService;
@@ -32,69 +33,69 @@ public class ExpenseInvoiceService {
         this.balanceService = balanceService;
         this.warehouseStockService = warehouseStockService;
     }
-  public String addExpenseInvoice(ExpenseInvoiceDto expenseInvoice){
-      List<Long> stockCodes = expenseInvoice.getStockCodes();
-      List<Integer> quantities = expenseInvoice.getQuantity();
-      List<BigDecimal> prices = expenseInvoice.getPrice();
-      double vats = expenseInvoice.getVat().doubleValue();
+
+    public String addExpenseInvoice(ExpenseInvoiceDto expenseInvoice) {
+        List<Long> stockCodes = expenseInvoice.getStockCodes();
+        List<Integer> quantities = expenseInvoice.getQuantity();
+        List<BigDecimal> prices = expenseInvoice.getPrice();
+        double vats = expenseInvoice.getVat().doubleValue();
 //      if(stockCodes.size()!=quantities.size()&&prices.size()!=quantities.size()&&stockCodes.size()!=prices.size()){
 //          return "size error ";
 //      }
-      BigDecimal totalPrice = BigDecimal.valueOf(0);
+        BigDecimal totalPrice = BigDecimal.valueOf(0);
 
-      for (int i = 0; i < stockCodes.size(); i++) {
+        for (int i = 0; i < stockCodes.size(); i++) {
 
 
-          double price = prices.get(i).doubleValue();
-         // BigDecimal vatAmount = prices.get(i) * (1 + vatRate)
+            double price = prices.get(i).doubleValue();
+            // BigDecimal vatAmount = prices.get(i) * (1 + vatRate)
 
-          totalPrice = BigDecimal.valueOf(price * (1 + vats/100));
-          Long stockCode = stockCodes.get(i);
-          Integer quantity = quantities.get(i);
+            totalPrice = BigDecimal.valueOf(price * (1 + vats / 100));
+            Long stockCode = stockCodes.get(i);
+            Integer quantity = quantities.get(i);
 
-          warehouseStockService.updateQuantityOut(stockCode, quantity);
+            warehouseStockService.updateQuantityOut(stockCode, quantity);
 //          if (!warehouseStockService.updateQuantityOut(stockCode, quantity)) {
 //              return "not enough products in warehouse";
 //          }
 
 
-          balanceService.updateBalanceToSale(expenseInvoice.getClientId(), totalPrice);
-      }
-      List<Stock> stocks = new ArrayList<>();
-      for (Long stockCode : stockCodes) {
-          Stock stock = stockService.getstockjustid(stockCode);
-          stocks.add(stock);
-      }
+            balanceService.updateBalanceToSale(expenseInvoice.getClientId(), totalPrice);
+        }
+        List<Stock> stocks = new ArrayList<>();
+        for (Long stockCode : stockCodes) {
+            Stock stock = stockService.getstockjustid(stockCode);
+            stocks.add(stock);
+        }
 
 
-      ExpenseInvoice e = new ExpenseInvoice(
-              clientService.getClientWithId(expenseInvoice.getClientId()),
-              new ArrayList<>(), // Initialize the list of invoices
-              expenseInvoice.getDate(),
-              expenseInvoice.getAutherized()
+        ExpenseInvoice e = new ExpenseInvoice(
+                clientService.getClientWithId(expenseInvoice.getClientId()),
+                new ArrayList<>(), // Initialize the list of invoices
+                expenseInvoice.getDate(),
+                expenseInvoice.getAutherized()
 
-      );
+        );
 
-      List<Invoice> invoices = new ArrayList<>();
-      for (int i = 0; i < stockCodes.size(); i++) {
-          double price = prices.get(i).doubleValue();
-          Stock stock = stockService.getstockjustid(stockCodes.get(i));
-          Invoice invoice = new Invoice(stock, quantities.get(i), BigDecimal.valueOf(price * (1 + vats/100)) ,vats);
-          invoice.setExpense(e); // Set the ExpenseInvoice object
-          invoices.add(invoice);
-      }
+        List<Invoice> invoices = new ArrayList<>();
+        for (int i = 0; i < stockCodes.size(); i++) {
+            double price = prices.get(i).doubleValue();
+            Stock stock = stockService.getstockjustid(stockCodes.get(i));
+            Invoice invoice = new Invoice(stock, quantities.get(i), BigDecimal.valueOf(price * (1 + vats / 100)), vats);
+            invoice.setExpense(e); // Set the ExpenseInvoice object
+            invoices.add(invoice);
+        }
 
-      e.setInvoices(invoices); // Set the list of invoices for ExpenseInvoice object
+        e.setInvoices(invoices); // Set the list of invoices for ExpenseInvoice object
 
-      expenseInvoiceRepository.save(e);
-      return "success";
+        expenseInvoiceRepository.save(e);
+        return "success";
 
     }
 
 
-
-    public Page<ExpenseInvoiceDto2> getAllExpenseInvoice(Pageable pageable,String keyword) {
-        Page<ExpenseInvoice> expenseInvoices = expenseInvoiceRepository.findWithNS(keyword,pageable);
+    public Page<ExpenseInvoiceDto2> getAllExpenseInvoice(Pageable pageable, String keyword) {
+        Page<ExpenseInvoice> expenseInvoices = expenseInvoiceRepository.findWithNS(keyword, pageable);
         List<ExpenseInvoiceDto2> expenseInvoiceDtos = expenseInvoices.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
@@ -127,11 +128,13 @@ public class ExpenseInvoiceService {
         dto.setClientPhone(expenseInvoice.getClient().getPhone());
         return dto;
     }
-    public List<ExpenseInvoiceDto2> getExpenseWithId(Long id) {
-        List<ExpenseInvoice> purchaseInvoices =  expenseInvoiceRepository.findExpenseInvoicesByClient_ClientId(id);
-        return purchaseInvoices.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+
+    public Page<ExpenseInvoiceDto2> getExpenseWithId(Pageable pageable, String keyword, Long id) {
+        Page<ExpenseInvoice> purchaseInvoices = expenseInvoiceRepository.findWithNS(keyword, pageable);
+        List<ExpenseInvoiceDto2> expenseInvoiceDto2s= purchaseInvoices.stream().map(this::convertToDTO).collect(Collectors.toList());
+
+        return new PageImpl<>(expenseInvoiceDto2s, pageable, purchaseInvoices.getTotalElements());
+
     }
 }
 

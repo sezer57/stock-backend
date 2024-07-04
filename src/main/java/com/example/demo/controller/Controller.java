@@ -44,6 +44,7 @@ public class Controller {
     public final BalanceTransferService balanceTransferService;
     private final TransactionService transactionService;
     private final ReportService reportService;
+
     public Controller(UserService service, JwtService jwtService, AuthenticationManager authenticationManager, StockService stockService, WarehouseService warehouseService, WarehouseStockService warehouseStockService, WarehouseTransferService warehouseTransferService, ClientService clientService, ExpenseInvoiceService expenseInvoiceService, InformationCodeService informationCodeService, BankAccountInfoService bankAccountInfoService, BalanceService balanceService, PurchaseService purchaseService, UserService userService, BalanceTransferService balanceTransferService, TransactionService transactionService, ReportService reportService) {
         this.service = service;
         this.jwtService = jwtService;
@@ -63,34 +64,38 @@ public class Controller {
         this.transactionService = transactionService;
         this.reportService = reportService;
     }
+
     //login
     //Authentication Endpoints
     @PostMapping("/addNewUser")
     public ResponseEntity<String> addNewUser(@RequestBody UserInfo userInfo) {
-        if(service.addUser(userInfo)){
+        if (service.addUser(userInfo)) {
             return ResponseEntity.ok("User Added Successfully");
-        }
-        else {
+        } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("User already signed up");
         }
     }
+
     @PostMapping("/login")
     public String authenticateAndGetToken(@RequestBody AuthRequestDto authRequest) {
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(authRequest.getUsername())+";"+authRequest.getUsername();
+            return jwtService.generateToken(authRequest.getUsername()) + ";" + authRequest.getUsername();
         } else {
             return ("invalid user request !");
         }
     }
+
     @GetMapping("/getExpired")
     public String getExpired() {
         return "true";
     }
+
     @GetMapping("/getClientCode")
     public long getClientCode() {
         return clientService.getClientCode();
     }
+
     // Stock ekleme
     @PostMapping("/stocks")
     public ResponseEntity<String> addStock(@RequestBody StockDto stock) {
@@ -100,15 +105,17 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Stock not add");
         }
     }
+
     // Warehouse ekleme
     @PostMapping("/warehouse")
     public ResponseEntity<String> addStock(@RequestBody Warehouse Warehouse) {
         warehouseService.addWarehouse(Warehouse);
         return ResponseEntity.ok("Stock added successfully");
     }
+
     //warehouse edit
     @PutMapping("/warehouse/{warehouseId}")
-    public ResponseEntity<String> updateWarehouse(@PathVariable Long warehouseId,  @RequestBody WarehouseEditDto updatedWarehouse) {
+    public ResponseEntity<String> updateWarehouse(@PathVariable Long warehouseId, @RequestBody WarehouseEditDto updatedWarehouse) {
 
         if (warehouseService.updateWarehouse(warehouseId, updatedWarehouse)) {
             return ResponseEntity.ok("warehouse updated successfully");
@@ -116,19 +123,22 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update warehouse");
         }
     }
+
     @GetMapping("/getWarehouseName")
     public ResponseEntity<List<String>> getWarehouseName() {
 
         List<String> Warehouse = warehouseService.getWarehouseNames();
-      //  System.out.println(Warehouse);
-        return ResponseEntity.ok(Warehouse) ;
+        //  System.out.println(Warehouse);
+        return ResponseEntity.ok(Warehouse);
     }
+
     // Warehouse alma
     @GetMapping("/getWarehouse")
     public ResponseEntity<List<Warehouse>> getWarehouse() {
         List<Warehouse> Warehouse = warehouseService.getWarehouse();
-        return ResponseEntity.ok(Warehouse) ;
+        return ResponseEntity.ok(Warehouse);
     }
+
     // warehouse silme
     //client silme
     @PostMapping("/deleteWarehouse")
@@ -136,7 +146,7 @@ public class Controller {
         //  System.out.println(deleteDto.getId());
         boolean transferResult = warehouseService.deleteWarehouse(deleteDto.getId());
 
-        if (transferResult==true) {
+        if (transferResult == true) {
             // Transfer başarılıysa
             return ResponseEntity.status(HttpStatus.OK).body(transferResult);
         } else {
@@ -147,13 +157,14 @@ public class Controller {
 
     //client ekleme
     @PostMapping("/clients")
-    public ResponseEntity<String> addClient(@RequestBody ClientDto client){
-      if(clientService.addClient(client)){
-      return ResponseEntity.ok("Client added successfully");
-      }else{
-          return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error of addition client");
-      }
+    public ResponseEntity<String> addClient(@RequestBody ClientDto client) {
+        if (clientService.addClient(client)) {
+            return ResponseEntity.ok("Client added successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error of addition client");
+        }
     }
+
     // client düzenleme
     @PutMapping("/clients/{clientId}")
     public ResponseEntity<String> updateClient(@PathVariable Long clientId, @RequestBody ClientDto clientDto) {
@@ -163,13 +174,14 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update client");
         }
     }
+
     //client silme
     @PostMapping("/clientDelete")
     public ResponseEntity<Boolean> clientDelete(@RequestBody DeleteDto deleteDto) {
         //  System.out.println(deleteDto.getId());
         boolean transferResult = clientService.deleteClient(deleteDto.getId());
 
-        if (transferResult==true) {
+        if (transferResult == true) {
             // Transfer başarılıysa
             return ResponseEntity.status(HttpStatus.OK).body(transferResult);
         } else {
@@ -179,16 +191,16 @@ public class Controller {
     }
 
 
-
     //transactionEkleme
     @PostMapping("/transactions")
-    public ResponseEntity<String> addTransaction(@RequestBody TransactionDto transaction){
-        if(transactionService.addTransaction(transaction)){
+    public ResponseEntity<String> addTransaction(@RequestBody TransactionDto transaction) {
+        if (transactionService.addTransaction(transaction)) {
             return ResponseEntity.ok("Transaction added successfully");
-        }else{
+        } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error of addition Transaction");
         }
     }
+
     //InformationCode sorguları
     @PostMapping("/information-codes")
     public ResponseEntity<String> addInformationCode(@RequestBody InformationCodeDto informationCodeDto) {
@@ -198,25 +210,28 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error updating InformationCode");
         }
     }
+
     //Add bank Account Info
     @PostMapping("/bankAccountInfos")
-    public ResponseEntity<String> addBankAccountInfo (@RequestBody BankAccountInfoDto bankAccountInfo){
-            if(bankAccountInfoService.addBankAccountInfo(bankAccountInfo)){
-                return ResponseEntity.ok("Bank account infos succeed");
-            } else {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bank account infos error");
-            }
+    public ResponseEntity<String> addBankAccountInfo(@RequestBody BankAccountInfoDto bankAccountInfo) {
+        if (bankAccountInfoService.addBankAccountInfo(bankAccountInfo)) {
+            return ResponseEntity.ok("Bank account infos succeed");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Bank account infos error");
+        }
     }
+
     //Add balance
     @PostMapping("/balances")
-    public ResponseEntity<String> addBalance(@RequestBody BalanceDto balance,@RequestParam("name") String name){
-        if(balanceService.addBalance(balance,name)){
-            return ResponseEntity.ok( "Balance succeed");
+    public ResponseEntity<String> addBalance(@RequestBody BalanceDto balance, @RequestParam("name") String name) {
+        if (balanceService.addBalance(balance, name)) {
+            return ResponseEntity.ok("Balance succeed");
         } else {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Balance error");
         }
     }
-//    @PostMapping("/balance/transfer")
+
+    //    @PostMapping("/balance/transfer")
 //    public ResponseEntity<String> balancetransfer(@RequestBody BalanceTransferDto balanceTransferDto) {
 //        String transferResult = balanceTransferService.transfer(balanceTransferDto);
 //
@@ -231,16 +246,17 @@ public class Controller {
 //    }
     @GetMapping("/getBalanceTransferByPage")
     public ResponseEntity<Page<BalanceTransfer>> getBalanceTransfers(@RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "10") int size
-            , @RequestParam("keyword") String keyword ) {
+                                                                     @RequestParam(defaultValue = "10") int size
+            , @RequestParam("keyword") String keyword) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
 
 
-        Page<BalanceTransfer> balance = balanceTransferService.getAllBalanceTransfers(pageable,keyword); // Tüm ürünleri getir
+        Page<BalanceTransfer> balance = balanceTransferService.getAllBalanceTransfers(pageable, keyword); // Tüm ürünleri getir
 
         return new ResponseEntity<>(balance, HttpStatus.OK);
     }
+
     // Quantity ekleme
     @PatchMapping("/{stockId}/updateQuantityIn")
     public ResponseEntity<String> updateQuantityIn(@PathVariable Long stockId, @RequestParam Integer quantityIn) {
@@ -252,16 +268,17 @@ public class Controller {
     }
 
     @PatchMapping("/{clientID}/updateBalance")
-    public ResponseEntity<String> updateBalance(@PathVariable Long clientID,@RequestParam String paymentType, @RequestParam BigDecimal value){
-        if(balanceService.updateBalance(clientID,paymentType,value)){
+    public ResponseEntity<String> updateBalance(@PathVariable Long clientID, @RequestParam String paymentType, @RequestParam BigDecimal value) {
+        if (balanceService.updateBalance(clientID, paymentType, value)) {
             return ResponseEntity.status(HttpStatus.OK).body("Updated UpdateBalance");
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error UpdateBalance");
     }
+
     @PatchMapping("/{clientID}/updateBalance2")
-    public ResponseEntity<String> updateBalance2(@PathVariable Long clientID,@RequestParam String paymentType, @RequestParam BigDecimal value){
-        if(balanceService.updateBalance2(clientID,paymentType,value)){
+    public ResponseEntity<String> updateBalance2(@PathVariable Long clientID, @RequestParam String paymentType, @RequestParam BigDecimal value) {
+        if (balanceService.updateBalance2(clientID, paymentType, value)) {
             return ResponseEntity.status(HttpStatus.OK).body("Updated UpdateBalance");
         }
 
@@ -309,9 +326,10 @@ public class Controller {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("stockName").ascending());
         Page<Stock> urunler = stockService.findAllActiveStocks(pageable);
-      //  System.out.println(urunler);
+        //  System.out.println(urunler);
         return new ResponseEntity<>(urunler, HttpStatus.OK);
     }
+
     @GetMapping("/getStocksBySearch")
     public ResponseEntity<Page<Stock>> getUrunler(
             @RequestParam("keyword") String keyword,
@@ -319,7 +337,7 @@ public class Controller {
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("stockName").ascending());
         Page<Stock> urunler = stockService.searchItems(keyword, pageable);
-     //   System.out.println(urunler);
+        //   System.out.println(urunler);
         return new ResponseEntity<>(urunler, HttpStatus.OK);
     }
 
@@ -328,11 +346,11 @@ public class Controller {
     public ResponseEntity<Page<StockWarehouseDto>> getstockwithid(@RequestParam(defaultValue = "0") int page,
                                                                   @RequestParam(defaultValue = "10") int size,
                                                                   @RequestParam("warehouse_id") Long warehouse_id
-                                                                  ) {
+    ) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("stockName").ascending());
 
-        Page<StockWarehouseDto> stocks = stockService.getStockWithId(warehouse_id,pageable);
+        Page<StockWarehouseDto> stocks = stockService.getStockWithId(warehouse_id, pageable);
 
         if (stocks.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -340,15 +358,16 @@ public class Controller {
             return ResponseEntity.ok(stocks);
         }
     }
+
     @GetMapping("/getStocksByIdSearch")
     public ResponseEntity<Page<StockWarehouseDto>> getStocksByIdSearch(@RequestParam(defaultValue = "0") int page,
-                                                                  @RequestParam(defaultValue = "10") int size,
-                                                                  @RequestParam("warehouse_id") Long warehouse_id,
-                                                                  @RequestParam("keyword") String keyword) {
+                                                                       @RequestParam(defaultValue = "10") int size,
+                                                                       @RequestParam("warehouse_id") Long warehouse_id,
+                                                                       @RequestParam("keyword") String keyword) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("stockName").ascending());
 
-        Page<StockWarehouseDto> stocks = stockService.getStocksByIdSearch(warehouse_id,pageable,keyword);
+        Page<StockWarehouseDto> stocks = stockService.getStocksByIdSearch(warehouse_id, pageable, keyword);
 
         if (stocks.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -356,7 +375,8 @@ public class Controller {
             return ResponseEntity.ok(stocks);
         }
     }
-//    @GetMapping("/getStockWithIdProduct")
+
+    //    @GetMapping("/getStockWithIdProduct")
 //    public ResponseEntity<List<Stock>> getStockWithIdProduct(@RequestParam("warehouse_id") Long warehouse_id) {
 //        List<Stock> stocks  = stockService.getStockWithIdProduct(warehouse_id);
 //
@@ -368,16 +388,17 @@ public class Controller {
 //    }
     @GetMapping("/getStockWithIdProductByPage")
     public ResponseEntity<Page<Stock>> getStockWithIdProductByPage(@RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "10") int size,
+                                                                   @RequestParam(defaultValue = "10") int size,
                                                                    @RequestParam("warehouse_id") Long warehouse_id
-                                                                  ) {
+    ) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("stockName").ascending());
-        Page<Stock> stock = stockService.getStockWithIdProduct(warehouse_id,pageable);
+        Page<Stock> stock = stockService.getStockWithIdProduct(warehouse_id, pageable);
 
 
         return new ResponseEntity<>(stock, HttpStatus.OK);
     }
+
     @GetMapping("/getStockWithIdProductByPageSearch")
     public ResponseEntity<Page<Stock>> getStockWithIdProductByPage(@RequestParam(defaultValue = "0") int page,
                                                                    @RequestParam(defaultValue = "10") int size,
@@ -385,17 +406,18 @@ public class Controller {
                                                                    @RequestParam("keyword") String keyword) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("stockName").ascending());
-        Page<Stock> stock = stockService.searchItemswithid(warehouse_id,pageable,keyword);
+        Page<Stock> stock = stockService.searchItemswithid(warehouse_id, pageable, keyword);
 
 
         return new ResponseEntity<>(stock, HttpStatus.OK);
     }
+
     //stock update
     @PostMapping("/stockUpdate")
     public ResponseEntity<Boolean> addPurchase(@RequestBody StockUpdateDto stockUpdateDto) {
         boolean transferResult = stockService.stockUpdate(stockUpdateDto);
 
-        if (transferResult==true) {
+        if (transferResult == true) {
             // Transfer başarılıysa
             return ResponseEntity.status(HttpStatus.OK).body(transferResult);
         } else {
@@ -409,7 +431,7 @@ public class Controller {
     public ResponseEntity<Boolean> stockUpdate(@RequestBody StockWarehouseUpdateDto stockWarehouseUpdateDto) {
         boolean transferResult = warehouseStockService.updateWarehouseStock(stockWarehouseUpdateDto);
 
-        if (transferResult==true) {
+        if (transferResult == true) {
             // Transfer başarılıysa
             return ResponseEntity.status(HttpStatus.OK).body(transferResult);
         } else {
@@ -423,7 +445,7 @@ public class Controller {
     public ResponseEntity<Boolean> stockUpdate(@RequestBody DeleteDto deleteDto) {
         boolean transferResult = warehouseStockService.deleteWarehouseStock(deleteDto);
 
-        if (transferResult==true) {
+        if (transferResult == true) {
             // Transfer başarılıysa
             return ResponseEntity.status(HttpStatus.OK).body(transferResult);
         } else {
@@ -431,13 +453,14 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(transferResult);
         }
     }
+
     //product delete
     @PostMapping("/productDelete")
     public ResponseEntity<Boolean> productDelete(@RequestBody DeleteDto deleteDto) {
-      //  System.out.println(deleteDto.getId());
+        //  System.out.println(deleteDto.getId());
         boolean transferResult = stockService.deleteStock(deleteDto.getId());
 
-        if (transferResult==true) {
+        if (transferResult == true) {
             // Transfer başarılıysa
             return ResponseEntity.status(HttpStatus.OK).body(transferResult);
         } else {
@@ -447,11 +470,11 @@ public class Controller {
     }
 
     @GetMapping("getBalanceWithClientID")
-    public ResponseEntity<Balance>findBalanceByClientID(@RequestParam("ClientID") Long ClientID){
+    public ResponseEntity<Balance> findBalanceByClientID(@RequestParam("ClientID") Long ClientID) {
         Balance balances = balanceService.findBalanceByClientID(ClientID);
-        if (balances==null){
+        if (balances == null) {
             return ResponseEntity.noContent().build();
-        }else {
+        } else {
             return ResponseEntity.ok(balances);
         }
     }
@@ -467,47 +490,37 @@ public class Controller {
             return ResponseEntity.ok(purchases);
         }
     }
+
     @GetMapping("/getPurchaseInvoiceClientByPage")
     public ResponseEntity<Page<PurchaseDto2>> getPurchaseInvoiceClientByPage(@RequestParam(defaultValue = "0") int page,
                                                                              @RequestParam(defaultValue = "10") int size,
                                                                              @RequestParam("client_id") Long client_id,
-             @RequestParam("keyword") String keyword ) {
+                                                                             @RequestParam("keyword") String keyword) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
-
-        Page<PurchaseDto2> purchase = purchaseService.getPurchaseWithIdAndPages(pageable,keyword,client_id); // Tüm ürünleri getir
-
-
+        Page<PurchaseDto2> purchase = purchaseService.getPurchaseWithIdAndPages(pageable, keyword, client_id); // Tüm ürünleri getir
         return new ResponseEntity<>(purchase, HttpStatus.OK);
     }
-    //  kullanıcıdan  satılanların listesi ödeme için
-    @GetMapping("/getSalesInvoiceClient")
-    public ResponseEntity<List<ExpenseInvoiceDto2>> getClientSalesInvoicewithid(@RequestParam("client_id") Long client_id) {
-        List<ExpenseInvoiceDto2> expenses = expenseInvoiceService.getExpenseWithId(client_id);
-        if (expenses.isEmpty()) {
+
+    //  kullanıcıdan  satılanların listesi ödeme için,
+    @GetMapping("/getClientSalesInvoicewithid")
+    public ResponseEntity<Page<ExpenseInvoiceDto2>> getClientSalesInvoicewithid(@RequestParam(defaultValue = "0") int page,
+                                                                                @RequestParam(defaultValue = "10") int size,
+                                                                                @RequestParam("client_id") Long client_id,
+                                                                                @RequestParam("keyword") String keyword) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
+        Page<ExpenseInvoiceDto2> expenses = expenseInvoiceService.getExpenseWithId(pageable, keyword, client_id);
+        return new ResponseEntity<>(expenses, HttpStatus.OK);
+    }
+
+
+
+    @GetMapping("getClientByName")
+    public ResponseEntity<Client> findClientByName(@RequestParam("name") String name) {
+        Client clients = clientService.getClientWithName(name);
+        if (clients == null) {
             return ResponseEntity.noContent().build();
         } else {
-            return ResponseEntity.ok(expenses);
-        }
-    }
-    @GetMapping("/getSalesInvoiceClientByPage")
-    public ResponseEntity<List<ExpenseInvoiceDto2>> getSalesInvoiceClientByPage(@RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "10") int size,@RequestParam("client_id") Long client_id) {
-        List<ExpenseInvoiceDto2> invoice = expenseInvoiceService.getExpenseWithId(client_id); // Tüm ürünleri getir
-
-        int startIndex = page * size;
-        int endIndex = Math.min(startIndex + size, invoice.size());
-        // İstenen sayfadaki ürünleri al
-        List<ExpenseInvoiceDto2> invoices = invoice.subList(startIndex, endIndex);
-
-        return new ResponseEntity<>(invoices, HttpStatus.OK);
-    }
-    @GetMapping("getClientByName")
-    public ResponseEntity<Client> findClientByName(@RequestParam("name") String name){
-        Client clients = clientService.getClientWithName(name);
-        if (clients==null){
-            return ResponseEntity.noContent().build();
-        }else {
             return ResponseEntity.ok(clients);
         }
     }
@@ -535,6 +548,7 @@ public class Controller {
             return new ResponseEntity<>(stocks, HttpStatus.OK);
         }
     }
+
     @GetMapping("/getWarehouseStockBySearch")
     public ResponseEntity<Page<WarehouseStock>> getWarehouseStockBySearch(
             @RequestParam("keyword") String keyword,
@@ -549,6 +563,7 @@ public class Controller {
         }
 
     }
+
     @GetMapping("/getWarehouseStockBySearchAndWarehouse")
     public ResponseEntity<Page<WarehouseStock>> getWarehouseStockBySearchAndWarehouse(
             @RequestParam("keyword") String keyword,
@@ -556,15 +571,16 @@ public class Controller {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("stock.stockName").ascending());
-        Page<WarehouseStock> stocks = warehouseStockService.searchItemsW(keyword,wharehouse, pageable);
+        Page<WarehouseStock> stocks = warehouseStockService.searchItemsW(keyword, wharehouse, pageable);
         if (stocks.isEmpty()) {
 
             return ResponseEntity.noContent().build();
         } else {
-             return new ResponseEntity<>(stocks, HttpStatus.OK);
+            return new ResponseEntity<>(stocks, HttpStatus.OK);
         }
 
     }
+
     //  warehousedaki stockları alma id ile
     //  warehousedaki stockları alma id ile
     @GetMapping("/getWarehouseStockWithId")
@@ -591,13 +607,14 @@ public class Controller {
 //    }
     @GetMapping("getClientsByPage")
     public ResponseEntity<Page<Client>> getClientsByPage(@RequestParam(defaultValue = "0") int page,
-                                                                 @RequestParam(defaultValue = "10") int size) {
+                                                         @RequestParam(defaultValue = "10") int size) {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("Name").ascending());
         Page<Client> client = clientService.getAllClients(pageable);
 
         return new ResponseEntity<>(client, HttpStatus.OK);
     }
+
     @GetMapping("/getClientsBySearch")
     public ResponseEntity<Page<Client>> getclientssearch(
             @RequestParam("keyword") String keyword,
@@ -605,13 +622,13 @@ public class Controller {
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("name").ascending());
         Page<Client> urunler = clientService.searchItems(keyword, pageable);
-      //  System.out.println(urunler);
+        //  System.out.println(urunler);
         return new ResponseEntity<>(urunler, HttpStatus.OK);
     }
 
     //Transaction Alma
     @GetMapping("getTransactions")
-    public ResponseEntity<List<Transaction>> getAllTransactions(){
+    public ResponseEntity<List<Transaction>> getAllTransactions() {
         List<Transaction> transactions = transactionService.getAllTransactions();
         if (transactions.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -622,7 +639,7 @@ public class Controller {
 
     //Balance Alma
     @GetMapping("/getBalances")
-    public ResponseEntity<List<Balance>> getAllBalances(){
+    public ResponseEntity<List<Balance>> getAllBalances() {
         List<Balance> balances = balanceService.getAllBalances();
         if (balances.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -644,11 +661,11 @@ public class Controller {
 
     @GetMapping("/getPurchasesByPage")
     public ResponseEntity<Page<PurchaseDto2>> getPurchasesByPage(@RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "10") int size,
-             @RequestParam("keyword") String keyword) {
+                                                                 @RequestParam(defaultValue = "10") int size,
+                                                                 @RequestParam("keyword") String keyword) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
 
-        Page<PurchaseDto2> purchase = purchaseService.getAllPurchasesInvoices(pageable,keyword); // Tüm ürünleri getir
+        Page<PurchaseDto2> purchase = purchaseService.getAllPurchasesInvoices(pageable, keyword); // Tüm ürünleri getir
 
         return new ResponseEntity<>(purchase, HttpStatus.OK);
     }
@@ -659,7 +676,7 @@ public class Controller {
 
         boolean transferResult = purchaseService.addPurchase(purchaseDto);
 
-        if (transferResult==true) {
+        if (transferResult == true) {
             // Transfer başarılıysa
             return ResponseEntity.status(HttpStatus.OK).body(transferResult);
         } else {
@@ -667,6 +684,7 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(transferResult);
         }
     }
+
     //sales satın alma faturası eklenecek   gerek kalmadı eskidin artık
 //    @GetMapping("/getSales")
 //    public ResponseEntity<List<ExpenseInvoiceDto2>> getAllSales() {
@@ -679,13 +697,13 @@ public class Controller {
 //    }
     @GetMapping("/getSalesByPage")
     public ResponseEntity<Page<ExpenseInvoiceDto2>> getSalesByPage(@RequestParam(defaultValue = "0") int page,
-                                                                 @RequestParam(defaultValue = "10") int size
-        , @RequestParam("keyword") String keyword
-    ){
+                                                                   @RequestParam(defaultValue = "10") int size
+            , @RequestParam("keyword") String keyword
+    ) {
 
-         // Tüm ürünleri getir
+        // Tüm ürünleri getir
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
-        Page<ExpenseInvoiceDto2> sale = expenseInvoiceService.getAllExpenseInvoice(pageable,keyword);
+        Page<ExpenseInvoiceDto2> sale = expenseInvoiceService.getAllExpenseInvoice(pageable, keyword);
 
 
         return new ResponseEntity<>(sale, HttpStatus.OK);
@@ -694,7 +712,7 @@ public class Controller {
     //sales oluşturma
     @PostMapping("/Sales")
     public ResponseEntity<String> addPurchase(@RequestBody ExpenseInvoiceDto expenseInvoiceDto) {
-      //  System.out.println(expenseInvoiceDto);
+        //  System.out.println(expenseInvoiceDto);
 
         String transferResult = expenseInvoiceService.addExpenseInvoice(expenseInvoiceDto);
 
@@ -720,9 +738,10 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(transferResult);
         }
     }
+
     // get waiting warehouse transfer
     @GetMapping("/warehouseStock/get_waiting_transfer")
-    public ResponseEntity<List<Map<String, String>>>getwaitngtransfer(){
+    public ResponseEntity<List<Map<String, String>>> getwaitngtransfer() {
         List<WarehouseTransfer> warehouseTransfers = warehouseTransferService.getallwaitingtransfer();
         List<Map<String, String>> transferNames = new ArrayList<>();
         for (WarehouseTransfer transfer : warehouseTransfers) {
@@ -730,40 +749,43 @@ public class Controller {
             names.put("id", transfer.getWarehouseTransferId().toString());
             names.put("source", transfer.getSource().getName());
             names.put("target", transfer.getTarget().getName());
-            names.put("quantity",transfer.getQuantity().toString());
-            names.put("comment",transfer.getComment());
-            names.put("approvelstatus",transfer.getApprovalStatus());
+            names.put("quantity", transfer.getQuantity().toString());
+            names.put("comment", transfer.getComment());
+            names.put("approvelstatus", transfer.getApprovalStatus());
             transferNames.add(names);
         }
         return ResponseEntity.ok(transferNames);
     }
+
     // approvelStatus change
     @PatchMapping("/{warehouse_transfer_id}/approvelStatus")
     public ResponseEntity<String> change_approvelStatus(@PathVariable Long warehouse_transfer_id, @RequestParam String status) {
-        if(Objects.equals(status, "onay")){
-            warehouseTransferService.change_status(warehouse_transfer_id,status);
+        if (Objects.equals(status, "onay")) {
+            warehouseTransferService.change_status(warehouse_transfer_id, status);
             return ResponseEntity.ok("onaylandı");
-        }
-        else if(Objects.equals(status, "red")){
-            warehouseTransferService.change_status(warehouse_transfer_id,status);
+        } else if (Objects.equals(status, "red")) {
+            warehouseTransferService.change_status(warehouse_transfer_id, status);
             return ResponseEntity.ok("red edildi ve miktar kaynaga tekrardan aktarıldı");
-        }
-        else
+        } else
             return ResponseEntity.badRequest().body("yanlış değer");
 
     }
+
     @GetMapping("/getDailyExpenses")
     public List<Object> getDailyExpenses(@RequestParam("date") LocalDateTime date) {
         return reportService.getDailyExpenses(date);
     }
+
     @GetMapping("/getWeeklyPurchaseInvoices")
     public List<Object> getWeeklyPurchaseInvoices(@RequestParam("startDate") LocalDateTime startDate, @RequestParam("endDate") LocalDateTime endDate) {
-        return reportService.getWeeklyPurchaseInvoices(startDate,endDate);
+        return reportService.getWeeklyPurchaseInvoices(startDate, endDate);
     }
+
     @GetMapping("/getStockCode")
     public long getStockCode() {
         return stockService.getStockCode();
     }
+
     //  stocklar  sales remaining
     @GetMapping("/getStocksRemainigById")
     public ResponseEntity<String> getStocksRemainigById(@RequestParam("stock_id") Long warehouse_id) {
@@ -775,6 +797,7 @@ public class Controller {
             return ResponseEntity.ok(stocks);
         }
     }
+
     @GetMapping("/getUserInfos")
     public ResponseEntity<String> getUserInfos() {
         String currentUsername = getCurrentUsername();
@@ -791,18 +814,20 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
     }
+
     @PostMapping("/editUsername")
     public ResponseEntity<String> editUsername(@RequestBody UserInfoEditDto editUsernameRequest) {
         String currentUsername = getCurrentUsername();
-        boolean result = userService.setUsername(currentUsername, editUsernameRequest.getInfo1(),editUsernameRequest.getInfo2());
+        boolean result = userService.setUsername(currentUsername, editUsernameRequest.getInfo1(), editUsernameRequest.getInfo2());
 
-      //  System.out.println(result);
+        //  System.out.println(result);
         if (result) {
             return ResponseEntity.ok("Username and Email updated successfully");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User not found");
         }
     }
+
     @PostMapping("/editPassword")
     public ResponseEntity<String> editPassword(@RequestBody UserInfoEditDto editPasswordRequest) {
         String currentUsername = getCurrentUsername();
@@ -824,7 +849,6 @@ public class Controller {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("User account not found");
         }
     }
-
 
 
     private String getCurrentUsername() {
