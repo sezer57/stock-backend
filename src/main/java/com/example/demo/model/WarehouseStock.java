@@ -63,6 +63,17 @@ public class WarehouseStock {
         this.quantityBlocked = 0;
         this.usableQuantity = 0;
     }
+    public WarehouseStock( Warehouse warehouse,Stock stock,Integer unitType){
+        this.warehouse=warehouse;
+        this.stock=stock;
+        this.quantityIn = 0;
+        this.quantityOut = 0;
+        this.quantityTransfer = 0;
+        this.quantityRemaining = 0;
+        this.quantityReserved = 0;
+        this.quantityBlocked = 0;
+        this.usableQuantity = 0;
+    }
 
 
 }

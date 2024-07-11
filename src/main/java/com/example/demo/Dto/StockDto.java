@@ -16,7 +16,8 @@ public class StockDto {
     private String barcode;
     private String groupName;
     private String middleGroupName;
-    private String unit;
+    private Integer unit;
+    private String unitType;
     private BigDecimal salesPrice;
     private BigDecimal purchasePrice;
     private List<Long> warehouse_id;

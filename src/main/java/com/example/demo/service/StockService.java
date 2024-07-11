@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -32,25 +33,24 @@ public class StockService {
         this.warehouseStockService = warehouseStockService;
     }
 
-    public boolean addStock(StockDto stock) {
+    public String addStock(StockDto stock) {
         if(stock.getWarehouse_id().isEmpty()){
-            return false;
-        }
-        else
-        {
+            return "warehouse empty error";
+        } else {
             List<Long> warehouseIds = stock.getWarehouse_id();
             for (Long warehouseId : warehouseIds) {
                 try {
                     Long warehouseIdLong = Long.valueOf(warehouseId);
                     Optional<Warehouse> warehouseOptional = warehouseRepository.findById(warehouseIdLong);
                     if (warehouseOptional.isEmpty()) {
-                        return false; // Warehouse bulunamadı, işlem başarısız
+                        return "warehouse empty error"; // Warehouse bulunamadı, işlem başarısız
                     } else {
-                        if (isDuplicateStock(warehouseId, stock.getStockName())) {
-                            return false; // Aynı depoda aynı isimde stok var
+                        if (isDuplicateStock(warehouseId, stock.getStockCode(), stock.getStockName(), stock.getBarcode())) {
+                            return "same stockcode , stockname or barcode error"; // Aynı depoda aynı stok kodu, isim veya barkod ile stok var
                         }
                         Warehouse warehouse = warehouseOptional.get();
                         Stock newStock = new Stock(
+                                stock.getUnitType(),
                                 stock.getUnit(),
                                 stock.getStockCode(),
                                 stock.getStockName(),
@@ -65,15 +65,24 @@ public class StockService {
                         stockRepository.save(newStock);
                         WarehouseStock warehouseStock = new WarehouseStock(warehouse, newStock);
                         warehouseStockRepository.save(warehouseStock);
-                                           }
+                    }
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                     // Sayısal değere dönüştürmede hata, işlem başarısız
-                    return false;
+                    return "false";
                 }
             }
-            return true;
+            return "Succes";
         }
+    }
+    private boolean isDuplicateStock(Long warehouseId, String stockName) {
+
+        return stockRepository.existsStocksByWarehouseWarehouseIdAndStockName(Long.valueOf(warehouseId.toString()), stockName);
+    }
+    private boolean isDuplicateStock(Long warehouseId, String stockCode, String stockName, String barcode) {
+        return stockRepository.existsStocksByWarehouseWarehouseIdAndStockCode(warehouseId, stockCode) ||
+                stockRepository.existsStocksByWarehouseWarehouseIdAndStockName(warehouseId, stockName) ||
+                stockRepository.existsStocksByWarehouseWarehouseIdAndBarcode(warehouseId, barcode);
     }
 
     public List<Stock> getAllStocks() {
@@ -103,13 +112,20 @@ public class StockService {
     }
 
     private StockWarehouseDto convertToStockWarehouseDto(Stock stock) {
+        double quantity = 0;
+        if(Objects.equals(stock.getUnitType(), "Carton"))
+        {
+            quantity= (double) warehouseStockService.findWarehouseStockQuantity(stock.getStockId()) /stock.getUnit();
+        }
         return new StockWarehouseDto(
                 stock.getStockId(),
                 stock.getStockName(),
                 stock.getSalesPrice(),
                 stock.getPurchasePrice(),
                 stock.getWarehouse().getWarehouseId(),
-                warehouseStockService.findWarehouseStockQuantity(stock.getStockId()));
+                quantity,
+                stock.getUnitType(),
+                stock.getUnit());
     }
     public Stock getstockjustid(Long id){
         return stockRepository.findStockByStockId(id);
@@ -125,15 +141,13 @@ public class StockService {
         s.setStockName(stockUpdateDto.getStockName());
         s.setSalesPrice(stockUpdateDto.getSalesPrice());
         s.setUnit(stockUpdateDto.getUnit());
+        s.setUnitType(stockUpdateDto.getUnitType());
         s.setPurchasePrice(stockUpdateDto.getPurchasePrice());
         stockRepository.save(s);
         return true;
     }
 
-    private boolean isDuplicateStock(Long warehouseId, String stockName) {
 
-        return stockRepository.existsStocksByWarehouseWarehouseIdAndStockName(Long.valueOf(warehouseId.toString()), stockName);
-    }
 
    // public boolean deleteStock(DeleteDto deleteDto) {
    //     Stock s = stockRepository.findStockByStockId(deleteDto.getId());
@@ -150,7 +164,8 @@ public class StockService {
     }
 
     public long getStockCode(){
-        return stockRepository.count()+1;
+        Long a= Long.valueOf("1");
+        return stockRepository.countStocksByWarehouse_WarehouseId(a)+1;
     }
 
     public String getStocksRemainigById(Long warehouse_id) {

@@ -99,10 +99,11 @@ public class Controller {
     // Stock ekleme
     @PostMapping("/stocks")
     public ResponseEntity<String> addStock(@RequestBody StockDto stock) {
-        if (stockService.addStock(stock)) {
+        String result = stockService.addStock(stock);
+        if (result=="Succes") {
             return ResponseEntity.ok("Stock added successfully");
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Stock not add");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
         }
     }
 
@@ -711,12 +712,12 @@ public class Controller {
 
     //sales oluşturma
     @PostMapping("/Sales")
-    public ResponseEntity<String> addPurchase(@RequestBody ExpenseInvoiceDto expenseInvoiceDto) {
+    public ResponseEntity<ExpenseInvoiceDto2> addPurchase(@RequestBody ExpenseInvoiceDto expenseInvoiceDto) {
         //  System.out.println(expenseInvoiceDto);
 
-        String transferResult = expenseInvoiceService.addExpenseInvoice(expenseInvoiceDto);
+        ExpenseInvoiceDto2 transferResult = expenseInvoiceService.addExpenseInvoice(expenseInvoiceDto);
 
-        if (Objects.equals(transferResult, "success")) {
+        if (transferResult!=null) {
             // Transfer başarılıysa
             return ResponseEntity.status(HttpStatus.OK).body(transferResult);
         } else {

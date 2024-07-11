@@ -13,7 +13,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface StockRepository extends JpaRepository<Stock,Long> {
+    boolean existsStocksByWarehouseWarehouseIdAndStockCode(Long warehouseId, String stockName);
     boolean existsStocksByWarehouseWarehouseIdAndStockName(Long warehouseId, String stockName);
+    boolean existsStocksByWarehouseWarehouseIdAndBarcode(Long warehouseId, String stockName);
+    Integer countStocksByWarehouse_WarehouseId(Long warehouseId);
+
     Stock findStockByStockId(Long id);
     Page<Stock> findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalse(Long warehouseId,Pageable pageable) ;
     List<Stock> getStocksByRegistrationDate(LocalDateTime  date);

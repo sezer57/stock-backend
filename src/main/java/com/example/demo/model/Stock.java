@@ -38,7 +38,9 @@ public class Stock {
     private String middleGroupName;
 
     @Column(name = "unit", nullable = false)
-    private String unit;
+    private Integer unit;
+    @Column(name = "unitType", nullable = false)
+    private String unitType;
 
     @Column(name = "sales_price", nullable = false)
     private BigDecimal salesPrice;
@@ -55,7 +57,8 @@ public class Stock {
 
     public Stock() {}
 
-    public Stock(String unit, String stockCode, String stockName, String groupName, String middleGroupName, String barcode, BigDecimal salesPrice, Warehouse p, BigDecimal purchasePrice, LocalDateTime registrationDate) {
+    public Stock(String unitType,Integer unit, String stockCode, String stockName, String groupName, String middleGroupName, String barcode, BigDecimal salesPrice, Warehouse p, BigDecimal purchasePrice, LocalDateTime registrationDate) {
+        this.unitType=unitType;
         this.unit = unit;
         this.stockCode = stockCode;
         this.stockName = stockName;

@@ -34,7 +34,7 @@ public class ExpenseInvoiceService {
         this.warehouseStockService = warehouseStockService;
     }
 
-    public String addExpenseInvoice(ExpenseInvoiceDto expenseInvoice) {
+    public ExpenseInvoiceDto2 addExpenseInvoice(ExpenseInvoiceDto expenseInvoice) {
         List<Long> stockCodes = expenseInvoice.getStockCodes();
         List<Integer> quantities = expenseInvoice.getQuantity();
         List<BigDecimal> prices = expenseInvoice.getPrice();
@@ -89,7 +89,7 @@ public class ExpenseInvoiceService {
         e.setInvoices(invoices); // Set the list of invoices for ExpenseInvoice object
 
         expenseInvoiceRepository.save(e);
-        return "success";
+        return convertToDTO(e);
 
     }
 
