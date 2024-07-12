@@ -113,9 +113,10 @@ public class StockService {
 
     private StockWarehouseDto convertToStockWarehouseDto(Stock stock) {
         double quantity = 0;
+        Integer quantity_remaing = 0;
         if(Objects.equals(stock.getUnitType(), "Carton"))
-        {
-            quantity= (double) warehouseStockService.findWarehouseStockQuantity(stock.getStockId()) /stock.getUnit();
+        {quantity_remaing=warehouseStockService.findWarehouseStockQuantity(stock.getStockId());
+            quantity= (double)  quantity_remaing/stock.getUnit();
         }
         return new StockWarehouseDto(
                 stock.getStockId(),
@@ -124,6 +125,7 @@ public class StockService {
                 stock.getPurchasePrice(),
                 stock.getWarehouse().getWarehouseId(),
                 quantity,
+                quantity_remaing,
                 stock.getUnitType(),
                 stock.getUnit());
     }
@@ -184,5 +186,9 @@ public class StockService {
     public Page<Stock> searchItemswithid(Long warehouse_id, Pageable pageable, String keyword) {
       return  stockRepository.findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalseAndStockNameContaining(warehouse_id,pageable,keyword);
 
+    }
+
+    public Integer getQuantityTypeCount(Long stockid){
+        return stockRepository.getStockUnitByStockId(stockid);
     }
 }

@@ -17,6 +17,7 @@ public class PurchaseDto2 {
     private List<BigDecimal> price;
     private List<Double> vat;
     private List<Integer> quantity;
+    private List<String> quantity_type;
     private String autherized;
     private String clientName;
     private String clientAdress;

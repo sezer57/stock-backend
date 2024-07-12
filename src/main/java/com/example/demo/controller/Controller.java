@@ -673,11 +673,11 @@ public class Controller {
 
     //purchase oluşturma
     @PostMapping("/purchase")
-    public ResponseEntity<Boolean> addPurchases(@RequestBody PurchaseDto purchaseDto) {
+    public ResponseEntity<PurchaseDto2> addPurchases(@RequestBody PurchaseDto purchaseDto) {
 
-        boolean transferResult = purchaseService.addPurchase(purchaseDto);
+        PurchaseDto2 transferResult = purchaseService.addPurchase(purchaseDto);
 
-        if (transferResult == true) {
+        if (transferResult!=null) {
             // Transfer başarılıysa
             return ResponseEntity.status(HttpStatus.OK).body(transferResult);
         } else {

@@ -15,6 +15,7 @@ public class ExpenseInvoiceDto2 {
     private List<String> stockName;
     private List<String> price;
     private List<String> quantity;
+    private List<String> quantity_type;
     private List<Double> vat;
     private String autherized;
     private String clientName;

@@ -28,6 +28,8 @@ public class InvoiceP {
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
+    @Column(name = "quantity_type", nullable = false)
+    private String quantity_type;
 
     @Column(name = "price", nullable = false)
     private BigDecimal price;
@@ -37,13 +39,14 @@ public class InvoiceP {
     public InvoiceP(){}
 
 
-    public InvoiceP(Stock stock, Integer quantity, BigDecimal price,Double vat) {
+    public InvoiceP(Stock stock, Integer quantity, BigDecimal price,Double vat,String quantity_type) {
 
         this.purchase = purchase;
         this.stock = stock;
         this.quantity = quantity;
         this.price = price;
         this.vat =vat;
+        this.quantity_type=quantity_type;
     }
 
 

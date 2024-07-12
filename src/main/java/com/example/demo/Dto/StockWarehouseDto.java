@@ -12,17 +12,19 @@ public class StockWarehouseDto {
     public String stockName;
     public Long warehouseId;
     public Double quantity;
+    public Integer quantity_remaing;
     public String type;
     public Integer typeS;
     public BigDecimal salesPrice;
     public BigDecimal purchasePrice;
-    public StockWarehouseDto(Long stockId, String stockName,BigDecimal salesPrice,BigDecimal purchasePrice, Long warehouseId, Double quantity,String type,Integer typeS) {
+    public StockWarehouseDto(Long stockId, String stockName,BigDecimal salesPrice,BigDecimal purchasePrice, Long warehouseId, Double quantity,Integer quantity_remaing,String type,Integer typeS) {
         this.stockId = stockId;
         this.stockName = stockName;
         this.salesPrice=salesPrice;
         this.purchasePrice=purchasePrice;
         this.warehouseId = warehouseId;
         this.quantity=quantity;
+        this.quantity_remaing=quantity_remaing;
         this.type=type;
         this.typeS=typeS;
     }

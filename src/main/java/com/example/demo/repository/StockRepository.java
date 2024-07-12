@@ -17,7 +17,8 @@ public interface StockRepository extends JpaRepository<Stock,Long> {
     boolean existsStocksByWarehouseWarehouseIdAndStockName(Long warehouseId, String stockName);
     boolean existsStocksByWarehouseWarehouseIdAndBarcode(Long warehouseId, String stockName);
     Integer countStocksByWarehouse_WarehouseId(Long warehouseId);
-
+    @Query("SELECT s.unit FROM Stock s WHERE s.stockId = :stockId")
+    Integer getStockUnitByStockId(Long stockId);
     Stock findStockByStockId(Long id);
     Page<Stock> findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalse(Long warehouseId,Pageable pageable) ;
     List<Stock> getStocksByRegistrationDate(LocalDateTime  date);

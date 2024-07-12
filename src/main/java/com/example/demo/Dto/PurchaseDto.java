@@ -15,6 +15,7 @@ import java.util.List;
 public class PurchaseDto {
 
     private List<Integer> quantity;
+    private List<String> quantity_type;
     private List<Long> stockCode;
     private Long clientId;
     private String autherized;

@@ -37,7 +37,7 @@ public class PurchaseService {
         this.warehouseService = warehouseService;
     }
 
-    public boolean addPurchase(PurchaseDto purchase) {
+    public PurchaseDto2 addPurchase(PurchaseDto purchase) {
 
         PurchaseInvoice p = new PurchaseInvoice(
                 clientService.getClientWithId(purchase.getClientId()),
@@ -46,6 +46,7 @@ public class PurchaseService {
                 purchase.getAutherized()
         );
         List<Integer> quantities = purchase.getQuantity();
+        List<String> quantities_type = purchase.getQuantity_type();
         List<BigDecimal> prices = purchase.getPrice();
         double vats = purchase.getVat().doubleValue();
         List<Long> stockCodes = purchase.getStockCode();
@@ -65,14 +66,23 @@ public class PurchaseService {
 
         for (int i = 0; i < stockCodes.size(); i++) {
 
-            warehouseStockService.updateQuantityIn(stockCodes.get(i), quantities.get(i));
+            if(quantities_type.get(i).equals("Carton")){
+                //backende stock sayısını eğer carton olarak satıldıysa ona göre artırma
 
+                warehouseStockService.updateQuantityIn(stockCodes.get(i), (quantities.get(i)*stockService.getQuantityTypeCount(stockCodes.get(i))));
+            }
+            else if(quantities_type.get(i).equals("Dozen")){
+                warehouseStockService.updateQuantityIn(stockCodes.get(i), (quantities.get(i)*12));
+            }
+            else {
+                warehouseStockService.updateQuantityIn(stockCodes.get(i), quantities.get(i));
+            }
         }
         List<InvoiceP> invoices = new ArrayList<>();
         for (int i = 0; i < stockCodes.size(); i++) {
             double price = prices.get(i).doubleValue();
             Stock stock = stockService.getstockjustid(stockCodes.get(i));
-            InvoiceP invoice = new InvoiceP(stock, quantities.get(i),BigDecimal.valueOf(price * (1 + vats/100)),vats);
+            InvoiceP invoice = new InvoiceP(stock, quantities.get(i),BigDecimal.valueOf(price * (1 + vats/100)),vats,quantities_type.get(i));
             invoice.setPurchase(p); // Set the ExpenseInvoice object
             invoices.add(invoice);
         }
@@ -81,7 +91,7 @@ public class PurchaseService {
 
 
         purchaseRepository.save(p);
-        return true;
+        return convertToDTO(p);
     }
 
     public List<PurchaseDto2> getAllPurchases() {
@@ -109,6 +119,9 @@ public class PurchaseService {
         dto.setAutherized(purchases.getAutherized());
         dto.setQuantity(purchases.getInvoices().stream()
                 .map(InvoiceP::getQuantity) // Convert Integer to String
+                .collect(Collectors.toList()));
+        dto.setQuantity_type(purchases.getInvoices().stream()
+                .map(InvoiceP::getQuantity_type)
                 .collect(Collectors.toList()));
         dto.setDate(purchases.getDate());
         dto.setClientName(purchases.getClientId().getName()+" "+purchases.getClientId().getSurname());
