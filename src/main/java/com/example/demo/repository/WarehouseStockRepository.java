@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.Stock;
+import com.example.demo.model.Warehouse;
 import com.example.demo.model.WarehouseStock;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,6 +22,7 @@ public interface WarehouseStockRepository extends JpaRepository<WarehouseStock,L
     @Query("SELECT ws FROM WarehouseStock ws WHERE ws.stock.stockId = :stockId AND ws.stock.isDeleted = false")
     WarehouseStock findWarehouseStockByStockStockId(@Param("stockId") Long stockId);
 
+
     // Silinmemiş Stock adı ve Warehouse id'sine göre WarehouseStock'ı getiren sorgu
     @Query("SELECT ws FROM WarehouseStock ws WHERE ws.stock.stockName = :stockName AND ws.warehouse.warehouseId = :warehouseId AND ws.stock.isDeleted = false")
     WarehouseStock findWarehouseStockByStockStockNameAndWarehouseWarehouseId(@Param("stockName") String stockName, @Param("warehouseId") Long warehouseId);
@@ -32,4 +34,11 @@ public interface WarehouseStockRepository extends JpaRepository<WarehouseStock,L
     Page<WarehouseStock> findAllActiveStocks(Pageable pageable);
     Page<WarehouseStock> findWarehouseStockByStockStockNameContainingAndWarehouseNameContainingAndStockIsDeletedIsFalse(String keyword,String warehouseName, Pageable pageable);
     Page<WarehouseStock> findWarehouseStockByStockStockNameContainingAndStockIsDeletedIsFalse(String keyword, Pageable pageable);
+
+    @Query("SELECT ws.stock.stockId FROM WarehouseStock ws")
+    List<Long> findAllStockIds();
+
+
+
+
 }

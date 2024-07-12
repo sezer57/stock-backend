@@ -1,12 +1,16 @@
 package com.example.demo.service;
 
 import com.example.demo.Dto.WarehouseEditDto;
-import com.example.demo.model.Client;
+import com.example.demo.model.Stock;
 import com.example.demo.model.Warehouse;
+import com.example.demo.model.WarehouseStock;
+import com.example.demo.repository.StockRepository;
 import com.example.demo.repository.WarehouseRepository;
+import com.example.demo.repository.WarehouseStockRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,17 +18,46 @@ import java.util.stream.Collectors;
 @Service
 public class WarehouseService {
     private final WarehouseRepository warehouseRepository;
+    private final StockRepository stockRepository;
+    private final WarehouseStockRepository warehouseStockRepository;
 
-    public WarehouseService(WarehouseRepository warehouseRepository) {
+    public WarehouseService(WarehouseRepository warehouseRepository, StockRepository stockRepository, WarehouseStockRepository warehouseStockRepository) {
         this.warehouseRepository = warehouseRepository;
+        this.stockRepository = stockRepository;
+        this.warehouseStockRepository = warehouseStockRepository;
     }
 
-    public void addWarehouse(Warehouse warehouse) {
-        if(warehouseRepository.existsWarehouseByName(warehouse.getName())){
+//    public void addWarehouse(Warehouse warehouse) {
+//        if(warehouseRepository.existsWarehouseByName(warehouse.getName())){
+//            return;
+//        }
+//        warehouseRepository.save(warehouse);
+//    }
+public void addWarehouse(Warehouse warehouse) {
+    try {
+        if (warehouseRepository.existsWarehouseByName(warehouse.getName())) {
             return;
         }
         warehouseRepository.save(warehouse);
+        List<Stock> stocks = stockRepository.findAll();
+        List<String> warehouseStockCode = new ArrayList<>();
+
+        for (Stock stock : stocks) {
+            if (!warehouseStockCode.contains(stock.getStockCode())) {
+                WarehouseStock warehouseStock = new WarehouseStock(warehouse, stock);
+                warehouseStockRepository.save(warehouseStock);
+                warehouseStockCode.add(stock.getStockCode());
+            }
+        }
+    } catch (Exception e) {
+        System.err.println(e.getMessage());
     }
+}
+
+
+
+
+
     public List<Warehouse> getWarehouse(){
         return warehouseRepository.findWarehouseByIsDeletedFalse();
     }
