@@ -38,6 +38,7 @@ public class ExpenseInvoiceService {
         List<Long> stockCodes = expenseInvoice.getStockCodes();
         List<Integer> quantities = expenseInvoice.getQuantity();
         List<BigDecimal> prices = expenseInvoice.getPrice();
+        List<String> quantities_type = expenseInvoice.getQuantity_type();
         double vats = expenseInvoice.getVat().doubleValue();
 //      if(stockCodes.size()!=quantities.size()&&prices.size()!=quantities.size()&&stockCodes.size()!=prices.size()){
 //          return "size error ";
@@ -54,7 +55,20 @@ public class ExpenseInvoiceService {
             Long stockCode = stockCodes.get(i);
             Integer quantity = quantities.get(i);
 
-            warehouseStockService.updateQuantityOut(stockCode, quantity);
+
+            if(quantities_type.get(i).equals("Carton")){
+                //backende stock sayısını eğer carton olarak satıldıysa ona göre artırma
+
+                warehouseStockService.updateQuantityIn(stockCode, (quantity*stockService.getQuantityTypeCount(stockCodes.get(i))));
+            }
+            else if(quantities_type.get(i).equals("Dozen")){
+                warehouseStockService.updateQuantityIn(stockCode, quantity*12);
+
+            }
+            else {
+                warehouseStockService.updateQuantityOut(stockCode, quantity);
+            }
+
 //          if (!warehouseStockService.updateQuantityOut(stockCode, quantity)) {
 //              return "not enough products in warehouse";
 //          }
@@ -81,7 +95,7 @@ public class ExpenseInvoiceService {
         for (int i = 0; i < stockCodes.size(); i++) {
             double price = prices.get(i).doubleValue();
             Stock stock = stockService.getstockjustid(stockCodes.get(i));
-            Invoice invoice = new Invoice(stock, quantities.get(i), BigDecimal.valueOf(price * (1 + vats / 100)), vats);
+            Invoice invoice = new Invoice(stock, quantities.get(i), BigDecimal.valueOf(price * (1 + vats / 100)), vats,quantities_type.get(i));
             invoice.setExpense(e); // Set the ExpenseInvoice object
             invoices.add(invoice);
         }
@@ -117,6 +131,9 @@ public class ExpenseInvoiceService {
                 .collect(Collectors.toList()));
         dto.setQuantity(expenseInvoice.getInvoices().stream()
                 .map(invoice -> invoice.getQuantity().toString()) // Convert Integer to String
+                .collect(Collectors.toList()));
+        dto.setQuantity_type(expenseInvoice.getInvoices().stream()
+                .map(Invoice::getQuantity_type)
                 .collect(Collectors.toList()));
         dto.setVat(expenseInvoice.getInvoices().stream()
                 .map(Invoice::getVat) // Convert Integer to String

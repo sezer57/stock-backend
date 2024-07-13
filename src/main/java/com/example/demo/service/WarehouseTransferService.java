@@ -37,30 +37,79 @@ public class WarehouseTransferService {
         Integer oldQt=sourceWarehouseStock.getQuantityTransfer();
         Integer oldQI=sourceWarehouseStock.getQuantityIn();
         Integer oldQR=sourceWarehouseStock.getQuantityRemaining();
-        if(sourceWarehouseStock.getQuantityRemaining()<warehouseTransferDto.getQuantity()){
-            return "There are not enough products in the target warehouse";
+        if(warehouseTransferDto.getQuantity_type().equals("Carton")){
+            //backende stock sayısını eğer carton olarak satıldıysa ona göre artırma
+
+            if(sourceWarehouseStock.getQuantityRemaining()<warehouseTransferDto.getQuantity()){
+                return "There are not enough products in the target warehouse";
+            }
+
+            if(oldQI==0){
+                return "There are not enough products in the warehouse";
+            }
+            if (oldQI<oldQt){
+                return "There are not enough products in the warehouse";
+            }
+            if(oldQR==0){
+                return "There is not enough product left in the warehouse";
+            }
+
+
+            sourceWarehouseStock.setQuantityRemaining(oldQR-warehouseTransferDto.getQuantity()*stockService.getQuantityTypeCount( s.getStockId()));
+            sourceWarehouseStock.setQuantityTransfer(oldQt+warehouseTransferDto.getQuantity()*stockService.getQuantityTypeCount( s.getStockId()));
+            warehouseStockService.savedb(sourceWarehouseStock);
+
+        }
+        else if(warehouseTransferDto.getQuantity_type().equals("Dozen")){
+            if(sourceWarehouseStock.getQuantityRemaining()<warehouseTransferDto.getQuantity()){
+                return "There are not enough products in the target warehouse";
+            }
+
+            if(oldQI==0){
+                return "There are not enough products in the warehouse";
+            }
+            if (oldQI<oldQt){
+                return "There are not enough products in the warehouse";
+            }
+            if(oldQR==0){
+                return "There is not enough product left in the warehouse";
+            }
+
+
+            sourceWarehouseStock.setQuantityRemaining(oldQR-warehouseTransferDto.getQuantity()*12);
+            sourceWarehouseStock.setQuantityTransfer(oldQt+warehouseTransferDto.getQuantity()*12);
+            warehouseStockService.savedb(sourceWarehouseStock);
+
+        }
+        else {
+            if(sourceWarehouseStock.getQuantityRemaining()<warehouseTransferDto.getQuantity()){
+                return "There are not enough products in the target warehouse";
+            }
+
+            if(oldQI==0){
+                return "There are not enough products in the warehouse";
+            }
+            if (oldQI<oldQt){
+                return "There are not enough products in the warehouse";
+            }
+            if(oldQR==0){
+                return "There is not enough product left in the warehouse";
+            }
+
+
+            sourceWarehouseStock.setQuantityRemaining(oldQR-warehouseTransferDto.getQuantity());
+            sourceWarehouseStock.setQuantityTransfer(oldQt+warehouseTransferDto.getQuantity());
+            warehouseStockService.savedb(sourceWarehouseStock);
         }
 
-        if(oldQI==0){
-            return "There are not enough products in the warehouse";
-        }
-        if (oldQI<oldQt){
-            return "There are not enough products in the warehouse";
-        }
-        if(oldQR==0){
-            return "There is not enough product left in the warehouse";
-        }
 
-
-        sourceWarehouseStock.setQuantityRemaining(oldQR-warehouseTransferDto.getQuantity());
-        sourceWarehouseStock.setQuantityTransfer(oldQt+warehouseTransferDto.getQuantity());
-        warehouseStockService.savedb(sourceWarehouseStock);
 
         WarehouseTransfer newWarehouseTransfer= new WarehouseTransfer(
                 sourceWarehouseStock.getWarehouse(),
                 targetWarehouseStock.getWarehouse(),
                 warehouseTransferDto.getStock_id(),
                 warehouseTransferDto.getQuantity(),
+                warehouseTransferDto.getQuantity_type(),
                 warehouseTransferDto.getDate(),
                 warehouseTransferDto.getComment(),
                 "Onay Bekliyor"

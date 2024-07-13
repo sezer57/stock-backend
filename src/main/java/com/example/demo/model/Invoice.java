@@ -28,7 +28,8 @@ public class Invoice {
 
     @Column(name = "quantity", nullable = false)
     private Integer quantity;
-
+    @Column(name = "quantity_type", nullable = false)
+    private String quantity_type;
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
@@ -36,13 +37,14 @@ public class Invoice {
     private Double vat;
     public Invoice(){}
 
-    public Invoice(    Stock stock, Integer quantity, BigDecimal price,Double vat) {
+    public Invoice(    Stock stock, Integer quantity, BigDecimal price,Double vat,String quantity_type) {
 
         this.expense = expense;
         this.stock = stock;
         this.quantity = quantity;
         this.price = price;
         this.vat = vat;
+        this.quantity_type = quantity_type;
     }
 
 
