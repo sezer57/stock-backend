@@ -23,7 +23,7 @@ public interface StockRepository extends JpaRepository<Stock,Long> {
     Page<Stock> findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalse(Long warehouseId,Pageable pageable) ;
     List<Stock> getStocksByRegistrationDate(LocalDateTime  date);
     List<Stock> getStocksByRegistrationDateBetween(LocalDateTime  startDate, LocalDateTime endDate);
-    List<Stock> findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalse(Long warehouseId);
+ //   Page<Stock> findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalse(Long warehouseId,Pageable pageable);
    // @Query("SELECT s FROM Stock s WHERE s.isDeleted = false")
   //  List<Stock> findAllActiveStocks();
   //  List<Stock> findStocksByIsDeletedIsFalse();

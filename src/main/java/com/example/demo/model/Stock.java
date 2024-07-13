@@ -55,6 +55,10 @@ public class Stock {
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 
+    @Column(name = "status", nullable = false)
+    private boolean statusStock = false;
+
+
     public Stock() {}
 
     public Stock(String unitType,Integer unit, String stockCode, String stockName, String groupName, String middleGroupName, String barcode, BigDecimal salesPrice, Warehouse p, BigDecimal purchasePrice, LocalDateTime registrationDate) {
@@ -70,5 +74,9 @@ public class Stock {
         this.purchasePrice = purchasePrice;
         this.registrationDate = registrationDate;
         this.isDeleted = false;
+
     }
+
+
+
 }

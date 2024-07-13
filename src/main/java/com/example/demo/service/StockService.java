@@ -93,30 +93,39 @@ public class StockService {
     }
 
     public Page<StockWarehouseDto> getStockWithId(Long warehouse_transfer_id, Pageable pageable) {
-        List<Stock> stocks = stockRepository.findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalse(warehouse_transfer_id);
+        Page<Stock> stocks = stockRepository.findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalse(warehouse_transfer_id, pageable);
 
         List<StockWarehouseDto> stockWarehouseDtos = stocks.stream()
                 .map(this::convertToStockWarehouseDto)
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(stockWarehouseDtos, pageable, stockWarehouseDtos.size());
+        return new PageImpl<>(stockWarehouseDtos, pageable, stocks.getTotalElements());
     }
-    public Page<StockWarehouseDto> getStocksByIdSearch(Long warehouse_transfer_id, Pageable pageable,String keyword) {
-        Page<Stock> stocks = stockRepository.findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalseAndStockNameContaining(warehouse_transfer_id,pageable,keyword);
+
+    public Page<StockWarehouseDto> getStocksByIdSearch(Long warehouse_transfer_id, Pageable pageable, String keyword) {
+        Page<Stock> stocks = stockRepository.findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalseAndStockNameContaining(warehouse_transfer_id, pageable, keyword);
 
         List<StockWarehouseDto> stockWarehouseDtos = stocks.stream()
                 .map(this::convertToStockWarehouseDto)
                 .collect(Collectors.toList());
 
-        return new PageImpl<>(stockWarehouseDtos, pageable, stockWarehouseDtos.size());
+        return new PageImpl<>(stockWarehouseDtos, pageable, stocks.getTotalElements());
     }
 
     private StockWarehouseDto convertToStockWarehouseDto(Stock stock) {
         double quantity = 0;
-        Integer quantity_remaing = 0;
-        if(Objects.equals(stock.getUnitType(), "Carton"))
-        {quantity_remaing=warehouseStockService.findWarehouseStockQuantity(stock.getStockId());
-            quantity= (double)  quantity_remaing/stock.getUnit();
+        Integer quantity_remaining = 0;
+        if (Objects.equals(stock.getUnitType(), "Carton")) {///burda cartonun kaç olduğunu belirliyor
+            quantity_remaining = warehouseStockService.findWarehouseStockQuantity(stock.getStockId());
+            quantity = (double) quantity_remaining / stock.getUnit();
+        }
+        if (Objects.equals(stock.getUnitType(), "Piece")) {
+            quantity_remaining = warehouseStockService.findWarehouseStockQuantity(stock.getStockId());
+            quantity = (double) quantity_remaining ;
+        }
+        if (Objects.equals(stock.getUnitType(), "Dozen")) {
+            quantity_remaining = warehouseStockService.findWarehouseStockQuantity(stock.getStockId());
+            quantity = (double) quantity_remaining / 12;
         }
         return new StockWarehouseDto(
                 stock.getStockId(),
@@ -125,9 +134,11 @@ public class StockService {
                 stock.getPurchasePrice(),
                 stock.getWarehouse().getWarehouseId(),
                 quantity,
-                quantity_remaing,
+                quantity_remaining,
                 stock.getUnitType(),
-                stock.getUnit());
+                stock.getUnit(),
+                stock.isStatusStock()
+        );
     }
     public Stock getstockjustid(Long id){
         return stockRepository.findStockByStockId(id);
@@ -190,5 +201,15 @@ public class StockService {
 
     public Integer getQuantityTypeCount(Long stockid){
         return stockRepository.getStockUnitByStockId(stockid);
+    }
+
+    public boolean setStatus(Long stockId) {
+        boolean status;
+        Stock s = getstockjustid(stockId);
+        status = s.isStatusStock();
+
+        s.setStatusStock(!status);
+        stockRepository.save(s);
+         return !status;
     }
 }

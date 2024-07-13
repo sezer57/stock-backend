@@ -325,10 +325,32 @@ public class Controller {
                                                   @RequestParam(defaultValue = "10") int size) {
 
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("stockName").ascending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by( "statusStock","stockName").ascending());
         Page<Stock> urunler = stockService.findAllActiveStocks(pageable);
-        //  System.out.println(urunler);
+
         return new ResponseEntity<>(urunler, HttpStatus.OK);
+    }
+
+    @PostMapping("/setStatus")
+    public ResponseEntity<String> setStatus(@RequestParam("stockId") Long stockId) {
+       boolean status;
+        try {
+
+            status= stockService.setStatus(stockId);
+
+
+        }
+        catch (Exception e) {
+            return ResponseEntity.noContent().build();
+        }
+        if (!status) {
+            return new ResponseEntity<>("Status set active ",HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>("Status set deactive",HttpStatus.OK);
+        }
+
+
     }
 
     @GetMapping("/getStocksBySearch")
@@ -336,7 +358,7 @@ public class Controller {
             @RequestParam("keyword") String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("stockName").ascending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by( "statusStock","stockName").ascending());
         Page<Stock> urunler = stockService.searchItems(keyword, pageable);
         //   System.out.println(urunler);
         return new ResponseEntity<>(urunler, HttpStatus.OK);
@@ -345,36 +367,28 @@ public class Controller {
     //  stocklar alma warehouse transfer için yapılan sadece id ve isim
     @GetMapping("/getStocksById")
     public ResponseEntity<Page<StockWarehouseDto>> getstockwithid(@RequestParam(defaultValue = "0") int page,
-                                                                  @RequestParam(defaultValue = "10") int size,
+                                                                  @RequestParam(defaultValue = "6") int size,
                                                                   @RequestParam("warehouse_id") Long warehouse_id
     ) {
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("stockName").ascending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by( "statusStock","stockName").ascending());
 
         Page<StockWarehouseDto> stocks = stockService.getStockWithId(warehouse_id, pageable);
 
-        if (stocks.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(stocks);
-        }
+        return new ResponseEntity<>(stocks, HttpStatus.OK);
     }
 
     @GetMapping("/getStocksByIdSearch")
     public ResponseEntity<Page<StockWarehouseDto>> getStocksByIdSearch(@RequestParam(defaultValue = "0") int page,
-                                                                       @RequestParam(defaultValue = "10") int size,
+                                                                       @RequestParam(defaultValue = "6") int size,
                                                                        @RequestParam("warehouse_id") Long warehouse_id,
                                                                        @RequestParam("keyword") String keyword) {
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("stockName").ascending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by( "statusStock","stockName").ascending());
 
         Page<StockWarehouseDto> stocks = stockService.getStocksByIdSearch(warehouse_id, pageable, keyword);
 
-        if (stocks.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        } else {
-            return ResponseEntity.ok(stocks);
-        }
+        return new ResponseEntity<>(stocks, HttpStatus.OK);
     }
 
     //    @GetMapping("/getStockWithIdProduct")
@@ -393,7 +407,7 @@ public class Controller {
                                                                    @RequestParam("warehouse_id") Long warehouse_id
     ) {
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("stockName").ascending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by( "statusStock","stockName").ascending());
         Page<Stock> stock = stockService.getStockWithIdProduct(warehouse_id, pageable);
 
 
@@ -406,7 +420,7 @@ public class Controller {
                                                                    @RequestParam("warehouse_id") Long warehouse_id,
                                                                    @RequestParam("keyword") String keyword) {
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by("stockName").ascending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by( "statusStock","stockName").ascending());
         Page<Stock> stock = stockService.searchItemswithid(warehouse_id, pageable, keyword);
 
 
@@ -540,7 +554,7 @@ public class Controller {
     @GetMapping("/getWarehouseStockByPage")
     public ResponseEntity<Page<WarehouseStock>> getWarehouseStockByPage(@RequestParam(defaultValue = "0") int page,
                                                                         @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("stock.stockName").ascending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("stock.statusStock","stock.stockName").ascending());
 
         Page<WarehouseStock> stocks = warehouseStockService.getAllWarehouseStock(pageable);
         if (stocks.isEmpty()) {
@@ -554,8 +568,8 @@ public class Controller {
     public ResponseEntity<Page<WarehouseStock>> getWarehouseStockBySearch(
             @RequestParam("keyword") String keyword,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("stock.stockName").ascending());
+            @RequestParam(defaultValue = "10") int size) {        Pageable pageable = PageRequest.of(page, size, Sort.by("stock.statusStock","stock.stockName").ascending());
+
         Page<WarehouseStock> stocks = warehouseStockService.searchItems(keyword, pageable);
         if (stocks.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -571,7 +585,7 @@ public class Controller {
             @RequestParam("warehouse") String wharehouse,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("stock.stockName").ascending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("stock.statusStock","stock.stockName").ascending());
         Page<WarehouseStock> stocks = warehouseStockService.searchItemsW(keyword, wharehouse, pageable);
         if (stocks.isEmpty()) {
 

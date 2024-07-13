@@ -13,4 +13,5 @@ public class WarehouseTransferDto {
     private Integer quantity;
     private LocalDateTime date;
     private String comment;
+    private String quantity_type;
 }
