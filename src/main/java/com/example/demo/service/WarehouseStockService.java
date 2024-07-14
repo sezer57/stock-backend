@@ -167,7 +167,7 @@ public class WarehouseStockService {
 
     }
     public Page<WarehouseStock> searchItemsW(String keyword,String warehouse, Pageable pageable) {
-        return warehouseStockRepository.findWarehouseStockByStockStockNameContainingAndWarehouseNameContainingAndStockIsDeletedIsFalse(keyword,warehouse, pageable);
+        return warehouseStockRepository.findWarehouseStockByStockStockNameContainingOrStockBarcodeContainingOrStockStockCodeContainingOrWarehouseNameContainingAndStockIsDeletedIsFalse(keyword,keyword,keyword,warehouse, pageable);
 
     }
 

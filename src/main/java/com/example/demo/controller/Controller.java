@@ -358,7 +358,7 @@ public class Controller {
             @RequestParam("keyword") String keyword,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by( "statusStock","stockName").ascending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by( "statusStock", "stockCode").ascending());
         Page<Stock> urunler = stockService.searchItems(keyword, pageable);
         //   System.out.println(urunler);
         return new ResponseEntity<>(urunler, HttpStatus.OK);

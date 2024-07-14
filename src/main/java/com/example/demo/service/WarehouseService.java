@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.Dto.StockDto;
 import com.example.demo.Dto.WarehouseEditDto;
 import com.example.demo.model.Stock;
 import com.example.demo.model.Warehouse;
@@ -20,11 +21,13 @@ public class WarehouseService {
     private final WarehouseRepository warehouseRepository;
     private final StockRepository stockRepository;
     private final WarehouseStockRepository warehouseStockRepository;
+    private final StockService stockService;
 
-    public WarehouseService(WarehouseRepository warehouseRepository, StockRepository stockRepository, WarehouseStockRepository warehouseStockRepository) {
+    public WarehouseService(WarehouseRepository warehouseRepository, StockRepository stockRepository, WarehouseStockRepository warehouseStockRepository, StockService stockService) {
         this.warehouseRepository = warehouseRepository;
         this.stockRepository = stockRepository;
         this.warehouseStockRepository = warehouseStockRepository;
+        this.stockService = stockService;
     }
 
 //    public void addWarehouse(Warehouse warehouse) {
@@ -40,14 +43,13 @@ public void addWarehouse(Warehouse warehouse) {
         }
         warehouseRepository.save(warehouse);
         List<Stock> stocks = stockRepository.findAll();
-        List<String> warehouseStockCode = new ArrayList<>();
+        List<Warehouse> warehouses = warehouseRepository.findAll();
+        List<Long> warehouseIds = new ArrayList<>();
+
+            warehouseIds.add(warehouse.getWarehouseId());
 
         for (Stock stock : stocks) {
-            if (!warehouseStockCode.contains(stock.getStockCode())) {
-                WarehouseStock warehouseStock = new WarehouseStock(warehouse, stock);
-                warehouseStockRepository.save(warehouseStock);
-                warehouseStockCode.add(stock.getStockCode());
-            }
+            stockService.addStock(StockDto.convert(stock,warehouseIds));
         }
     } catch (Exception e) {
         System.err.println(e.getMessage());

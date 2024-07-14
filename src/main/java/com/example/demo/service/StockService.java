@@ -13,7 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -115,15 +114,16 @@ public class StockService {
     private StockWarehouseDto convertToStockWarehouseDto(Stock stock) {
         double quantity = 0;
         Integer quantity_remaining = 0;
+
         if (Objects.equals(stock.getUnitType(), "Carton")) {///burda cartonun kaç olduğunu belirliyor
             quantity_remaining = warehouseStockService.findWarehouseStockQuantity(stock.getStockId());
             quantity = (double) quantity_remaining / stock.getUnit();
         }
-        if (Objects.equals(stock.getUnitType(), "Piece")) {
+        else if (Objects.equals(stock.getUnitType(), "Piece")) {System.out.println(stock.getUnitType()); System.out.println(stock.getUnit());
             quantity_remaining = warehouseStockService.findWarehouseStockQuantity(stock.getStockId());
-            quantity = (double) quantity_remaining ;
+            quantity = 0 ;
         }
-        if (Objects.equals(stock.getUnitType(), "Dozen")) {
+        else if (Objects.equals(stock.getUnitType(), "Dozen")) {
             quantity_remaining = warehouseStockService.findWarehouseStockQuantity(stock.getStockId());
             quantity = (double) quantity_remaining / 12;
         }
@@ -191,7 +191,7 @@ public class StockService {
     }
 
     public Page<Stock> searchItems(String keyword, Pageable pageable) {
-        return stockRepository.findStocksByStockNameContainingAndIsDeletedIsFalse(keyword, pageable);
+        return stockRepository.findStocksByStockNameContainingOrBarcodeContainingOrStockCodeContainingAndIsDeletedIsFalse(keyword, keyword,keyword,pageable);
     }
 
     public Page<Stock> searchItemswithid(Long warehouse_id, Pageable pageable, String keyword) {
