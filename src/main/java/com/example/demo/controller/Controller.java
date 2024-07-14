@@ -77,15 +77,12 @@ public class Controller {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> authenticateAndGetToken(@RequestBody AuthRequestDto authRequest) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
-        );
+    public String authenticateAndGetToken(@RequestBody AuthRequestDto authRequest) {
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
         if (authentication.isAuthenticated()) {
-            String token = jwtService.generateToken(authRequest.getUsername());
-            return ResponseEntity.ok("Token: " + token + "; Username: " + authRequest.getUsername());
+            return jwtService.generateToken(authRequest.getUsername()) + ";" + authRequest.getUsername();
         } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid user request.");
+            return ("Invalid user request !");
         }
     }
 
