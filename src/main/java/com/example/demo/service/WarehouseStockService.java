@@ -163,11 +163,12 @@ public class WarehouseStockService {
     }
 
     public Page<WarehouseStock> searchItems(String keyword, Pageable pageable) {
+
         return warehouseStockRepository.findWarehouseStockByStockStockNameContainingAndStockIsDeletedIsFalse(keyword, pageable);
 
     }
     public Page<WarehouseStock> searchItemsW(String keyword,String warehouse, Pageable pageable) {
-        return warehouseStockRepository.findWarehouseStockByStockStockNameContainingOrStockBarcodeContainingOrStockStockCodeContainingOrWarehouseNameContainingAndStockIsDeletedIsFalse(keyword,keyword,keyword,warehouse, pageable);
+        return warehouseStockRepository.findWarehouseStockByStockStockNameContainingAndWarehouseNameAndStockIsDeletedIsFalseOrStockBarcodeContainingAndWarehouseNameAndStockIsDeletedIsFalseOrStockStockCodeContainingAndWarehouseNameAndStockIsDeletedIsFalse(keyword,warehouse,keyword,warehouse, keyword,warehouse,pageable);
 
     }
 

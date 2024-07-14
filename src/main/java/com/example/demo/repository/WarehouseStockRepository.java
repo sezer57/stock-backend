@@ -32,7 +32,7 @@ public interface WarehouseStockRepository extends JpaRepository<WarehouseStock,L
     WarehouseStock findWarehouseStockByWarehouseStockId(@Param("warehouseStockId") Long warehouseStockId);
     @Query("SELECT s FROM WarehouseStock s WHERE s.stock.isDeleted = false")
     Page<WarehouseStock> findAllActiveStocks(Pageable pageable);
-    Page<WarehouseStock> findWarehouseStockByStockStockNameContainingOrStockBarcodeContainingOrStockStockCodeContainingOrWarehouseNameContainingAndStockIsDeletedIsFalse(String keyword,String keyword1,String keyword2,String warehouseName, Pageable pageable);
+    Page<WarehouseStock> findWarehouseStockByStockStockNameContainingAndWarehouseNameAndStockIsDeletedIsFalseOrStockBarcodeContainingAndWarehouseNameAndStockIsDeletedIsFalseOrStockStockCodeContainingAndWarehouseNameAndStockIsDeletedIsFalse(String keyword,String warehouseName,String keyword2,String warehouseName1,String keyword1,String warehouseName12, Pageable pageable);
  Page<WarehouseStock> findWarehouseStockByStockStockNameContainingAndStockIsDeletedIsFalse(String keyword, Pageable pageable);
 
     @Query("SELECT ws.stock.stockId FROM WarehouseStock ws")

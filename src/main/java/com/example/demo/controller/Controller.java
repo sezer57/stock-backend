@@ -384,7 +384,7 @@ public class Controller {
                                                                        @RequestParam("warehouse_id") Long warehouse_id,
                                                                        @RequestParam("keyword") String keyword) {
 
-        Pageable pageable = PageRequest.of(page, size, Sort.by( "statusStock","stockName").ascending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by( "statusStock", "stockCode").ascending());
 
         Page<StockWarehouseDto> stocks = stockService.getStocksByIdSearch(warehouse_id, pageable, keyword);
 

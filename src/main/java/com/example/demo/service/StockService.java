@@ -102,7 +102,9 @@ public class StockService {
     }
 
     public Page<StockWarehouseDto> getStocksByIdSearch(Long warehouse_transfer_id, Pageable pageable, String keyword) {
-        Page<Stock> stocks = stockRepository.findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalseAndStockNameContaining(warehouse_transfer_id, pageable, keyword);
+        System.out.println(warehouse_transfer_id);
+        Page<Stock> stocks = stockRepository.findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalseAndStockCodeContainingOrWarehouse_WarehouseIdAndIsDeletedIsFalseAndStockNameContainingOrWarehouse_WarehouseIdAndIsDeletedIsFalseAndBarcodeContaining(
+                warehouse_transfer_id,keyword,warehouse_transfer_id,keyword,warehouse_transfer_id,keyword,pageable );
 
         List<StockWarehouseDto> stockWarehouseDtos = stocks.stream()
                 .map(this::convertToStockWarehouseDto)
@@ -130,6 +132,8 @@ public class StockService {
         return new StockWarehouseDto(
                 stock.getStockId(),
                 stock.getStockName(),
+                stock.getStockCode(),
+                stock.getBarcode(),
                 stock.getSalesPrice(),
                 stock.getPurchasePrice(),
                 stock.getWarehouse().getWarehouseId(),
@@ -195,7 +199,7 @@ public class StockService {
     }
 
     public Page<Stock> searchItemswithid(Long warehouse_id, Pageable pageable, String keyword) {
-      return  stockRepository.findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalseAndStockNameContaining(warehouse_id,pageable,keyword);
+      return  stockRepository.findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalseAndStockCodeContainingOrWarehouse_WarehouseIdAndIsDeletedIsFalseAndStockNameContainingOrWarehouse_WarehouseIdAndIsDeletedIsFalseAndBarcodeContaining( warehouse_id,keyword,warehouse_id,keyword, warehouse_id,keyword, pageable );
 
     }
 

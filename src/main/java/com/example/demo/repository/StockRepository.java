@@ -28,5 +28,5 @@ public interface StockRepository extends JpaRepository<Stock,Long> {
    Page<Stock> findStocksByIsDeletedIsFalse(Pageable pageable);
     Page<Stock> findStocksByStockNameContainingOrBarcodeContainingOrStockCodeContainingAndIsDeletedIsFalse(String stockName,String stockName1,String stockName2, Pageable pageable);
 
-    Page<Stock> findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalseAndStockNameContaining(Long warehouseId, Pageable pageable,String stockName);
+    Page<Stock> findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalseAndStockCodeContainingOrWarehouse_WarehouseIdAndIsDeletedIsFalseAndStockNameContainingOrWarehouse_WarehouseIdAndIsDeletedIsFalseAndBarcodeContaining(Long warehouseId0, String s01,Long warehouseId1, String s1,Long warehouseId, String s21, Pageable pageable);
 }
