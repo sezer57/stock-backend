@@ -70,75 +70,77 @@ public class Controller {
     @PostMapping("/addNewUser")
     public ResponseEntity<String> addNewUser(@RequestBody UserInfo userInfo) {
         if (service.addUser(userInfo)) {
-            return ResponseEntity.ok("User Added Successfully");
+            return ResponseEntity.ok("User added successfully.");
         } else {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already signed up");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists.");
         }
     }
 
     @PostMapping("/login")
-    public String authenticateAndGetToken(@RequestBody AuthRequestDto authRequest) {
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
+    public ResponseEntity<String> authenticateAndGetToken(@RequestBody AuthRequestDto authRequest) {
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
+        );
         if (authentication.isAuthenticated()) {
-            return jwtService.generateToken(authRequest.getUsername()) + ";" + authRequest.getUsername();
+            String token = jwtService.generateToken(authRequest.getUsername());
+            return ResponseEntity.ok("Token: " + token + "; Username: " + authRequest.getUsername());
         } else {
-            return ("invalid user request !");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid user request.");
         }
     }
 
     @GetMapping("/getExpired")
-    public String getExpired() {
-        return "true";
+    public ResponseEntity<String> getExpired() {
+        return ResponseEntity.ok("true");
     }
 
     @GetMapping("/getClientCode")
-    public long getClientCode() {
-        return clientService.getClientCode();
+    public ResponseEntity<Long> getClientCode() {
+        long clientCode = clientService.getClientCode();
+        return ResponseEntity.ok(clientCode);
     }
 
     // Stock ekleme
     @PostMapping("/stocks")
     public ResponseEntity<String> addStock(@RequestBody StockDto stock) {
         String result = stockService.addStock(stock);
-        if (result=="Succes") {
-            return ResponseEntity.ok("Stock added successfully");
+        if ("Success".equals(result)) {
+            return ResponseEntity.ok("Stock added successfully.");
         } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(result);
         }
     }
 
     // Warehouse ekleme
-    @PostMapping("/warehouse")
-    public ResponseEntity<String> addStock(@RequestBody Warehouse Warehouse) {
-        warehouseService.addWarehouse(Warehouse);
-        return ResponseEntity.ok("Stock added successfully");
+    @PostMapping("{copy}/warehouse")
+    public ResponseEntity<String> addWarehouse(@RequestBody Warehouse warehouse, @PathVariable boolean copy) {
+        warehouseService.addWarehouse(warehouse, copy);
+        return ResponseEntity.ok("Warehouse added successfully.");
     }
 
-    //warehouse edit
-    @PutMapping("/warehouse/{warehouseId}")
-    public ResponseEntity<String> updateWarehouse(@PathVariable Long warehouseId, @RequestBody WarehouseEditDto updatedWarehouse) {
-
-        if (warehouseService.updateWarehouse(warehouseId, updatedWarehouse)) {
-            return ResponseEntity.ok("warehouse updated successfully");
+    // Warehouse edit
+    @PutMapping("/warehouse/{copy}/{warehouseId}")
+    public ResponseEntity<String> updateWarehouse(@PathVariable Long warehouseId, @PathVariable boolean copy, @RequestBody WarehouseEditDto updatedWarehouse) {
+        if (warehouseService.updateWarehouse(warehouseId, updatedWarehouse, copy)) {
+            return ResponseEntity.ok("Warehouse updated successfully.");
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update warehouse");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to update warehouse.");
         }
     }
 
     @GetMapping("/getWarehouseName")
-    public ResponseEntity<List<String>> getWarehouseName() {
-
-        List<String> Warehouse = warehouseService.getWarehouseNames();
-        //  System.out.println(Warehouse);
-        return ResponseEntity.ok(Warehouse);
+    public ResponseEntity<List<String>> getWarehouseNames() {
+        List<String> warehouseNames = warehouseService.getWarehouseNames();
+        return ResponseEntity.ok(warehouseNames);
     }
 
     // Warehouse alma
     @GetMapping("/getWarehouse")
-    public ResponseEntity<List<Warehouse>> getWarehouse() {
-        List<Warehouse> Warehouse = warehouseService.getWarehouse();
-        return ResponseEntity.ok(Warehouse);
+    public ResponseEntity<List<Warehouse>> getWarehouses() {
+        List<Warehouse> warehouses = warehouseService.getWarehouse();
+        return ResponseEntity.ok(warehouses);
     }
+
 
     // warehouse silme
     //client silme
@@ -206,9 +208,9 @@ public class Controller {
     @PostMapping("/information-codes")
     public ResponseEntity<String> addInformationCode(@RequestBody InformationCodeDto informationCodeDto) {
         if (informationCodeService.addInformationCode(informationCodeDto)) {
-            return ResponseEntity.ok("InformationCode updated successfully");
+            return ResponseEntity.ok("Information Code updated successfully");
         } else {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error updating InformationCode");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error updating Information Code");
         }
     }
 
@@ -263,9 +265,9 @@ public class Controller {
     public ResponseEntity<String> updateQuantityIn(@PathVariable Long stockId, @RequestParam Integer quantityIn) {
 
         if (warehouseStockService.updateQuantityIn(stockId, quantityIn)) {
-            return ResponseEntity.status(HttpStatus.OK).body("WarehouseStock updateQuantityIn guncellendi:" + stockId);
+            return ResponseEntity.status(HttpStatus.OK).body("WarehouseStock updateQuantityIn updated:" + stockId);
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hata updateQuantityIn:" + stockId);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error updateQuantityIn:" + stockId);
     }
 
     @PatchMapping("/{clientID}/updateBalance")
@@ -291,9 +293,9 @@ public class Controller {
     public ResponseEntity<String> updateQuantityOut(@PathVariable Long stockId, @RequestParam Integer quantityOut) {
 
         if (warehouseStockService.updateQuantityOut(stockId, quantityOut)) {
-            return ResponseEntity.status(HttpStatus.OK).body("WarehouseStock  updateQuantityOut guncellendi:" + stockId);
+            return ResponseEntity.status(HttpStatus.OK).body("WarehouseStock updateQuantityOut updated:" + stockId);
         }
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Hata updateQuantityOut:" + stockId);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error updateQuantityOut:" + stockId);
     }
 
     // bütün stocklar alma şuan gereksiz gibi
@@ -347,7 +349,7 @@ public class Controller {
             return new ResponseEntity<>("Status set active ",HttpStatus.OK);
         }
         else {
-            return new ResponseEntity<>("Status set deactive",HttpStatus.OK);
+            return new ResponseEntity<>("Status set deactivate",HttpStatus.OK);
         }
 
 
@@ -780,9 +782,9 @@ public class Controller {
             return ResponseEntity.ok("onaylandı");
         } else if (Objects.equals(status, "red")) {
             warehouseTransferService.change_status(warehouse_transfer_id, status);
-            return ResponseEntity.ok("red edildi ve miktar kaynaga tekrardan aktarıldı");
+            return ResponseEntity.ok("Rejected. The amount has been transferred back to the source.");
         } else
-            return ResponseEntity.badRequest().body("yanlış değer");
+            return ResponseEntity.badRequest().body("Wrong amount");
 
     }
 
