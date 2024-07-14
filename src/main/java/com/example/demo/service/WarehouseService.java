@@ -36,29 +36,35 @@ public class WarehouseService {
 //        }
 //        warehouseRepository.save(warehouse);
 //    }
-public void addWarehouse(Warehouse warehouse) {
+
+public void addWarehouse(Warehouse warehouse, boolean copyProducts) {
     try {
         if (warehouseRepository.existsWarehouseByName(warehouse.getName())) {
             return;
         }
         warehouseRepository.save(warehouse);
-        List<Stock> stocks = stockRepository.findAll();
-        List<Warehouse> warehouses = warehouseRepository.findAll();
-        List<Long> warehouseIds = new ArrayList<>();
-
-            warehouseIds.add(warehouse.getWarehouseId());
-
-        for (Stock stock : stocks) {
-            stockService.addStock(StockDto.convert(stock,warehouseIds));
+        if (copyProducts){
+        copyProducts(warehouse);
         }
     } catch (Exception e) {
         System.err.println(e.getMessage());
     }
 }
 
-
-
-
+public void copyProducts(Warehouse warehouse){
+        try {
+            List<Stock> stocks = stockRepository.findAll();
+            List<Long> warehouseIds = new ArrayList<>();
+            warehouseIds.add(warehouse.getWarehouseId());
+            for (Stock stock : stocks) {
+                if (stockRepository.existsStocksByWarehouseWarehouseIdAndStockCode(stock.getWarehouse().getWarehouseId(),stock.getStockCode())) {
+                    stockService.addStock(StockDto.convert(stock, warehouseIds));
+                }
+            }
+        }catch (Exception e){
+            System.err.println(e.getMessage());
+        }
+    }
 
     public List<Warehouse> getWarehouse(){
         return warehouseRepository.findWarehouseByIsDeletedFalse();
@@ -67,16 +73,16 @@ public void addWarehouse(Warehouse warehouse) {
         return warehouseRepository.findWarehouseByWarehouseId(id);
     }
 
-    public boolean updateWarehouse(Long id, WarehouseEditDto updatedWarehouse) {
+    public boolean updateWarehouse(Long id, WarehouseEditDto updatedWarehouse,boolean copyProducts) {
         Optional<Warehouse> optionalWarehouse = warehouseRepository.findWarehouseByWarehouseIdAndIsDeletedFalse(id);
-        if (optionalWarehouse.isPresent()) {
-
+        if (optionalWarehouse.isPresent() && copyProducts) {
             Warehouse warehouse = optionalWarehouse.get();
             warehouse.setName(updatedWarehouse.getName());
             warehouse.setAuthorized(updatedWarehouse.getAuthorized());
             warehouse.setPhone(updatedWarehouse.getPhone());
             warehouse.setAddress(updatedWarehouse.getAddress());
             warehouseRepository.save(warehouse);
+            copyProducts(warehouse);
             return true;
         } else {
             return false;
