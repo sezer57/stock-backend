@@ -85,7 +85,18 @@ public void copyProducts(Warehouse warehouse){
             warehouseRepository.save(warehouse);
             copyProducts(warehouse);
             return true;
-        } else {
+        } else if(optionalWarehouse.isPresent())
+        {
+            Warehouse warehouse = optionalWarehouse.get();
+            warehouse.setName(updatedWarehouse.getName());
+            warehouse.setAuthorized(updatedWarehouse.getAuthorized());
+            warehouse.setPhone(updatedWarehouse.getPhone());
+            warehouse.setAddress(updatedWarehouse.getAddress());
+            warehouseRepository.save(warehouse);
+
+            return true;
+        }
+        {
             return false;
         }
     }

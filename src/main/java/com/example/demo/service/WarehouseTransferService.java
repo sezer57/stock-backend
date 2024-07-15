@@ -54,33 +54,33 @@ public class WarehouseTransferService {
                 return "There is not enough product left in the warehouse";
             }
 
-
-            sourceWarehouseStock.setQuantityRemaining(oldQR-warehouseTransferDto.getQuantity()*stockService.getQuantityTypeCount( s.getStockId()));
-            sourceWarehouseStock.setQuantityTransfer(oldQt+warehouseTransferDto.getQuantity()*stockService.getQuantityTypeCount( s.getStockId()));
+            System.out.println(stockService.getQuantityTypeCount( s.getStockId()));
+            sourceWarehouseStock.setQuantityRemaining(oldQR-(warehouseTransferDto.getQuantity()*stockService.getQuantityTypeCount( s.getStockId())));
+            sourceWarehouseStock.setQuantityTransfer(oldQt+(warehouseTransferDto.getQuantity()*stockService.getQuantityTypeCount( s.getStockId())));
             warehouseStockService.savedb(sourceWarehouseStock);
 
         }
-        else if(warehouseTransferDto.getQuantity_type().equals("Dozen")){
-            if(sourceWarehouseStock.getQuantityRemaining()<warehouseTransferDto.getQuantity()){
-                return "There are not enough products in the target warehouse";
-            }
-
-            if(oldQI==0){
-                return "There are not enough products in the warehouse";
-            }
-            if (oldQI<oldQt){
-                return "There are not enough products in the warehouse";
-            }
-            if(oldQR==0){
-                return "There is not enough product left in the warehouse";
-            }
-
-
-            sourceWarehouseStock.setQuantityRemaining(oldQR-warehouseTransferDto.getQuantity()*12);
-            sourceWarehouseStock.setQuantityTransfer(oldQt+warehouseTransferDto.getQuantity()*12);
-            warehouseStockService.savedb(sourceWarehouseStock);
-
-        }
+//        else if(warehouseTransferDto.getQuantity_type().equals("Dozen")){
+//            if(sourceWarehouseStock.getQuantityRemaining()<warehouseTransferDto.getQuantity()){
+//                return "There are not enough products in the target warehouse";
+//            }
+//
+//            if(oldQI==0){
+//                return "There are not enough products in the warehouse";
+//            }
+//            if (oldQI<oldQt){
+//                return "There are not enough products in the warehouse";
+//            }
+//            if(oldQR==0){
+//                return "There is not enough product left in the warehouse";
+//            }
+//
+//
+//            sourceWarehouseStock.setQuantityRemaining(oldQR-warehouseTransferDto.getQuantity()*12);
+//            sourceWarehouseStock.setQuantityTransfer(oldQt+warehouseTransferDto.getQuantity()*12);
+//            warehouseStockService.savedb(sourceWarehouseStock);
+//
+//        }
         else {
             if(sourceWarehouseStock.getQuantityRemaining()<warehouseTransferDto.getQuantity()){
                 return "There are not enough products in the target warehouse";
@@ -140,16 +140,36 @@ public class WarehouseTransferService {
         if(Objects.equals(status, "onay")){
             Integer oldQR=targetWarehouseStock.getQuantityRemaining();
             Integer oldQR_s=sourceWarehouseStock.getQuantityTransfer();
-            targetWarehouseStock.setQuantityIn(add);
-            targetWarehouseStock.setQuantityRemaining(oldQR+add);
-            sourceWarehouseStock.setQuantityTransfer(oldQR_s-add);
-            sourceWarehouseStock.setQuantityOut(add);
+            Integer x;
+            if(transfer.getQuantity_type().equals("Carton")){
+                x=stockService.getQuantityTypeCount( s.getStockId());
+                targetWarehouseStock.setQuantityIn(add*x);
+                targetWarehouseStock.setQuantityRemaining(oldQR+(add*x));
+                sourceWarehouseStock.setQuantityTransfer(oldQR_s-(add*x));
+                sourceWarehouseStock.setQuantityOut((add*x));
+
+            }
+            else{
+                targetWarehouseStock.setQuantityIn(add);
+                targetWarehouseStock.setQuantityRemaining(oldQR+(add));
+                sourceWarehouseStock.setQuantityTransfer(oldQR_s-(add));
+                sourceWarehouseStock.setQuantityOut((add));
+            }
+
             transfer.setApprovalStatus("onay");
         }
         else if(Objects.equals(status, "red")){
             Integer oldQT_s=sourceWarehouseStock.getQuantityTransfer();
-            sourceWarehouseStock.setQuantityTransfer(oldQT_s-add);
-            sourceWarehouseStock.setQuantityRemaining(oldQT_s+add);
+            Integer x;
+            if(transfer.getQuantity_type().equals("Carton")) {
+                x = stockService.getQuantityTypeCount(s.getStockId());
+                sourceWarehouseStock.setQuantityTransfer(oldQT_s - (add*x));
+                sourceWarehouseStock.setQuantityRemaining(oldQT_s + (add*x));
+            }
+            else{
+                sourceWarehouseStock.setQuantityTransfer(oldQT_s - add);
+                sourceWarehouseStock.setQuantityRemaining(oldQT_s + add);
+            }
             transfer.setApprovalStatus("red");
         }
         warehouseStockService.savedb(sourceWarehouseStock);

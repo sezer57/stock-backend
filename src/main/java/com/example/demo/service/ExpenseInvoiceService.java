@@ -61,10 +61,10 @@ public class ExpenseInvoiceService {
 
                 warehouseStockService.updateQuantityOut(stockCode, (quantity*stockService.getQuantityTypeCount(stockCodes.get(i))));
             }
-            else if(quantities_type.get(i).equals("Dozen")){
-                warehouseStockService.updateQuantityOut(stockCode, quantity*12);
-
-            }
+//            else if(quantities_type.get(i).equals("Dozen")){
+//                warehouseStockService.updateQuantityOut(stockCode, quantity*12);
+//
+//            }
             else {
                 warehouseStockService.updateQuantityOut(stockCode, quantity);
             }
