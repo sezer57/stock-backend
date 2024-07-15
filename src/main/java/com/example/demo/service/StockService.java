@@ -42,10 +42,10 @@ public class StockService {
                     Long warehouseIdLong = Long.valueOf(warehouseId);
                     Optional<Warehouse> warehouseOptional = warehouseRepository.findById(warehouseIdLong);
                     if (warehouseOptional.isEmpty()) {
-                        return "warehouse empty error"; // Warehouse bulunamadı, işlem başarısız
+                        return "Warehouse is not exist "; // Warehouse bulunamadı, işlem başarısız
                     } else {
                         if (isDuplicateStock(warehouseId, stock.getStockCode(), stock.getStockName(), stock.getBarcode())) {
-                            return "same stockcode , stockname or barcode error"; // Aynı depoda aynı stok kodu, isim veya barkod ile stok var
+                            return "Same 'stockcode' or 'stockname' or 'barcode' are used"; // Aynı depoda aynı stok kodu, isim veya barkod ile stok var
                         }
                         Warehouse warehouse = warehouseOptional.get();
                         Stock newStock = new Stock(
@@ -71,7 +71,7 @@ public class StockService {
                     return "false";
                 }
             }
-            return "Succes";
+            return "Success";
         }
     }
     private boolean isDuplicateStock(Long warehouseId, String stockName) {
