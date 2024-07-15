@@ -59,10 +59,10 @@ public class ExpenseInvoiceService {
             if(quantities_type.get(i).equals("Carton")){
                 //backende stock sayısını eğer carton olarak satıldıysa ona göre artırma
 
-                warehouseStockService.updateQuantityIn(stockCode, (quantity*stockService.getQuantityTypeCount(stockCodes.get(i))));
+                warehouseStockService.updateQuantityOut(stockCode, (quantity*stockService.getQuantityTypeCount(stockCodes.get(i))));
             }
             else if(quantities_type.get(i).equals("Dozen")){
-                warehouseStockService.updateQuantityIn(stockCode, quantity*12);
+                warehouseStockService.updateQuantityOut(stockCode, quantity*12);
 
             }
             else {
@@ -72,8 +72,6 @@ public class ExpenseInvoiceService {
 //          if (!warehouseStockService.updateQuantityOut(stockCode, quantity)) {
 //              return "not enough products in warehouse";
 //          }
-
-
             balanceService.updateBalanceToSale(expenseInvoice.getClientId(), totalPrice);
         }
         List<Stock> stocks = new ArrayList<>();

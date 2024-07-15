@@ -58,9 +58,9 @@ public class PurchaseService {
             // BigDecimal vatAmount = prices.get(i) * (1 + vatRate)
 
             totalPrice = BigDecimal.valueOf(price * (1 + vats/100));
-           BigDecimal oldB=b.getBalance();
+           BigDecimal oldB=b.getBalanceReceive();
 
-            b.setBalance(oldB.add(totalPrice));
+            b.setBalanceReceive(oldB.add(totalPrice));
 
         }
 

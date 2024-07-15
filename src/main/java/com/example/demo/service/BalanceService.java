@@ -32,8 +32,15 @@ public class BalanceService {
         if (isDuplicateClientID(balance.getClientID())) {
             return false;
         } else {
-            Balance b = new Balance(balance.getClientID(), balance.getDebitCreditStatus(), balance.getDebit(), balance.getCredit(), balance.getCash(),
-                    balance.getBalance(), balance.getComment());
+            Balance b = new Balance(
+                    balance.getClientID(),
+                    balance.getDebitCreditStatus(),
+                    balance.getDebit(),
+                    balance.getCredit(),
+                    balance.getCash(),
+                    balance.getBalanceDebt(),
+                    balance.getBalanceReceive(),
+                    balance.getComment());
             if (b.getClientID().equals(clients.getClientId())) {
                 balanceRepository.save(b);
                 return true;
@@ -63,17 +70,18 @@ public class BalanceService {
         return balanceRepository.findBalanceByClientID(ClientID);
     }
 
+    //purchase işleminde kullanılıyor
     public boolean updateBalance(Long clientID, String paymentType, BigDecimal Value) {
         Balance balance = balanceRepository.findBalanceByClientID(clientID);
         Client client = clientRepository.findClientByClientId(clientID);
         BigDecimal oldValue;
 
-        oldValue = balance.getBalance();
+        oldValue = balance.getBalanceReceive();
         if (oldValue == null) {
             oldValue = BigDecimal.ZERO;
         }
         BigDecimal newValue = oldValue.subtract(Value);
-        balance.setBalance(newValue);
+        balance.setBalanceReceive(newValue);
 
 
         switch (paymentType) {
@@ -113,7 +121,7 @@ public class BalanceService {
                 client.getName(),
                 client.getSurname(),
                 client.getCommercialTitle(),
-                balance.getBalance(),
+                balance.getBalanceReceive(),
                 Value,
                 paymentType,
                 currentDate,
@@ -124,17 +132,20 @@ public class BalanceService {
         return true;
 
     }
+
+
+    // salede kullanılıyor
     public boolean updateBalance2(Long clientID, String paymentType, BigDecimal Value) {
         Balance balance = balanceRepository.findBalanceByClientID(clientID);
         Client client = clientRepository.findClientByClientId(clientID);
         BigDecimal oldValue;
 
-        oldValue = balance.getBalance();
+        oldValue = balance.getBalanceDebt();
         if (oldValue == null) {
             oldValue = BigDecimal.ZERO;
         }
-        BigDecimal newValue = oldValue.add(Value);
-        balance.setBalance(newValue);
+        BigDecimal newValue = oldValue.subtract(Value);
+        balance.setBalanceDebt(newValue);
 
 
         switch (paymentType) {
@@ -143,7 +154,7 @@ public class BalanceService {
                 if (oldValue == null) {
                     oldValue = BigDecimal.ZERO;
                 }
-                newValue = oldValue.add(Value);
+                newValue = oldValue.subtract(Value);
                 balance.setDebit(newValue);
                 break;
 
@@ -152,7 +163,7 @@ public class BalanceService {
                 if (oldValue == null) {
                     oldValue = BigDecimal.ZERO;
                 }
-                newValue = oldValue.add(Value);
+                newValue = oldValue.subtract(Value);
                 balance.setCredit(newValue);
                 break;
             case "Cash":
@@ -160,7 +171,7 @@ public class BalanceService {
                 if (oldValue == null) {
                     oldValue = BigDecimal.ZERO;
                 }
-                newValue = oldValue.add(Value);
+                newValue = oldValue.subtract(Value);
                 balance.setCash(newValue);
                 break;
             default:
@@ -175,7 +186,7 @@ public class BalanceService {
                 client.getName(),
                 client.getSurname(),
                 client.getCommercialTitle(),
-                balance.getBalance(),
+                balance.getBalanceDebt(),
                 Value,
                 paymentType,
                 currentDate,
@@ -190,12 +201,12 @@ public class BalanceService {
         Balance balance = balanceRepository.findBalanceByClientID(clientID);
         BigDecimal oldValue;
 
-        oldValue = balance.getBalance();
+        oldValue = balance.getBalanceDebt();
         if (oldValue == null) {
             oldValue = BigDecimal.ZERO;
         }
-        BigDecimal newValue = oldValue.subtract(Value);
-        balance.setBalance(newValue);
+        BigDecimal newValue = oldValue.add(Value);
+        balance.setBalanceDebt(newValue);
 
         balanceRepository.save(balance);
         return true;

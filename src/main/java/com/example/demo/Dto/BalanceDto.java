@@ -14,6 +14,7 @@ public class BalanceDto {
     private BigDecimal debit;
     private BigDecimal credit;
     private BigDecimal cash;
-    private BigDecimal balance;
+    private BigDecimal balanceDebt;
+    private BigDecimal balanceReceive;
     private String comment;
 }
