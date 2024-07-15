@@ -112,7 +112,10 @@ public class WarehouseTransferService {
                 warehouseTransferDto.getQuantity_type(),
                 warehouseTransferDto.getDate(),
                 warehouseTransferDto.getComment(),
-                "Onay Bekliyor"
+
+                "Onay Bekliyor",
+                s.getStockName(),
+                s.getStockCode()
         );
 
         warehouseTransferRepository.save(newWarehouseTransfer);

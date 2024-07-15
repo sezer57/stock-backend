@@ -46,6 +46,7 @@ public void addWarehouse(Warehouse warehouse, boolean copyProducts) {
         if (copyProducts){
         copyProducts(warehouse);
         }
+
     } catch (Exception e) {
         System.err.println(e.getMessage());
     }

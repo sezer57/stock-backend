@@ -744,7 +744,7 @@ public class Controller {
     public ResponseEntity<String> transfer(@RequestBody WarehouseTransferDto warehouseTransferDto) {
         String transferResult = warehouseTransferService.transfer(warehouseTransferDto);
 
-        if (Objects.equals(transferResult, "transfer basarılı")) {
+        if (Objects.equals(transferResult, "Transfer successful")) {
             // Transfer başarılıysa
             return ResponseEntity.status(HttpStatus.OK).body(transferResult);
         } else {
@@ -766,6 +766,9 @@ public class Controller {
             names.put("quantity", transfer.getQuantity().toString());
             names.put("comment", transfer.getComment());
             names.put("approvelstatus", transfer.getApprovalStatus());
+            names.put("date", transfer.getDate().toString());
+            names.put("stockName", transfer.getStockName());
+            names.put("stockCode", transfer.getStockCode());
             transferNames.add(names);
         }
         return ResponseEntity.ok(transferNames);
