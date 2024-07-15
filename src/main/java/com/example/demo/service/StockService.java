@@ -102,7 +102,7 @@ public class StockService {
     }
 
     public Page<StockWarehouseDto> getStocksByIdSearch(Long warehouse_transfer_id, Pageable pageable, String keyword) {
-        System.out.println(warehouse_transfer_id);
+        //System.out.println(warehouse_transfer_id);
         Page<Stock> stocks = stockRepository.findStocksByWarehouse_WarehouseIdAndIsDeletedIsFalseAndStockCodeContainingOrWarehouse_WarehouseIdAndIsDeletedIsFalseAndStockNameContainingOrWarehouse_WarehouseIdAndIsDeletedIsFalseAndBarcodeContaining(
                 warehouse_transfer_id,keyword,warehouse_transfer_id,keyword,warehouse_transfer_id,keyword,pageable );
 
@@ -121,7 +121,8 @@ public class StockService {
             quantity_remaining = warehouseStockService.findWarehouseStockQuantity(stock.getStockId());
             quantity = (double) quantity_remaining / stock.getUnit();
         }
-        else if (Objects.equals(stock.getUnitType(), "Piece")) {System.out.println(stock.getUnitType()); System.out.println(stock.getUnit());
+        else if (Objects.equals(stock.getUnitType(), "Piece")) {
+            //System.out.println(stock.getUnitType()); System.out.println(stock.getUnit());
             quantity_remaining = warehouseStockService.findWarehouseStockQuantity(stock.getStockId());
             quantity = 0 ;
         }

@@ -45,12 +45,19 @@ public class WarehouseTransfer {
     @Column(name = "approval_status")
     private String approvalStatus; // "Onay Bekliyor", "Onaylandı", "Reddedildi"
 
+    @Column(name = "StockName")
+    private String stockName;
+
+    @Column(name = "StockCode")
+    private String stockCode;
+
 
 
     public WarehouseTransfer() {
 
     }
-    public WarehouseTransfer( Warehouse source, Warehouse target,Long stock_id, Integer quantity,String quantity_type,LocalDateTime date, String comment, String approvalStatus) {
+    public WarehouseTransfer( Warehouse source, Warehouse target,Long stock_id, Integer quantity,String quantity_type,LocalDateTime date,
+                              String comment, String approvalStatus, String stockName,String stockCode ) {
         this.stock_id=stock_id;
         this.source = source;
         this.target = target;
@@ -59,5 +66,7 @@ public class WarehouseTransfer {
         this.comment = comment;
         this.date = date;
         this.approvalStatus = approvalStatus;
+        this.stockName = stockName;
+        this.stockCode = stockCode;
     }
 }
