@@ -137,7 +137,7 @@ public class WarehouseTransferService {
         WarehouseStock targetWarehouseStock = warehouseStockService.findByWarehouseStock_name(s.getStockName(),transfer.getTarget().getWarehouseId());
         Integer add=transfer.getQuantity();
 
-        if(Objects.equals(status, "onay")){
+        if(status.equals( "onay")){
             Integer oldQR=targetWarehouseStock.getQuantityRemaining();
             Integer oldQR_s=sourceWarehouseStock.getQuantityTransfer();
             Integer x;
@@ -158,17 +158,18 @@ public class WarehouseTransferService {
 
             transfer.setApprovalStatus("onay");
         }
-        else if(Objects.equals(status, "red")){
+        else if(status.equals( "red")){
             Integer oldQT_s=sourceWarehouseStock.getQuantityTransfer();
+            Integer oldQR_s=sourceWarehouseStock.getQuantityRemaining();
             Integer x;
             if(transfer.getQuantity_type().equals("Carton")) {
                 x = stockService.getQuantityTypeCount(s.getStockId());
                 sourceWarehouseStock.setQuantityTransfer(oldQT_s - (add*x));
-                sourceWarehouseStock.setQuantityRemaining(oldQT_s + (add*x));
+                sourceWarehouseStock.setQuantityRemaining(oldQR_s + (add*x));
             }
             else{
                 sourceWarehouseStock.setQuantityTransfer(oldQT_s - add);
-                sourceWarehouseStock.setQuantityRemaining(oldQT_s + add);
+                sourceWarehouseStock.setQuantityRemaining(oldQR_s + add);
             }
             transfer.setApprovalStatus("red");
         }
